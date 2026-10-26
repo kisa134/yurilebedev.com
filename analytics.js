@@ -1,8 +1,8 @@
 /* Cogito site analytics: Google Analytics 4 + first-touch attribution + reading events.
    Change GA_ID only here. Docs: README.md → "Analytics". */
 (function () {
-  var GA_ID = 'G-XXXXXXXXXX';
-  if (!GA_ID || GA_ID.indexOf('XXXX') !== -1) return;
+  var GA_ID = 'G-JXWPRE2VW4';
+  if (!GA_ID) return;
   if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
 
   var s = document.createElement('script');
