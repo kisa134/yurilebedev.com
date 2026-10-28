@@ -76,6 +76,12 @@
       gtag('event', 'essay_read', { essay_path: location.pathname, seconds: Math.round((Date.now() - start) / 1000) });
     }
   }
-  window.addEventListener('scroll', check, { passive: true });
+  // Throttled to one check per animation frame, never per scroll event.
+  var queued = false;
+  window.addEventListener('scroll', function () {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; check(); });
+  }, { passive: true });
   setInterval(check, 15000);
 })();

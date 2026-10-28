@@ -2,50 +2,185 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="A personal journal about trading, building tools, and applying systems thinking.">
-<meta name="theme-color" content="#faf9f6"><title>Cogito | Trading, tools & clearer thinking</title>
+<title>Cogito | Trading, tools and clearer thinking</title>
+<meta name="description" content="A personal journal about trading, building my own trading terminal in public, and applying systems thinking.">
+<meta name="theme-color" content="#F3EFE6">
 <link rel="canonical" href="https://yurilebedev.com/">
-<meta property="og:type" content="website"><meta property="og:url" content="https://yurilebedev.com/"><meta property="og:title" content="Cogito | Trading, tools & clearer thinking"><meta property="og:description" content="A personal journal about trading, building tools, and applying systems thinking."><meta property="og:site_name" content="Cogito">
-<meta name="twitter:card" content="summary"><meta name="twitter:site" content="@Cogit08"><meta name="twitter:creator" content="@Cogit08">
-<script src="analytics.js" defer></script>
+<link rel="icon" href="favicon.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website"><meta property="og:url" content="https://yurilebedev.com/"><meta property="og:title" content="Cogito | Trading, tools and clearer thinking"><meta property="og:description" content="A personal journal about trading, building my own trading terminal in public, and applying systems thinking."><meta property="og:site_name" content="Cogito">
+<meta property="og:image" content="https://yurilebedev.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Cogito. Trading, tools and clearer thinking.">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@Cogit08"><meta name="twitter:creator" content="@Cogit08"><meta name="twitter:image" content="https://yurilebedev.com/og.png">
+<link rel="preload" href="fonts/Newsreader.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+<script>document.documentElement.classList.add('js')</script>
+<script src="analytics.js" defer></script>
+<script src="site.js" defer></script>
+</head><body>
 <a class="skip" href="#main">Skip to content</a>
-<div class="wrap">
-<header><a class="wordmark" href="index.html" aria-label="Cogito home">Cogito.</a><nav aria-label="Main navigation"><a href="#writing">Writing</a><a href="#projects">Projects</a><a href="#about">About</a></nav></header>
-<main id="main">
+<div class="ribbon" aria-hidden="true"></div>
+<header class="masthead">
+  <div class="page">
+    <a class="wordmark" href="index.html" aria-label="Cogito home">Cogito<span>.</span></a>
+    <div class="meta label"><span>Journal · Vol. 1</span><span>Dubai <b data-clock>--:--</b> GST</span></div>
+    <nav aria-label="Main navigation">
+      <a href="index.html#writing">Writing</a><a href="index.html#work" class="hide-sm">Work</a><a href="index.html#about" class="hide-sm">About</a>
+      <a class="follow-btn" href="https://x.com/Cogit08"><svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M214.75,211.71l-62.6-98.38,61.77-67.95a8,8,0,0,0-11.84-10.76L143.24,99.34,102.75,35.71A8,8,0,0,0,96,32H48a8,8,0,0,0-6.75,12.3l62.6,98.37-61.77,68a8,8,0,1,0,11.84,10.76l58.84-64.72,40.49,63.63A8,8,0,0,0,160,224h48a8,8,0,0,0,6.75-12.29ZM164.39,208,62.57,48h29L193.43,208Z"/></svg> Follow</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="page">
+
 <section class="hero" aria-labelledby="hero-title">
-<p class="kicker">Independent trader & builder · Dubai</p>
-<h1 id="hero-title">Trading, tools &<br><span>clearer thinking.</span></h1>
-<p class="intro">I trade, build my own trading tools, and apply systems thinking to my work. This is where I write about the process, the questions, and what I’m learning along the way.</p>
-<a class="text-link" href="writing/point-zero.html">Read the first essay <span aria-hidden="true">↗</span></a>
+  <div class="row">
+    <div class="margin label"><span class="section-no">§ 00</span>Independent trader<br>and builder<br>Dubai</div>
+    <div class="grid">
+      <div>
+        <h1 id="hero-title">Trading, tools &amp;<br><span class="accent">clearer thinking.<span class="u" aria-hidden="true"></span></span></h1>
+        <p class="intro">I trade for a living and build my own trading terminal in public. This journal is where the decisions, experiments and mistakes get written down, so other people can inspect them and argue with them.</p>
+        <div class="actions">
+          <a class="btn" href="https://x.com/Cogit08"><svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M214.75,211.71l-62.6-98.38,61.77-67.95a8,8,0,0,0-11.84-10.76L143.24,99.34,102.75,35.71A8,8,0,0,0,96,32H48a8,8,0,0,0-6.75,12.3l62.6,98.37-61.77,68a8,8,0,1,0,11.84,10.76l58.84-64.72,40.49,63.63A8,8,0,0,0,160,224h48a8,8,0,0,0,6.75-12.29ZM164.39,208,62.57,48h29L193.43,208Z"/></svg> Follow the build on X</a>
+          <a class="ink label" href="writing/point-zero.html">Read essay 001 <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a>
+        </div>
+        <p class="ledger-line label"><span><b>02</b> entries</span><span><b>01</b> terminal in development</span><span><b>00</b> signals sold</span></p>
+      </div>
+      <figure class="plate" data-plate="I">
+        <div class="plate-art"><div class="plate-empty"><span class="label">Plate I</span><span class="label">Self portrait</span><span class="label red">to be drawn</span></div></div>
+        <figcaption class="label"><span>Plate I · Self portrait</span><span>Ink on paper</span></figcaption>
+      </figure>
+    </div>
+  </div>
 </section>
-<section class="section" id="writing" aria-labelledby="writing-title">
-<div class="section-top"><h2 class="section-title" id="writing-title">Writing</h2><p class="meta">Notes from the work, not the sidelines.</p></div>
-<a class="essay-row" href="writing/point-zero.html">
-<span class="number">ESSAY 001</span>
-<div><p class="kicker">Life & systems · October 2026</p><h3>Point zero: what I carried with me</h3><p>I have started over more times than I can count. This time I want to write down what I'm bringing into the new start.</p></div>
-<span class="arrow" aria-hidden="true">↗</span>
-</a>
-<a class="essay-row" href="writing/building-in-public.html">
-<span class="number">ESSAY 002</span>
-<div><p class="kicker">Trading & building · October 2026</p><h3>Why I’m building my trading tools in public</h3><p>Trading is the work. The terminal is the product. Writing is how I want to make my thinking visible.</p></div>
-<span class="arrow" aria-hidden="true">↗</span>
-</a>
+
+<section class="section reveal" id="writing" aria-labelledby="writing-title">
+  <div class="row">
+    <div class="margin label"><span class="section-no">§ 01</span>Index of entries</div>
+    <div>
+      <h2 id="writing-title">Writing</h2>
+      <p class="lede">Notes from the work, not the sidelines.</p>
+      <div class="ledger">
+        <a class="entry" href="writing/point-zero.html">
+          <span class="no label">No. 001</span>
+          <div><h3><span>Point zero: what I carried with me</span></h3><p>I have started over more times than I can count. This time I want to write down what I’m bringing into the new start.</p></div>
+          <span class="when label">Life and systems<br>Oct 2026 · 4 min</span>
+          <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg>
+        </a>
+        <a class="entry" href="writing/building-in-public.html">
+          <span class="no label">No. 002</span>
+          <div><h3><span>Why I’m building my trading tools in public</span></h3><p>Trading is the work. The terminal is the product. Writing is how I want to make my thinking visible.</p></div>
+          <span class="when label">Trading and building<br>Oct 2026 · 3 min</span>
+          <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
 </section>
-<section class="section" id="projects" aria-labelledby="projects-title">
-<div class="section-top"><h2 class="section-title" id="projects-title">What I’m building</h2><p class="meta">A main product. A few experiments.</p></div>
-<article class="project"><div><h3>Trading terminal</h3><span class="status">Main product · In development</span></div><div><p>My own trading terminal, bringing together tools and ideas developed through my daily trading work.</p><p class="project-note">I’ll use this journal to share selected decisions, experiments, and development notes.</p></div></article>
-<article class="project"><div><h3>Ant Kitchen</h3><span class="status">Game · Prototype stage</span></div><div><p>A game about an ant exploring a kitchen. The next step is to share gameplay, invite people to play, and learn from their reactions.</p></div></article>
-<article class="project"><div><h3>BomberMeme</h3><span class="status">Game · Preparing a new edition</span></div><div><p>A game project moving toward a standalone, non-crypto edition. Release preparation and distribution are the next pieces of work.</p></div></article>
+
+<section class="section" aria-label="Principle">
+  <div class="row">
+    <div class="margin label"><span class="section-no">§ 02</span>A principle</div>
+    <div class="spread">
+      <div>
+        <p class="quote" data-words><span class="line">Motivation starts things.</span> <span class="line">Structure finishes them.</span></p>
+        <p class="quote-by label">From entry 001, Point zero</p>
+      </div>
+      <figure class="figure" data-draw-root="2600">
+        <svg viewBox="0 0 560 250" role="img" aria-label="A line chart: a sharp impulse that oscillates and settles back to equilibrium">
+          <path class="axis" d="M20,10 L20,230 L548,230"/>
+          <path class="eq" d="M20,120 L548,120"/>
+          <text class="tick" x="548" y="108" text-anchor="end">equilibrium</text>
+          <text class="tick" x="28" y="24">impulse</text>
+          <text class="tick" x="548" y="246" text-anchor="end">time →</text>
+          <path class="curve" data-draw d="M20.0,120 L23.7,82.9 L27.4,71.8 L31.1,62.2 L34.9,54.1 L38.6,47.7 L42.3,42.9 L46.0,39.9 L49.7,38.5 L53.4,38.8 L57.1,40.6 L60.9,43.9 L64.6,48.6 L68.3,54.4 L72.0,61.2 L75.7,68.9 L79.4,77.2 L83.1,85.9 L86.9,95.0 L90.6,104.1 L94.3,113.1 L98.0,121.9 L101.7,130.2 L105.4,137.9 L109.1,145.0 L112.9,151.3 L116.6,156.6 L120.3,161.1 L124.0,164.5 L127.7,166.9 L131.4,168.3 L135.1,168.7 L138.9,168.1 L142.6,166.6 L146.3,164.3 L150.0,161.3 L153.7,157.5 L157.4,153.2 L161.1,148.5 L164.9,143.4 L168.6,138.1 L172.3,132.7 L176.0,127.2 L179.7,121.9 L183.4,116.8 L187.1,111.9 L190.9,107.5 L194.6,103.5 L198.3,99.9 L202.0,97.0 L205.7,94.6 L209.4,92.8 L213.1,91.6 L216.9,91.0 L220.6,91.0 L224.3,91.6 L228.0,92.7 L231.7,94.3 L235.4,96.3 L239.1,98.6 L242.9,101.3 L246.6,104.3 L250.3,107.4 L254.0,110.6 L257.7,113.8 L261.4,117.0 L265.1,120.2 L268.9,123.2 L272.6,126.0 L276.3,128.5 L280.0,130.8 L283.7,132.8 L287.4,134.4 L291.1,135.7 L294.9,136.6 L298.6,137.1 L302.3,137.3 L306.0,137.2 L309.7,136.7 L313.4,135.9 L317.1,134.9 L320.9,133.6 L324.6,132.1 L328.3,130.4 L332.0,128.6 L335.7,126.8 L339.4,124.8 L343.1,122.9 L346.9,121.0 L350.6,119.1 L354.3,117.4 L358.0,115.8 L361.7,114.3 L365.4,113.0 L369.1,111.9 L372.9,111.1 L376.6,110.4 L380.3,109.9 L384.0,109.7 L387.7,109.7 L391.4,109.8 L395.1,110.2 L398.9,110.7 L402.6,111.4 L406.3,112.2 L410.0,113.2 L413.7,114.2 L417.4,115.3 L421.1,116.5 L424.9,117.6 L428.6,118.8 L432.3,119.9 L436.0,121.0 L439.7,122.0 L443.4,122.9 L447.1,123.7 L450.9,124.4 L454.6,125.0 L458.3,125.5 L462.0,125.9 L465.7,126.1 L469.4,126.2 L473.1,126.1 L476.9,126.0 L480.6,125.7 L484.3,125.4 L488.0,124.9 L491.7,124.4 L495.4,123.8 L499.1,123.2 L502.9,122.5 L506.6,121.8 L510.3,121.1 L514.0,120.5 L517.7,119.8 L521.4,119.2 L525.1,118.6 L528.9,118.1 L532.6,117.6 L536.3,117.2 L540.0,116.9"/>
+          <g data-tracer><circle class="halo" r="9"/><circle class="tracer" r="3.5"/></g>
+        </svg>
+        <figcaption class="label"><span>Fig. 1 · An impulse settling into equilibrium</span><span>Drawn by code</span></figcaption>
+      </figure>
+    </div>
+  </div>
 </section>
-<section class="section" id="about" aria-labelledby="about-title">
-<div class="section-top"><h2 class="section-title" id="about-title">A little about me</h2><p class="meta">The person behind the work.</p></div>
-<div class="about-grid"><p class="aside">Trade. Build.<br>Think. Write.</p><div><p>I’m an independent trader and entrepreneur based in Dubai. Trading is my main focus; I also build software and develop game projects with collaborators.</p><p>I’m studying and applying the First Principles Framework (FPF) in my work, with AI as part of that process. Here, I want to turn private notes into clear explanations, useful questions, and things other people can inspect.</p><p>This is a personal journal, not a signal service. I’m here to show the work and have better conversations about it.</p></div></div>
+
+<section class="section reveal" id="work" aria-labelledby="work-title">
+  <div class="row">
+    <div class="margin label"><span class="section-no">§ 03</span>Work in progress</div>
+    <div>
+      <h2 id="work-title">What I’m building</h2>
+      <p class="lede">One main product. A couple of experiments with collaborators.</p>
+      <div class="cards">
+        <article class="card featured">
+          <div class="top"><span class="label">Card 01 · Main product</span><span class="stamp">In development</span></div>
+          <h3>Trading terminal</h3>
+          <p>My own trading terminal, bringing together the tools and ideas developed through my daily trading work. Selected decisions, experiments and development notes get shared in this journal.</p>
+        </article>
+        <article class="card">
+          <div class="top"><span class="label">Card 02 · Game</span><span class="stamp">Prototype</span></div>
+          <h3>Ant Kitchen</h3>
+          <p>A game about an ant exploring a kitchen. Next step: share gameplay, invite people to play, learn from their reactions.</p>
+        </article>
+        <article class="card">
+          <div class="top"><span class="label">Card 03 · Game</span><span class="stamp">New edition</span></div>
+          <h3>BomberMeme</h3>
+          <p>Moving toward a standalone edition without crypto. Release preparation and distribution come next.</p>
+        </article>
+      </div>
+    </div>
+  </div>
 </section>
+
+<section class="section reveal" id="about" aria-labelledby="about-title">
+  <div class="row">
+    <div class="margin label"><span class="section-no">§ 04</span>The person<br>behind the work</div>
+    <div>
+      <h2 id="about-title">Trade. Build. Think. Write.</h2>
+      <div class="about">
+        <div class="body">
+          <p>I’m an independent trader and entrepreneur based in Dubai. Trading is my main focus. I also build software and develop game projects with collaborators.</p>
+          <p>I study and apply the First Principles Framework (FPF) in my work, with AI as part of that process. Here I want to turn private notes into clear explanations, useful questions, and things other people can inspect.</p>
+          <p>This is a personal journal, not a signal service. I’m here to show the work and have better conversations about it.</p>
+        </div>
+        <figure class="plate" data-plate="II">
+        <div class="plate-art"><div class="plate-empty"><span class="label">Plate II</span><span class="label">The desk</span><span class="label red">to be drawn</span></div></div>
+        <figcaption class="label"><span>Plate II · The desk</span><span>Pencil and watercolour</span></figcaption>
+      </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal" id="questions" aria-labelledby="faq-title">
+  <div class="row">
+    <div class="margin label"><span class="section-no">§ 05</span>Marginalia</div>
+    <div>
+      <h2 id="faq-title">Questions people ask first</h2>
+      <p class="lede">Short answers. The essays have the long ones.</p>
+      <dl class="faq">
+        <div><dt><span class="label">Q1</span>Is this a signal service?</dt><dd>No. I don’t sell signals, manage money for anyone, or tell you what to trade. Nothing here is investment advice.</dd></div>
+        <div><dt><span class="label">Q2</span>What is the trading terminal?</dt><dd>My own terminal, built around the tools and ideas I use in daily trading. It is the main product I’m building.</dd></div>
+        <div><dt><span class="label">Q3</span>Why build it in public?</dt><dd>Private notes are too easy to leave half finished. Writing for readers closes the loop. More in <a href="writing/building-in-public.html">entry 002</a>.</dd></div>
+        <div><dt><span class="label">Q4</span>What is the First Principles Framework?</dt><dd>A body of systems thinking I study and apply, mostly as questions before decisions: what exactly am I changing, who does what, is this a fact or a guess, what would change my mind.</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal" aria-labelledby="follow-title">
+  <div class="row">
+    <div class="margin label"><span class="section-no">§ 06</span>Subscription</div>
+    <div class="follow">
+      <div><span class="label">Free · nothing to sign up for</span><h2 id="follow-title">Watch the terminal get built.</h2><p>Essays, decisions and development notes, shared on X as they happen.</p></div>
+      <a class="btn" href="https://x.com/Cogit08"><svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M214.75,211.71l-62.6-98.38,61.77-67.95a8,8,0,0,0-11.84-10.76L143.24,99.34,102.75,35.71A8,8,0,0,0,96,32H48a8,8,0,0,0-6.75,12.3l62.6,98.37-61.77,68a8,8,0,1,0,11.84,10.76l58.84-64.72,40.49,63.63A8,8,0,0,0,160,224h48a8,8,0,0,0,6.75-12.29ZM164.39,208,62.57,48h29L193.43,208Z"/></svg> Follow @Cogit08</a>
+    </div>
+  </div>
+</section>
+
 </main>
-<footer><p>Cogito. · A personal work in progress.</p><p>For education and discussion. Not investment advice or a recommendation to trade.</p></footer>
-</div>
+<footer class="colophon">
+  <div class="page grid label">
+    <span>Cogito<span class="red">.</span> Vol. 1</span>
+    <span>A personal work in progress. Set in Newsreader and JetBrains Mono. Drawings by hand.</span>
+    <nav aria-label="Footer"><a href="privacy.html">Privacy</a><a href="https://x.com/Cogit08">X</a></nav>
+    <span class="disclaimer">For education and discussion. Not investment advice or a recommendation to trade.</span>
+  </div>
+</footer>
 </body>
 </html>
