@@ -10,6 +10,7 @@ Static site, no build step. Hosted on GitHub Pages, domain `yurilebedev.com` (DN
 index.html                      Home: hero, writing ledger, principle + Fig. 1, work cards, about, questions, follow
 styles.css                      All styles (one file, tokens in :root)
 site.js                         Reveals, self-drawing ink paths, ribbon bookmark, Dubai clock, essay § numbers
+seismo.js                       The weather layer: ASCII field, cubs, dogs, Bentlik on the zero line
 analytics.js                    GA4 + first-touch attribution + reading events
 fonts/                          Self-hosted Newsreader and JetBrains Mono (OFL)
 writing/point-zero.html         Essay 001
