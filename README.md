@@ -7,19 +7,25 @@ Static site, no build step. Hosted on GitHub Pages, domain `yurilebedev.com` (DN
 ## Structure
 
 ```
-index.html                      Home: hero, writing list, projects, about
-styles.css                      All styles (one file)
+index.html                      Home: hero, writing ledger, principle + Fig. 1, work cards, about, questions, follow
+styles.css                      All styles (one file, tokens in :root)
+site.js                         Reveals, self-drawing ink paths, ribbon bookmark, Dubai clock, essay § numbers
 analytics.js                    GA4 + first-touch attribution + reading events
+fonts/                          Self-hosted Newsreader and JetBrains Mono (OFL)
 writing/point-zero.html         Essay 001
 writing/building-in-public.html Essay 002
+privacy.html                    What the site measures
+404.html                        Not-found page (GitHub Pages serves it automatically)
+og.png                          1200x630 share image
+favicon.png, apple-touch-icon.png
 sitemap.xml, robots.txt         SEO
 CNAME                           Custom domain for GitHub Pages
 ```
 
 ## Add a new essay
 
-1. Copy `writing/point-zero.html` to `writing/<slug>.html`, keep the `<head>` block (canonical, og, analytics) and update title, description, canonical, og:url.
-2. Add an `essay-row` link in `index.html` → `#writing`, next number (ESSAY 003…).
+1. Copy `writing/point-zero.html` to `writing/<slug>.html`, keep the `<head>` block and update title, description, canonical, og:url, the JSON-LD and the read time (words / 200).
+2. Add an `entry` link to the ledger in `index.html` → `#writing`, next number (No. 003…), and bump the entry count in the hero ledger line.
 3. Add the URL to `sitemap.xml`.
 4. Commit and push to `main` — GitHub Pages deploys automatically.
 
