@@ -1,187 +1,594 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cogito | Trading, tools and clearer thinking</title>
-<meta name="description" content="A personal journal about trading, building my own trading terminal in public, and applying systems thinking.">
-<meta name="theme-color" content="#F3EFE6">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bentlik OS · Cogito</title>
+<meta name="description" content="Yuri's desktop on the web. A trading journal, a notebook, live weather and a lighthouse that stays on.">
+<meta name="theme-color" content="#0D0E0B">
 <link rel="canonical" href="https://yurilebedev.com/">
 <link rel="icon" href="favicon.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta property="og:type" content="website"><meta property="og:url" content="https://yurilebedev.com/"><meta property="og:title" content="Cogito | Trading, tools and clearer thinking"><meta property="og:description" content="A personal journal about trading, building my own trading terminal in public, and applying systems thinking."><meta property="og:site_name" content="Cogito">
-<meta property="og:image" content="https://yurilebedev.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Cogito. Trading, tools and clearer thinking.">
+<meta property="og:type" content="website"><meta property="og:url" content="https://yurilebedev.com/"><meta property="og:title" content="Bentlik OS · Cogito"><meta property="og:description" content="Yuri's desktop on the web. A trading journal, a notebook, live weather and a lighthouse that stays on."><meta property="og:site_name" content="Cogito">
+<meta property="og:image" content="https://yurilebedev.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@Cogit08"><meta name="twitter:creator" content="@Cogit08"><meta name="twitter:image" content="https://yurilebedev.com/og.png">
-<link rel="preload" href="fonts/Newsreader.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css">
-<script>document.documentElement.classList.add('js')</script>
 <script src="analytics.js" defer></script>
-<script src="site.js" defer></script>
-<script src="seismo.js" defer></script>
-</head><body>
-<a class="skip" href="#main">Skip to content</a>
-<div class="ribbon" aria-hidden="true"></div>
-<header class="masthead">
-  <div class="page">
-    <a class="wordmark" href="index.html" aria-label="Cogito home">Cogito<span>.</span></a>
-    <div class="meta label"><span>Journal · Vol. 1</span><span>Dubai <b data-clock>--:--</b> GST</span></div>
-    <nav aria-label="Main navigation">
-      <a href="index.html#writing">Writing</a><a href="index.html#work" class="hide-sm">Work</a><a href="index.html#about" class="hide-sm">About</a>
-      <a class="follow-btn" href="https://x.com/Cogit08"><svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M214.75,211.71l-62.6-98.38,61.77-67.95a8,8,0,0,0-11.84-10.76L143.24,99.34,102.75,35.71A8,8,0,0,0,96,32H48a8,8,0,0,0-6.75,12.3l62.6,98.37-61.77,68a8,8,0,1,0,11.84,10.76l58.84-64.72,40.49,63.63A8,8,0,0,0,160,224h48a8,8,0,0,0,6.75-12.29ZM164.39,208,62.57,48h29L193.43,208Z"/></svg> Follow</a>
-    </nav>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a personal operating system. A live 1-bit dithered world is the wallpaper (an island, a sea whose weather
+   is driven by one number, a lighthouse that never goes dark). Windows float above it and can be dragged. */
+:root {
+  --ink: #0D0E0B;      /* the dark half of every dithered pixel */
+  --paper: #CFCBBE;    /* the light half */
+  --green: #00A651;    /* the one marker colour: light, live state, focus */
+  --win: #121310;
+  --win-2: #1A1B17;
+  --line: #34352F;
+  --text: #E4E1D7;
+  --dim: #8F8C82;
+  --sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--ink); color: var(--text); font: 13px/1.5 var(--sans); overflow: hidden; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+:focus-visible { outline: 1px solid var(--green); outline-offset: 2px; }
+.mono { font-family: var(--mono); font-size: 11px; line-height: 16px; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.dim { color: var(--dim); }
+.g { color: var(--green); }
+
+/* wallpaper */
+#world { position: fixed; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+#lh-hit { position: fixed; width: 44px; height: 64px; transform: translate(-50%, -80%); z-index: 2; cursor: pointer; border-radius: 4px; }
+#lh-hit span { position: absolute; left: 50%; top: -14px; transform: translateX(-50%); white-space: nowrap; opacity: 0; transition: opacity 300ms var(--ease); color: var(--green); }
+#lh-hit:hover span, #lh-hit:focus-visible span { opacity: 1; }
+
+/* menubar */
+.menubar { position: fixed; top: 0; left: 0; right: 0; z-index: 900; height: 30px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: env(safe-area-inset-top, 0px) max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px));
+  background: rgba(13, 14, 11, .88); border-bottom: 1px solid var(--line); backdrop-filter: blur(8px); }
+.menubar .left, .menubar .right { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.menubar .brand { font-weight: 600; padding: 4px 8px; letter-spacing: -.01em; }
+.menubar .brand b { color: var(--green); font-weight: 600; }
+.menubar.slip .brand { text-shadow: calc(var(--jx, 0px) * 2) 0 var(--green); }
+.menubar .item { padding: 4px 8px; border-radius: 3px; color: var(--dim); transition: color 300ms var(--ease), background-color 300ms var(--ease); display: inline-flex; gap: 6px; align-items: center; }
+.menubar .item:hover { color: var(--text); background: var(--win-2); }
+kbd { font: 500 10px/14px var(--mono); padding: 0 4px; border: 1px solid var(--line); border-radius: 3px; color: var(--dim); }
+.menubar .right .mono { padding: 0 6px; color: var(--dim); white-space: nowrap; }
+.menubar .state { color: var(--text); }
+.menubar .state i { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 6px; vertical-align: 1px; }
+
+/* desktop icons */
+.icons { position: fixed; top: 46px; left: max(14px, env(safe-area-inset-left, 0px)); z-index: 3; display: grid; gap: 10px; }
+.icon { width: 76px; display: grid; justify-items: center; gap: 6px; padding: 6px 2px; border-radius: 4px; text-align: center; transition: background-color 300ms var(--ease); }
+.icon:hover, .icon:focus-visible { background: rgba(13, 14, 11, .7); }
+.icon svg { width: 32px; height: 32px; shape-rendering: crispEdges; }
+.icon .mono { color: var(--text); background: rgba(13, 14, 11, .75); padding: 0 4px; }
+
+/* windows */
+.win { position: fixed; z-index: 10; width: 360px; max-width: calc(100vw - 32px); background: var(--win); border: 1px solid var(--line);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.6), 6px 6px 0 rgba(0,0,0,.45); transform: translate(var(--jx, 0px), 0);
+  display: flex; flex-direction: column; max-height: calc(100vh - 80px); }
+.win[hidden] { display: none !important; }
+.win.top { border-color: #4A4B44; }
+.win .bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 26px; padding: 0 4px 0 10px; border-bottom: 1px solid var(--line); background: var(--win-2); cursor: grab; user-select: none; flex: none; }
+.win.drag .bar { cursor: grabbing; }
+.win .bar .t { display: flex; gap: 8px; align-items: center; }
+.win.top .bar .t::before { content: ''; width: 6px; height: 6px; background: var(--green); }
+.win .x { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 3px; color: var(--dim); transition: color 300ms var(--ease), background-color 300ms var(--ease); }
+.win .x:hover { color: var(--text); background: var(--line); }
+.win .body { padding: 14px 16px 16px; overflow: auto; min-height: 0; }
+.win .body::-webkit-scrollbar { width: 8px; } .win .body::-webkit-scrollbar-thumb { background: var(--line); }
+.win.opening { animation: open 380ms var(--ease); }
+@keyframes open { from { opacity: 0; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+
+/* about */
+.spec { display: grid; grid-template-columns: 96px 1fr; gap: 4px 12px; margin: 12px 0 16px; }
+.spec dt { color: var(--dim); } .spec dd { margin: 0; }
+.about h1 { margin: 0; font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -.02em; }
+.about h1 b { color: var(--green); font-weight: 600; }
+.about p { margin: 0 0 12px; color: var(--text); }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--text); color: var(--ink); font-weight: 600; text-decoration: none; border-radius: 3px; transition: background-color 300ms var(--ease), transform 300ms var(--ease); }
+.btn:hover { background: var(--green); }
+.btn:active { transform: translateY(1px); }
+.fine { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+
+/* notebook */
+.entries { display: grid; gap: 2px; }
+.entry { display: grid; grid-template-columns: 44px 1fr; gap: 10px; text-align: left; padding: 10px 8px; border-radius: 3px; transition: background-color 300ms var(--ease); }
+.entry:hover, .entry:focus-visible { background: var(--win-2); }
+.entry .n { color: var(--green); padding-top: 2px; }
+.entry b { display: block; font-weight: 500; font-size: 14px; line-height: 20px; }
+.entry span.d { display: block; color: var(--dim); margin-top: 2px; }
+.reader .back { color: var(--dim); margin-bottom: 14px; display: inline-block; }
+.reader .back:hover { color: var(--text); }
+.reader h2 { margin: 6px 0 8px; font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -.02em; text-wrap: balance; }
+.reader .deck { color: var(--dim); margin: 0 0 16px; font-size: 15px; line-height: 22px; }
+.prose { font-size: 15px; line-height: 24px; color: var(--text); max-width: 62ch; }
+.prose p { margin: 0 0 14px; text-wrap: pretty; }
+.prose h2 { font-size: 15px; line-height: 22px; margin: 22px 0 8px; font-weight: 600; letter-spacing: 0; }
+.prose h2::before { content: '## '; color: var(--green); font-family: var(--mono); font-weight: 400; }
+.prose blockquote { margin: 18px 0; padding: 10px 12px; border: 1px solid var(--line); background: var(--win-2); font-weight: 500; }
+.prose ul { padding-left: 18px; margin: 0 0 14px; } .prose li { margin: 4px 0; } .prose li::marker { color: var(--green); }
+
+/* weather */
+.wx .now { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.wx .now b { font-size: 34px; line-height: 40px; font-weight: 600; letter-spacing: -.03em; }
+.wx canvas { width: 100%; height: 90px; display: block; margin: 10px 0; border: 1px solid var(--line); background: var(--ink); image-rendering: pixelated; }
+.wx .row { display: flex; justify-content: space-between; gap: 12px; }
+.wx .act { margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.ghost { padding: 7px 11px; border: 1px solid var(--line); border-radius: 3px; transition: border-color 300ms var(--ease), color 300ms var(--ease); }
+.ghost:hover { border-color: var(--green); color: var(--green); }
+.ghost:active { transform: translateY(1px); }
+
+/* dogs */
+.album { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.album figure { margin: 0; }
+.photo { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border: 1px solid var(--line); cursor: crosshair; background: var(--ink); }
+.photo canvas, .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+.photo img { opacity: 0; transition: opacity 600ms var(--ease); }
+.photo:hover img, .photo:focus-visible img { opacity: 1; }
+.album figcaption { margin-top: 6px; }
+.dogs .hint { margin: 0 0 10px; color: var(--dim); }
+
+/* games */
+.carts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cart { border: 1px solid var(--line); background: var(--win-2); padding: 0 10px 12px; border-radius: 6px 6px 2px 2px; transition: transform 380ms var(--ease); }
+.cart:hover { transform: translateY(-4px); }
+.cart .notch { height: 10px; margin: 0 -10px 10px; border-bottom: 1px solid var(--line); background: repeating-linear-gradient(90deg, var(--line) 0 2px, transparent 2px 6px); }
+.cart .label { background: var(--paper); color: var(--ink); padding: 10px; min-height: 84px; display: grid; align-content: space-between; }
+.cart .label b { font-size: 16px; line-height: 20px; letter-spacing: -.01em; }
+.cart p { margin: 10px 0 0; color: var(--dim); }
+
+/* bentlik */
+.bent { text-align: left; }
+.bent h2 { margin: 0 0 10px; font-size: 18px; line-height: 24px; font-weight: 600; }
+.bent p { margin: 0 0 10px; }
+.bent .zero { height: 1px; margin: 14px 0; background: repeating-linear-gradient(90deg, var(--green) 0 4px, transparent 4px 8px); }
+
+/* boot */
+#boot { position: fixed; inset: 0; z-index: 2000; background: var(--ink); display: grid; place-items: center; transition: opacity 700ms var(--ease); padding: 24px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px)); }
+#boot.done { opacity: 0; pointer-events: none; }
+#boot .box { width: min(560px, 100%); }
+#boot pre { margin: 0 0 18px; font: 12px/18px var(--mono); color: var(--paper); white-space: pre-wrap; min-height: 180px; }
+#boot canvas { width: 100%; height: 70px; display: block; }
+#boot .bl { display: flex; justify-content: space-between; margin-top: 8px; color: var(--dim); }
+#boot .skip { color: var(--dim); }
+
+/* small screens: windows stack and scroll over the wallpaper */
+@media (max-width: 720px) {
+  body { overflow: auto; }
+  .menubar .item kbd, .menubar .hide-sm { display: none; }
+  .menubar .item { padding: 4px 5px; }
+  .icons { display: none; }
+  .desk { position: relative; z-index: 5; padding: 44px max(12px, env(safe-area-inset-right, 0px)) 24px max(12px, env(safe-area-inset-left, 0px)); display: grid; gap: 14px; }
+  .win { position: relative !important; left: auto !important; top: auto !important; width: auto; max-width: none; max-height: none; }
+  .win .bar { cursor: default; }
+  .album { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 1ms !important; animation: none !important; }
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+
+
+<canvas id="world" aria-hidden="true"></canvas>
+<nav class="sr-only" aria-label="Pages"><a href="writing/point-zero.html">Point zero: what I carried with me</a> <a href="writing/building-in-public.html">Why I’m building my trading tools in public</a> <a href="privacy.html">Privacy</a> <a href="https://x.com/Cogit08">X</a></nav>
+<button id="lh-hit" type="button" aria-label="Open Bentlik"><span class="mono">bentlik</span></button>
+
+<header class="menubar" id="menubar">
+  <div class="left">
+    <button class="brand" data-open="bentlik" type="button">Bentlik<b>OS</b></button>
+    <button class="item" data-open="notebook" type="button">Notebook <kbd>N</kbd></button>
+    <button class="item" data-open="weather" type="button">Weather <kbd>W</kbd></button>
+    <button class="item" data-open="dogs" type="button">Dogs <kbd>D</kbd></button>
+    <button class="item hide-sm" data-open="games" type="button">Games <kbd>G</kbd></button>
+    <button class="item hide-sm" data-open="about" type="button">About <kbd>A</kbd></button>
+  </div>
+  <div class="right">
+    <span class="mono state"><i></i><span id="mb-state">calm</span></span>
+    <span class="mono hide-sm">DXB <span id="clock">--:--</span></span>
   </div>
 </header>
 
-<main id="main" class="page">
+<nav class="icons" aria-label="Desktop">
+  <button class="icon" data-open="notebook" type="button"><svg data-px="notebook" aria-hidden="true"></svg><span class="mono">Notebook</span></button>
+  <button class="icon" data-open="weather" type="button"><svg data-px="weather" aria-hidden="true"></svg><span class="mono">Weather</span></button>
+  <button class="icon" data-open="dogs" type="button"><svg data-px="dog" aria-hidden="true"></svg><span class="mono">Dogs</span></button>
+  <button class="icon" data-open="games" type="button"><svg data-px="cart" aria-hidden="true"></svg><span class="mono">Games</span></button>
+  <button class="icon" data-open="about" type="button"><svg data-px="info" aria-hidden="true"></svg><span class="mono">About.txt</span></button>
+</nav>
 
-<section class="hero" aria-labelledby="hero-title">
-  <div class="row">
-    <div class="margin label"><span class="section-no">§ 00</span>Independent trader<br>and builder<br>Dubai</div>
-    <div class="grid">
-      <div>
-        <h1 id="hero-title">Trading, tools &amp;<br><span class="accent">clearer thinking.<span class="u" aria-hidden="true"></span></span></h1>
-        <p class="intro">I trade for a living and build my own trading terminal in public. This journal is where the decisions, experiments and mistakes get written down, so other people can inspect them and argue with them.</p>
-        <div class="actions">
-          <a class="btn" href="https://x.com/Cogit08"><svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M214.75,211.71l-62.6-98.38,61.77-67.95a8,8,0,0,0-11.84-10.76L143.24,99.34,102.75,35.71A8,8,0,0,0,96,32H48a8,8,0,0,0-6.75,12.3l62.6,98.37-61.77,68a8,8,0,1,0,11.84,10.76l58.84-64.72,40.49,63.63A8,8,0,0,0,160,224h48a8,8,0,0,0,6.75-12.29ZM164.39,208,62.57,48h29L193.43,208Z"/></svg> Follow the build on X</a>
-          <a class="ink label" href="writing/point-zero.html">Read essay 001 <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a>
-        </div>
-        <p class="ledger-line label"><span><b>02</b> entries</span><span><b>01</b> terminal in development</span><span><b>00</b> signals sold</span></p>
-      </div>
-      <figure class="plate" data-plate="I">
-        <div class="plate-art"><div class="plate-empty"><span class="label">Plate I</span><span class="label">Self portrait</span><span class="label red">to be drawn</span></div></div>
-        <figcaption class="label"><span>Plate I · Self portrait</span><span>Ink on paper</span></figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<section class="section reveal" id="writing" aria-labelledby="writing-title">
-  <div class="row">
-    <div class="margin label"><span class="section-no">§ 01</span>Index of entries</div>
-    <div>
-      <h2 id="writing-title">Writing</h2>
-      <p class="lede">Notes from the work, not the sidelines.</p>
-      <div class="ledger">
-        <a class="entry" href="writing/point-zero.html">
-          <span class="no label">No. 001</span>
-          <div><h3><span>Point zero: what I carried with me</span></h3><p>I have started over more times than I can count. This time I want to write down what I’m bringing into the new start.</p></div>
-          <span class="when label">Life and systems<br>Oct 2026 · 4 min</span>
-          <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg>
-        </a>
-        <a class="entry" href="writing/building-in-public.html">
-          <span class="no label">No. 002</span>
-          <div><h3><span>Why I’m building my trading tools in public</span></h3><p>Trading is the work. The terminal is the product. Writing is how I want to make my thinking visible.</p></div>
-          <span class="when label">Trading and building<br>Oct 2026 · 3 min</span>
-          <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" aria-label="Principle">
-  <div class="row">
-    <div class="margin label"><span class="section-no">§ 02</span>A principle</div>
-    <div class="spread">
-      <div>
-        <p class="quote" data-words><span class="line">Motivation starts things.</span> <span class="line">Structure finishes them.</span></p>
-        <p class="quote-by label">From entry 001, Point zero</p>
-      </div>
-      <figure class="figure" data-draw-root="2600">
-        <svg viewBox="0 0 560 250" role="img" aria-label="A line chart: a sharp impulse that oscillates and settles back to equilibrium">
-          <path class="axis" d="M20,10 L20,230 L548,230"/>
-          <path class="eq" d="M20,120 L548,120"/>
-          <text class="tick" x="548" y="108" text-anchor="end">equilibrium</text>
-          <text class="tick" x="28" y="24">impulse</text>
-          <text class="tick" x="548" y="246" text-anchor="end">time →</text>
-          <path class="curve" data-draw d="M20.0,120 L23.7,82.9 L27.4,71.8 L31.1,62.2 L34.9,54.1 L38.6,47.7 L42.3,42.9 L46.0,39.9 L49.7,38.5 L53.4,38.8 L57.1,40.6 L60.9,43.9 L64.6,48.6 L68.3,54.4 L72.0,61.2 L75.7,68.9 L79.4,77.2 L83.1,85.9 L86.9,95.0 L90.6,104.1 L94.3,113.1 L98.0,121.9 L101.7,130.2 L105.4,137.9 L109.1,145.0 L112.9,151.3 L116.6,156.6 L120.3,161.1 L124.0,164.5 L127.7,166.9 L131.4,168.3 L135.1,168.7 L138.9,168.1 L142.6,166.6 L146.3,164.3 L150.0,161.3 L153.7,157.5 L157.4,153.2 L161.1,148.5 L164.9,143.4 L168.6,138.1 L172.3,132.7 L176.0,127.2 L179.7,121.9 L183.4,116.8 L187.1,111.9 L190.9,107.5 L194.6,103.5 L198.3,99.9 L202.0,97.0 L205.7,94.6 L209.4,92.8 L213.1,91.6 L216.9,91.0 L220.6,91.0 L224.3,91.6 L228.0,92.7 L231.7,94.3 L235.4,96.3 L239.1,98.6 L242.9,101.3 L246.6,104.3 L250.3,107.4 L254.0,110.6 L257.7,113.8 L261.4,117.0 L265.1,120.2 L268.9,123.2 L272.6,126.0 L276.3,128.5 L280.0,130.8 L283.7,132.8 L287.4,134.4 L291.1,135.7 L294.9,136.6 L298.6,137.1 L302.3,137.3 L306.0,137.2 L309.7,136.7 L313.4,135.9 L317.1,134.9 L320.9,133.6 L324.6,132.1 L328.3,130.4 L332.0,128.6 L335.7,126.8 L339.4,124.8 L343.1,122.9 L346.9,121.0 L350.6,119.1 L354.3,117.4 L358.0,115.8 L361.7,114.3 L365.4,113.0 L369.1,111.9 L372.9,111.1 L376.6,110.4 L380.3,109.9 L384.0,109.7 L387.7,109.7 L391.4,109.8 L395.1,110.2 L398.9,110.7 L402.6,111.4 L406.3,112.2 L410.0,113.2 L413.7,114.2 L417.4,115.3 L421.1,116.5 L424.9,117.6 L428.6,118.8 L432.3,119.9 L436.0,121.0 L439.7,122.0 L443.4,122.9 L447.1,123.7 L450.9,124.4 L454.6,125.0 L458.3,125.5 L462.0,125.9 L465.7,126.1 L469.4,126.2 L473.1,126.1 L476.9,126.0 L480.6,125.7 L484.3,125.4 L488.0,124.9 L491.7,124.4 L495.4,123.8 L499.1,123.2 L502.9,122.5 L506.6,121.8 L510.3,121.1 L514.0,120.5 L517.7,119.8 L521.4,119.2 L525.1,118.6 L528.9,118.1 L532.6,117.6 L536.3,117.2 L540.0,116.9"/>
-          <g data-tracer><circle class="halo" r="9"/><circle class="tracer" r="3.5"/></g>
-        </svg>
-        <figcaption class="label"><span>Fig. 1 · An impulse settling into equilibrium</span><span>Drawn by code</span></figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<section class="section reveal" id="work" aria-labelledby="work-title">
-  <div class="row">
-    <div class="margin label"><span class="section-no">§ 03</span>Work in progress</div>
-    <div>
-      <h2 id="work-title">What I’m building</h2>
-      <p class="lede">One main product. A couple of experiments with collaborators.</p>
-      <div class="cards">
-        <article class="card featured">
-          <div class="top"><span class="label">Card 01 · Main product</span><span class="stamp">In development</span></div>
-          <h3>Trading terminal</h3>
-          <p>My own trading terminal, bringing together the tools and ideas developed through my daily trading work. Selected decisions, experiments and development notes get shared in this journal.</p>
-        </article>
-        <article class="card">
-          <div class="top"><span class="label">Card 02 · Game</span><span class="stamp">Prototype</span></div>
-          <h3>Ant Kitchen</h3>
-          <p>A game about an ant exploring a kitchen. Next step: share gameplay, invite people to play, learn from their reactions.</p>
-        </article>
-        <article class="card">
-          <div class="top"><span class="label">Card 03 · Game</span><span class="stamp">New edition</span></div>
-          <h3>BomberMeme</h3>
-          <p>Moving toward a standalone edition without crypto. Release preparation and distribution come next.</p>
-        </article>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section reveal" id="about" aria-labelledby="about-title">
-  <div class="row">
-    <div class="margin label"><span class="section-no">§ 04</span>The person<br>behind the work</div>
-    <div>
-      <h2 id="about-title">Trade. Build. Think. Write.</h2>
-      <div class="about">
-        <div class="body">
-          <p>I’m an independent trader and entrepreneur based in Dubai. Trading is my main focus. I also build software and develop game projects with collaborators.</p>
-          <p>I study and apply the First Principles Framework (FPF) in my work, with AI as part of that process. Here I want to turn private notes into clear explanations, useful questions, and things other people can inspect.</p>
-          <p>This is a personal journal, not a signal service. I’m here to show the work and have better conversations about it.</p>
-        </div>
-        <figure class="plate" data-plate="II">
-        <div class="plate-art"><div class="plate-empty"><span class="label">Plate II</span><span class="label">The desk</span><span class="label red">to be drawn</span></div></div>
-        <figcaption class="label"><span>Plate II · The desk</span><span>Pencil and watercolour</span></figcaption>
-      </figure>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section reveal" id="questions" aria-labelledby="faq-title">
-  <div class="row">
-    <div class="margin label"><span class="section-no">§ 05</span>Marginalia</div>
-    <div>
-      <h2 id="faq-title">Questions people ask first</h2>
-      <p class="lede">Short answers. The essays have the long ones.</p>
-      <dl class="faq">
-        <div><dt><span class="label">Q1</span>Is this a signal service?</dt><dd>No. I don’t sell signals, manage money for anyone, or tell you what to trade. Nothing here is investment advice.</dd></div>
-        <div><dt><span class="label">Q2</span>What is the trading terminal?</dt><dd>My own terminal, built around the tools and ideas I use in daily trading. It is the main product I’m building.</dd></div>
-        <div><dt><span class="label">Q3</span>Why build it in public?</dt><dd>Private notes are too easy to leave half finished. Writing for readers closes the loop. More in <a href="writing/building-in-public.html">entry 002</a>.</dd></div>
-        <div><dt><span class="label">Q4</span>What is the First Principles Framework?</dt><dd>A body of systems thinking I study and apply, mostly as questions before decisions: what exactly am I changing, who does what, is this a fact or a guess, what would change my mind.</dd></div>
+<main class="desk">
+  <section class="win about" id="w-about" data-x="0.075" data-y="0.06" data-w="380" aria-label="About">
+    <header class="bar"><span class="t mono">About this system</span><button class="x" type="button" aria-label="Close">×</button></header>
+    <div class="body">
+      <h1>Bentlik<b>OS</b> 1.0</h1>
+      <dl class="spec mono">
+        <dt>User</dt><dd>Yuri, aka Cogito</dd>
+        <dt>Location</dt><dd>Dubai, GST</dd>
+        <dt>Work</dt><dd>Trades for a living. Builds his own trading tools.</dd>
+        <dt>Off hours</dt><dd>Notebooks, ink, markers, watercolour, games</dd>
+        <dt>Dogs</dt><dd>Three French bulldogs</dd>
+        <dt>Kernel</dt><dd>Every impulse returns to equilibrium</dd>
       </dl>
+      <p>This is my desktop on the web. The notebook holds what I write, the weather outside is real, and the light on the island stays on.</p>
+      <a class="btn" href="https://x.com/Cogit08">Follow the build on X ↗</a>
+      <p class="fine mono dim">A personal journal. Not a signal service. Not investment advice. <a href="privacy.html">Privacy</a></p>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="section reveal" aria-labelledby="follow-title">
-  <div class="row">
-    <div class="margin label"><span class="section-no">§ 06</span>Subscription</div>
-    <div class="follow">
-      <div><span class="label">Free · nothing to sign up for</span><h2 id="follow-title">Watch the terminal get built.</h2><p>Essays, decisions and development notes, shared on X as they happen.</p></div>
-      <a class="btn" href="https://x.com/Cogit08"><svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M214.75,211.71l-62.6-98.38,61.77-67.95a8,8,0,0,0-11.84-10.76L143.24,99.34,102.75,35.71A8,8,0,0,0,96,32H48a8,8,0,0,0-6.75,12.3l62.6,98.37-61.77,68a8,8,0,1,0,11.84,10.76l58.84-64.72,40.49,63.63A8,8,0,0,0,160,224h48a8,8,0,0,0,6.75-12.29ZM164.39,208,62.57,48h29L193.43,208Z"/></svg> Follow @Cogit08</a>
+  <section class="win notebook" id="w-notebook" data-x="0.34" data-y="0.12" data-w="440" data-h="0.72" hidden aria-label="Notebook">
+    <header class="bar"><span class="t mono">Notebook</span><button class="x" type="button" aria-label="Close">×</button></header>
+    <div class="body" id="nb-body"></div>
+  </section>
+
+  <section class="win wx" id="w-weather" data-x="0.075" data-y="0.62" data-w="320" aria-label="Weather">
+    <header class="bar"><span class="t mono">Weather</span><button class="x" type="button" aria-label="Close">×</button></header>
+    <div class="body">
+      <div class="now"><b id="wx-state">calm</b><span class="mono dim" id="wx-last">no tremor yet</span></div>
+      <canvas id="wx-trace" width="288" height="90" aria-hidden="true"></canvas>
+      <div class="row mono"><span class="dim">amplitude</span><span id="wx-amp">0.00</span></div>
+      <div class="row mono"><span class="dim">returns to</span><span>0.00</span></div>
+      <div class="act"><button class="ghost mono" id="kick" type="button">Send an impulse</button><span class="mono dim" id="wx-src">Connecting to the weather…</span></div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <section class="win dogs" id="w-dogs" data-x="0.22" data-y="0.30" data-w="440" hidden aria-label="Dogs">
+    <header class="bar"><span class="t mono">Dogs</span><button class="x" type="button" aria-label="Close">×</button></header>
+    <div class="body">
+      <p class="hint mono">The machine sees them in two tones. Hover to see them the way I do.</p>
+      <div class="album" id="album"></div>
+    </div>
+  </section>
+
+  <section class="win games" id="w-games" data-x="0.40" data-y="0.36" data-w="380" hidden aria-label="Games">
+    <header class="bar"><span class="t mono">Games</span><button class="x" type="button" aria-label="Close">×</button></header>
+    <div class="body">
+      <div class="carts">
+        <div class="cart"><div class="notch"></div><div class="label"><b>Ant Kitchen</b><span class="mono">PROTOTYPE</span></div><p class="mono">An ant explores a kitchen. Playtests next.</p></div>
+        <div class="cart"><div class="notch"></div><div class="label"><b>BomberMeme</b><span class="mono">NEW EDITION</span></div><p class="mono">A standalone edition, no crypto. Release prep.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="win bent" id="w-bentlik" data-x="0.40" data-y="0.30" data-w="320" hidden aria-label="Bentlik">
+    <header class="bar"><span class="t mono">bentlik</span><button class="x" type="button" aria-label="Close">×</button></header>
+    <div class="body">
+      <h2>Bentlik</h2>
+      <p>The first one.</p>
+      <p>He keeps the light on. Whatever the weather does to the island, everything here returns to him.</p>
+      <div class="zero"></div>
+      <p class="mono dim">The terminal will carry his name.</p>
+    </div>
+  </section>
 </main>
-<footer class="colophon">
-  <div class="page grid label">
-    <span>Cogito<span class="red">.</span> Vol. 1</span>
-    <span>A personal work in progress. Set in Newsreader and JetBrains Mono. Drawings by hand.</span>
-    <nav aria-label="Footer"><a href="privacy.html">Privacy</a><a href="https://x.com/Cogit08">X</a></nav>
-    <span class="disclaimer">For education and discussion. Not investment advice or a recommendation to trade.</span>
+
+<div id="boot" role="status" aria-live="polite">
+  <div class="box">
+    <pre id="boot-log"></pre>
+    <canvas id="boot-curve" width="1120" height="140" aria-hidden="true"></canvas>
+    <div class="bl mono"><span id="boot-msg">Calibrating zero line</span><span><span id="boot-pc">0</span>%</span></div>
+    <div class="bl mono"><span></span><button class="skip" id="boot-skip" type="button">Skip ⏎</button></div>
   </div>
-</footer>
+</div>
+
+<script>
+var DOG_IMGS = ["art/dog-1.jpg", "art/dog-2.jpg", "art/dog-3.jpg"];
+var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have started over more times than I can count. This time I want to write down what I'm bringing into the new start.", "prose": "\n<p>I'm 29. I trade for a living, I build software, and I've just moved my life and work to Dubai. A new company, a new home, a new daily routine. I think of this moment as point zero. Not because everything before it was wasted, but because I'm deliberately choosing what to carry forward.<\/p>\n<p>So before writing about markets, tools, or products, I want to write down what the past years actually taught me. It's less of a success story and more of an inventory.<\/p>\n\n<h2>Ideas were never the problem<\/h2>\n<p>I have kept a task manager since 2019. When I looked at it recently, I found thousands of completed tasks and more than forty archived projects. Some of those projects worked. Many didn't. A few came back again and again. This blog, for example, has been an idea every year or two, and every time it lost to something more urgent.<\/p>\n<p>Looking at that archive was uncomfortable, but also clarifying. I never lacked ideas or energy. What I lacked was a structure that could hold them. Starting was easy for me. Finishing needed a system.<\/p>\n<blockquote>Motivation starts things. Structure finishes them.<\/blockquote>\n\n<h2>Willpower is a bad foundation<\/h2>\n<p>For a long time I believed that if I just wanted something badly enough, I would do it. That works for a week. Then life gets loud, and whatever depended on willpower quietly stops.<\/p>\n<p>What actually changed my days were boring things: a fixed time to work, a fixed time to rest, a short list of what matters today, and a weekly review of what happened. When a habit has a time and a place, I don't need to negotiate with myself every morning.<\/p>\n\n<h2>Speed is not the same as progress<\/h2>\n<p>I'm someone who rushes. For years I treated speed as a virtue: answer faster, decide faster, start the next thing faster. It felt like progress. Often it was just noise.<\/p>\n<p>The hardest skill I'm still learning is slowing down on purpose. Not every opportunity is mine. Not every message needs an answer in five minutes. The thought \"I could have...\" is not a plan. It's usually just anxiety wearing the mask of ambition.<\/p>\n\n<h2>Thinking from first principles<\/h2>\n<p>At some point I started studying systems thinking seriously, and later the First Principles Framework. I don't use it as a philosophy to quote. I use it as a set of questions that I ask before an important decision.<\/p>\n<ul>\n<li>What exactly am I trying to change, and how will I know it changed?<\/li>\n<li>Who is doing what? Am I the right person for this part, or should someone else do it?<\/li>\n<li>Is this a fact, or a guess I've started treating as a fact?<\/li>\n<li>What would make me change my mind?<\/li>\n<\/ul>\n<p>These questions sound simple. In practice they save me from a lot of confident mistakes. They also help me separate what only I can do from what I can delegate. That turned out to be one of the most useful distinctions of all.<\/p>\n\n<h2>Shocks are part of the system<\/h2>\n<p>This year, an exchange I used froze my account for more than a month. Nothing I did could speed it up. Plans I had made assumed it couldn't happen.<\/p>\n<p>It taught me something I had only understood in theory: resilience is not a mood, it's a design decision. Don't keep everything in one place. Keep a reserve you don't touch. Build plans that survive a bad month, not just a good one. Now part of every week's result goes into a reserve outside the markets. It's not exciting. That's the point.<\/p>\n\n<h2>Work in public, think in writing<\/h2>\n<p>Most of my thinking used to live in private notes and chats. It helped me, but nobody else could see it, argue with it, or build on it. And honestly, without an audience, it was too easy to leave things half-finished.<\/p>\n<p>Writing in public is my way of closing that loop. Here I'll share how I build my trading terminal, how I make decisions, what works and what doesn't. Not as advice, and not as a performance. Just a clear record of the work.<\/p>\n\n<h2>What I'm carrying into point zero<\/h2>\n<ul>\n<li>A daily structure that doesn't depend on mood.<\/li>\n<li>A habit of asking first-principles questions before big decisions.<\/li>\n<li>A reserve, and plans that assume things can break.<\/li>\n<li>Fewer projects, finished properly.<\/li>\n<li>Permission to slow down.<\/li>\n<li>A place to write it all down. This one.<\/li>\n<\/ul>\n<p>Everything before this moment was the training. Now I want to see what this system can build.<\/p>\n", "slug": "point-zero"}, {"title": "Why I’m building my trading tools in public", "deck": "Trading is the work. The terminal is the product. Writing is how I want to make my thinking visible.", "prose": "\n<p>I trade every day. I also have my own trading terminal, a product that brings together my trading tools and the ideas I want to develop further.<\/p>\n<p>Alongside that work, I study systems thinking, apply the First Principles Framework, and use AI to help me work through questions. There is a lot happening in private. I want to start making the useful parts public.<\/p>\n<p>That is the reason for this site. Not to become a full-time content creator. Not to turn every trading session into a performance. To write clearly about work I am already doing.<\/p>\n<h2>The work comes first<\/h2>\n<p>Trading remains my main focus. The terminal is my main product. This journal should support both, rather than become a separate machine that consumes the time they need.<\/p>\n<p>I want to share selected questions from that work: what I’m trying to solve, why a tool needs to exist, what an experiment can actually tell me, and what remains unresolved.<\/p>\n<p>Some entries will be about a specific tool. Others will be about a decision, an idea I’m studying, or a change in how I approach a problem. I also build games with collaborators, so there will be occasional notes from those projects.<\/p>\n<h2>A terminal, not a promise<\/h2>\n<p>The terminal gives this journal a concrete centre. Instead of only discussing ideas, I can connect them to a product that is being developed.<\/p>\n<p>But showing a product is not the same as demonstrating an advantage in the market. I don’t want polished screenshots or confident language to stand in for evidence.<\/p>\n<p>When I share an experiment, my aim is to make its status clear: an idea, something implemented, a test, or a result with limits. Where there is not enough evidence, that should remain visible.<\/p>\n<h2>Thinking that leaves a trace<\/h2>\n<p>For me, the point of studying a framework is to change how I work. I want to write about that connection in ordinary language, through specific questions and examples, rather than ask every reader to learn a vocabulary first.<\/p>\n<p>A useful note might explain which assumption I questioned, which alternatives I considered, or what information would make me change my mind. The intention is to make the reasoning easier to inspect, including the parts that are incomplete.<\/p>\n<blockquote>I want the writing to leave a clearer record of the work.<\/blockquote>\n<h2>A simple publishing practice<\/h2>\n<p>I’m starting with a deliberately simple format: a daily article or focused field note here, and a short post on X that carries its main idea and points to the full piece.<\/p>\n<p>I can add other formats later. For now, I want a place to write, an archive that grows, and conversations with people who care about trading, tools, and thoughtful work.<\/p>\n<p>The next entries should make the work more concrete.<\/p>\n", "slug": "building-in-public"}];
+</script>
+<script>
+(function () {
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var small = function () { return innerWidth <= 720; };
+
+  /* ---------- weather: a damped oscillator, x'' + 2ζω x' + ω² x = kick ---------- */
+  var W = { x: 0, v: 0, w0: 2 * Math.PI * .45, z: .1, e: 0, hist: [], next: 9, t: 0, last: null };
+  function kick(s) { W.v += s * (Math.random() < .5 ? -1 : 1) * 4; W.last = new Date(); }
+  document.getElementById('kick').addEventListener('click', function () { kick(2.6); });
+  // Live readings: 1-minute BTC candles from the public Hyperliquid API. Only the size of the latest move
+  // against the recent median becomes an impulse. No price is ever shown. Falls back to a resting simulation.
+  var LIVE = false, lastCandle = 0, srcNote = document.getElementById('wx-src');
+  function poll() {
+    var end = Date.now(), start = end - 45 * 60 * 1000;
+    fetch('https://api.hyperliquid.xyz/info', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'candleSnapshot', req: { coin: 'BTC', interval: '1m', startTime: start, endTime: end } }) })
+      .then(function (r) { return r.json(); }).then(function (c) {
+        if (!Array.isArray(c) || c.length < 10) throw new Error('short');
+        LIVE = true; if (srcNote) srcNote.textContent = 'Live readings, every 30 seconds. No prices shown.';
+        var mv = c.map(function (k) { return Math.abs(+k.c - +k.o) / +k.o; });
+        var s = mv.slice(0, -1).sort(function (a, b) { return a - b; }), med = s[Math.floor(s.length / 2)] || 1e-9;
+        var lastK = c[c.length - 1], ratio = mv[mv.length - 1] / med;
+        if (lastK.t !== lastCandle || ratio > 3) { lastCandle = lastK.t; if (ratio > 1.8) kick(Math.min(3, .5 + (ratio - 1.8) * .6)); }
+      }).catch(function () { LIVE = false; if (srcNote) srcNote.textContent = 'Resting signal. The live feed is not answering.'; });
+  }
+  if (!reduced) { poll(); setInterval(poll, 30000); }
+  function weatherWord(e) { return e < .08 ? 'calm' : e < .3 ? 'ripple' : e < .6 ? 'swell' : 'storm'; }
+
+  /* ---------- the world: raymarched island, 8x8 Bayer dither, two tones and one green ---------- */
+  var cv = document.getElementById('world');
+  var gl = cv.getContext('webgl', { antialias: false, preserveDrawingBuffer: false });
+  var SCALE = 3, prog, uR, uT, uE, uM;
+  var FS = [
+    'precision highp float;',
+    'uniform vec2 R; uniform float T; uniform float E; uniform vec2 M;',
+    'const vec2 LP = vec2(.38,-.12); const float TH = .36;',
+    'float h2(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
+    'float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h2(i),h2(i+vec2(1,0)),f.x),mix(h2(i+vec2(0,1)),h2(i+vec2(1,1)),f.x),f.y);}',
+    'float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<5;i++){s+=a*n2(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return s;}',
+    'float ter(vec2 p){float d=length(p*vec2(1.,1.2));float m=smoothstep(1.45,.1,d);return m*(.12+.8*fbm(p*1.35+3.))-.12;}',
+    'float wat(vec2 p){float a=.01+E*.06;return a*(sin(p.x*7.+T*1.3)+sin(p.y*9.-T*1.1+p.x*2.)+.5*sin((p.x+p.y)*15.+T*2.3));}',
+    'float B2(vec2 a){a=floor(a);return fract(a.x/2.+a.y*a.y*.75);}',
+    'float B8(vec2 a){return B2(.25*a)*.0625+B2(.5*a)*.25+B2(a);}',
+    'void main(){',
+    ' vec2 fc=gl_FragCoord.xy; float row=floor(fc.y/2.);',
+    ' if(E>.35 && h2(vec2(row,floor(T*16.)))>1.-E*.14) fc.x+=(h2(vec2(row,T))-.5)*40.*E;',
+    ' vec2 uv=(fc-.5*R)/R.y; uv.x-=.3;',
+    ' float a=.7+T*.02+M.x*.5; vec3 ro=vec3(sin(a)*4.4,1.35+M.y*.35,cos(a)*4.4); vec3 ta=vec3(0.,.05,0.);',
+    ' vec3 f=normalize(ta-ro); vec3 r=normalize(cross(f,vec3(0,1,0))); vec3 u=cross(r,f);',
+    ' vec3 rd=normalize(f*1.9+uv.x*r+uv.y*u);',
+    ' float t=.5,hitT=-1.; int kind=0;',
+    ' for(int i=0;i<120;i++){vec3 p=ro+rd*t; float h=ter(p.xz); float w=wat(p.xz);',
+    '  if(p.y<h){kind=1;hitT=t;break;} if(p.y<w){kind=2;hitT=t;break;}',
+    '  t+=max(.006,(p.y-max(h,w))*.35); if(t>10.)break;}',
+    ' vec3 L=normalize(vec3(.35,.75,.55)); float lum=0., g=0.;',
+    ' if(kind==1){vec3 p=ro+rd*hitT; vec2 e=vec2(.01,0.);',
+    '  vec3 n=normalize(vec3(ter(p.xz-e.xy)-ter(p.xz+e.xy),2.*e.x,ter(p.xz-e.yx)-ter(p.xz+e.yx)));',
+    '  float df=max(dot(n,L),0.); lum=.02+.95*pow(df,1.8)+(fbm(p.xz*24.)-.5)*.22; lum*=mix(1.,.75,E);}',
+    ' else if(kind==2){vec3 p=ro+rd*hitT; vec2 e=vec2(.02,0.);',
+    '  vec3 n=normalize(vec3(wat(p.xz-e.xy)-wat(p.xz+e.xy),2.*e.x,wat(p.xz-e.yx)-wat(p.xz+e.yx)));',
+    '  float fr=pow(1.-max(dot(-rd,n),0.),3.); float sp=pow(max(dot(reflect(rd,n),L),0.),36.);',
+    '  float am=.01+E*.06; lum=.005+.05*fr+sp*(1.-.6*E)*.7+smoothstep(.6,1.,wat(p.xz)/(am*2.2))*(.12+.12*E); lum+=smoothstep(.03,0.,abs(ter(p.xz)-p.y))*.5; }',
+    ' else {float y=max(rd.y,0.); lum=.01+.05*(1.-y);'+'\n'+' if(h2(floor(fc*.5))>.996-.0*E) lum+=.8*(1.-E);',
+    '  float c=fbm(rd.xz/(rd.y+.12)*1.1+vec2(T*.015*(1.+E*8.),0.)); lum+=smoothstep(.55-.3*E,.95,c)*(.12+.18*E);}',
+    ' float bh=ter(LP); vec2 o2=ro.xz-LP; vec2 d2=rd.xz; float tt=-dot(o2,d2)/dot(d2,d2);',
+    ' float dist=length(o2+d2*tt); float ty=ro.y+rd.y*tt;',
+    ' if(tt>0. && (hitT<0.||tt<hitT) && dist<.03 && ty>bh-.02 && ty<bh+TH){float k=(ty-bh)/TH;',
+    '  lum=.92-step(.5,fract(k*4.))*.62; if(k>.84){lum=1.;g=1.;}}',
+    ' vec3 lamp=vec3(LP.x,bh+TH*.92,LP.y);',
+    ' for(int s=0;s<2;s++){float ang=T*.8+float(s)*3.14159; vec3 D=normalize(vec3(cos(ang),-.05,sin(ang)));',
+    '  vec3 w0=ro-lamp; float b=dot(rd,D),dd=dot(rd,w0),ee=dot(D,w0); float den=max(1.-b*b,1e-4);',
+    '  float sc=(b*ee-dd)/den, tc=(ee-b*dd)/den;',
+    '  if(sc>0.&&tc>0.&&(hitT<0.||sc<hitT)){float q=length(w0+rd*sc-D*tc); float wd=.006+tc*.02;',
+    '   g+=exp(-q*q/(wd*wd))*exp(-tc*.3)*.6;}}',
+    ' { vec3 w0=ro-lamp; float sc=max(dot(lamp-ro,rd),0.); float q=length(w0+rd*sc); if(hitT<0.||sc<hitT) g+=exp(-q*q*4000.)*1.4; }',
+    ' if(E>.25){float col=floor(fc.x/2.); float r=h2(vec2(col,floor(fc.y/7.+T*26.+h2(vec2(col,1.))*40.))); if(r>1.-(E-.25)*.08) lum+=.55;}'+'\n'+' if(E>.6 && h2(vec2(floor(T*7.),3.))>.95) lum+=.18;',
+    ' lum=clamp(lum,0.,1.); float th=B8(gl_FragCoord.xy)+.004;',
+    ' vec3 INK=vec3(.051,.055,.043), PAP=vec3(.812,.796,.745), GR=vec3(0.,.651,.318);',
+    ' vec3 col=lum>th?PAP:INK; if(g>th) col=GR;',
+    ' gl_FragColor=vec4(col,1.);',
+    '}'
+  ].join('\n');
+  function sh(type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.error(gl.getShaderInfoLog(s)); return null; } return s; }
+  if (gl) {
+    var vs = sh(gl.VERTEX_SHADER, 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}'), fs = sh(gl.FRAGMENT_SHADER, FS);
+    if (vs && fs) {
+      prog = gl.createProgram(); gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog); gl.useProgram(prog);
+      var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      var loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      uR = gl.getUniformLocation(prog, 'R'); uT = gl.getUniformLocation(prog, 'T'); uE = gl.getUniformLocation(prog, 'E'); uM = gl.getUniformLocation(prog, 'M');
+    }
+  }
+  function resize() {
+    SCALE = innerWidth > 1600 ? 4 : 3;
+    cv.width = Math.ceil(innerWidth / SCALE); cv.height = Math.ceil(innerHeight / SCALE);
+    if (gl) gl.viewport(0, 0, cv.width, cv.height);
+  }
+  addEventListener('resize', resize); resize();
+
+  // the same noise in JS, to find the lighthouse on screen
+  function fr(x) { return x - Math.floor(x); }
+  function h2(x, y) { return fr(Math.sin(x * 127.1 + y * 311.7) * 43758.5453); }
+  function n2(x, y) { var ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy; fx = fx * fx * (3 - 2 * fx); fy = fy * fy * (3 - 2 * fy);
+    var a = h2(ix, iy), b = h2(ix + 1, iy), c = h2(ix, iy + 1), d = h2(ix + 1, iy + 1); return (a + (b - a) * fx) + ((c + (d - c) * fx) - (a + (b - a) * fx)) * fy; }
+  function fbm(x, y) { var a = .5, s = 0; for (var i = 0; i < 5; i++) { s += a * n2(x, y); var nx = x * 2.03 + 1.7, ny = y * 2.03 + 9.2; x = nx; y = ny; a *= .5; } return s; }
+  function ter(x, y) { var d = Math.hypot(x, y * 1.2); var t = Math.min(1, Math.max(0, (d - 1.45) / (.1 - 1.45))); var m = t * t * (3 - 2 * t); return m * (.12 + .8 * fbm(x * 1.35 + 3, y * 1.35 + 3)) - .12; }
+  var LPX = .38, LPZ = -.12, LBH = ter(LPX, LPZ);
+  var hit = document.getElementById('lh-hit');
+  function placeLighthouse(T, M) {
+    var a = .7 + T * .02 + M[0] * .5, ro = [Math.sin(a) * 4.4, 1.35 + M[1] * .35, Math.cos(a) * 4.4];
+    var f = [-ro[0], .05 - ro[1], -ro[2]], fl = Math.hypot(f[0], f[1], f[2]); f = [f[0] / fl, f[1] / fl, f[2] / fl];
+    var r = [-f[2], 0, f[0]], rl = Math.hypot(r[0], r[2]); r = [r[0] / rl, 0, r[2] / rl];
+    var u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]];
+    var p = [LPX - ro[0], LBH + .36 * .8 - ro[1], LPZ - ro[2]];
+    var z = p[0] * f[0] + p[1] * f[1] + p[2] * f[2]; if (z <= 0) return;
+    var x = (p[0] * r[0] + p[1] * r[1] + p[2] * r[2]) / z * 1.9 + .3, y = (p[0] * u[0] + p[1] * u[1] + p[2] * u[2]) / z * 1.9;
+    var H = cv.height * SCALE;
+    hit.style.left = (x * H + innerWidth / 2) + 'px'; hit.style.top = (innerHeight / 2 - y * H + 34) + 'px';
+  }
+  hit.addEventListener('click', function () { openWin('bentlik'); });
+
+  var mouse = [0, 0], ms = [0, 0];
+  addEventListener('pointermove', function (e) { mouse = [(e.clientX / innerWidth - .5) * 2, (e.clientY / innerHeight - .5) * -2]; });
+
+  /* ---------- windows ---------- */
+  var wins = {}, zTop = 20;
+  document.querySelectorAll('.win').forEach(function (w) {
+    var id = w.id.slice(2); wins[id] = w;
+    if (w.dataset.w) w.style.width = w.dataset.w + 'px';
+    w.addEventListener('pointerdown', function () { focusWin(w); });
+    w.querySelector('.x').addEventListener('click', function (e) { e.stopPropagation(); w.hidden = true; pickTop(); });
+    var bar = w.querySelector('.bar'), sx, sy, ox, oy, drag = false;
+    bar.addEventListener('pointerdown', function (e) {
+      if (small() || e.target.closest('.x')) return;
+      drag = true; w.classList.add('drag'); sx = e.clientX; sy = e.clientY; ox = w.offsetLeft; oy = w.offsetTop; bar.setPointerCapture(e.pointerId);
+    });
+    bar.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var nx = Math.max(-w.offsetWidth + 80, Math.min(innerWidth - 80, ox + e.clientX - sx));
+      var ny = Math.max(30, Math.min(innerHeight - 40, oy + e.clientY - sy));
+      w.style.left = nx + 'px'; w.style.top = ny + 'px';
+    });
+    bar.addEventListener('pointerup', function () { drag = false; w.classList.remove('drag'); });
+  });
+  function layout() {
+    if (small()) return;
+    Object.keys(wins).forEach(function (k) {
+      var w = wins[k]; if (w.dataset.placed) return;
+      var ww = Math.min(parseFloat(w.dataset.w || 360), innerWidth - 32);
+      var x = Math.round(Math.min(innerWidth - ww - 16, Math.max(110, innerWidth * parseFloat(w.dataset.x))));
+      var y = Math.round(Math.max(44, innerHeight * parseFloat(w.dataset.y)));
+      w.style.left = x + 'px'; w.style.top = y + 'px';
+      if (w.dataset.h) w.style.maxHeight = Math.round(innerHeight * parseFloat(w.dataset.h)) + 'px';
+      if (y + 220 > innerHeight) w.style.top = Math.max(44, innerHeight - 260) + 'px';
+      w.dataset.placed = '1';
+    });
+  }
+  function focusWin(w) { w.style.zIndex = ++zTop; document.querySelectorAll('.win.top').forEach(function (o) { o.classList.remove('top'); }); w.classList.add('top'); }
+  function pickTop() { var best = null; Object.keys(wins).forEach(function (k) { var w = wins[k]; if (!w.hidden && (!best || +w.style.zIndex > +best.style.zIndex)) best = w; }); if (best) focusWin(best); }
+  function openWin(id) {
+    var w = wins[id]; if (!w) return;
+    var was = w.hidden; w.hidden = false; layout(); focusWin(w);
+    if (was) { w.classList.remove('opening'); void w.offsetWidth; w.classList.add('opening'); }
+    if (small()) w.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+  }
+  document.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { openWin(b.dataset.open); }); });
+  addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey || /input|textarea/i.test(e.target.tagName)) return;
+    var k = e.key.toLowerCase(), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik' };
+    if (map[k] && document.getElementById('boot').classList.contains('done')) openWin(map[k]);
+    if (e.key === 'Escape') { var t = document.querySelector('.win.top'); if (t) { t.hidden = true; pickTop(); } }
+  });
+  addEventListener('resize', function () { Object.keys(wins).forEach(function (k) { delete wins[k].dataset.placed; }); layout(); });
+  layout(); focusWin(wins.about);
+
+  /* ---------- notebook ---------- */
+  var nb = document.getElementById('nb-body');
+  function words(h) { return h.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length; }
+  function listView() {
+    nb.innerHTML = '<p class="mono dim" style="margin:0 0 10px">~/notebook · ' + ESSAYS.length + ' entries</p><div class="entries">' +
+      ESSAYS.map(function (e, i) {
+        return '<button class="entry" type="button" data-i="' + i + '"><span class="n mono">' + String(i + 1).padStart(3, '0') + '</span><span><b>' + e.title + '</b><span class="d mono">Oct 2026 · ' + Math.max(1, Math.round(words(e.prose) / 200)) + ' min</span></span></button>';
+      }).join('') + '</div>';
+    nb.querySelectorAll('.entry').forEach(function (b) { b.addEventListener('click', function () { readView(+b.dataset.i); }); });
+  }
+  function readView(i) {
+    var e = ESSAYS[i];
+    nb.innerHTML = '<div class="reader"><button class="back mono" type="button">← ~/notebook</button><p class="mono g" style="margin:0">' + String(i + 1).padStart(3, '0') + '</p><h2>' + e.title + '</h2><p class="deck">' + e.deck + '</p><div class="prose">' + e.prose + '</div><p class="fine"><a class="ghost mono" href="writing/' + e.slug + '.html">Open as a page ↗</a></p><p class="mono dim">Not investment advice.</p></div>';
+    nb.scrollTop = 0;
+    nb.querySelector('.back').addEventListener('click', listView);
+  }
+  listView();
+
+  /* ---------- dogs: one filter for everything ---------- */
+  var album = document.getElementById('album'), caps = ['fawn · 01', 'fawn · 02', 'sonechka'];
+  function bayer4(x, y) { var m = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]; return (m[(y % 4) * 4 + (x % 4)] + .5) / 16; }
+  DOG_IMGS.forEach(function (src, i) {
+    var fig = document.createElement('figure');
+    fig.innerHTML = '<div class="photo" tabindex="0"><canvas></canvas><img alt="French bulldog, photo ' + (i + 1) + '"></div><figcaption class="mono dim">' + caps[i] + '</figcaption>';
+    album.appendChild(fig);
+    var img = fig.querySelector('img'), c = fig.querySelector('canvas');
+    img.onload = function () {
+      var w = 120, h = Math.round(w * img.naturalHeight / img.naturalWidth); c.width = w; c.height = h;
+      var x = c.getContext('2d'); x.drawImage(img, 0, 0, w, h);
+      var d = x.getImageData(0, 0, w, h), p = d.data;
+      for (var yy = 0; yy < h; yy++) for (var xx = 0; xx < w; xx++) {
+        var o = (yy * w + xx) * 4, l = (p[o] * .3 + p[o + 1] * .59 + p[o + 2] * .11) / 255;
+        l = Math.min(1, Math.max(0, (l - .12) * 1.35));
+        var on = l > bayer4(xx, yy); p[o] = on ? 207 : 13; p[o + 1] = on ? 203 : 14; p[o + 2] = on ? 190 : 11;
+      }
+      x.putImageData(d, 0, 0);
+    };
+    img.src = src;
+  });
+
+  /* ---------- pixel icons ---------- */
+  var PX = {
+    notebook: ['..######', '.#....##', '.#.##.##', '.#....##', '.#.##.##', '.#....##', '.#....##', '..######'],
+    weather: ['........', '..##....', '.#..##..', '#.....#.', '.######.', '..#.#.#.', '.#.#.#..', '........'],
+    dog: ['#.....#.', '##...##.', '.#####..', '.#.#.#..', '.#####..', '..#.#...', '.#####..', '........'],
+    cart: ['.######.', '.#.##.#.', '.######.', '.#....#.', '.#.##.#.', '.#....#.', '.######.', '.#.#.#..'],
+    info: ['.######.', '.#....#.', '.#.##.#.', '.#....#.', '.#.##.#.', '.#.##.#.', '.#....#.', '.######.']
+  };
+  document.querySelectorAll('svg[data-px]').forEach(function (s) {
+    var m = PX[s.dataset.px]; s.setAttribute('viewBox', '0 0 8 8');
+    s.innerHTML = m.map(function (row, y) { return row.split('').map(function (ch, x) { return ch === '#' ? '<rect x="' + x + '" y="' + y + '" width="1" height="1" fill="' + (s.dataset.px === 'weather' && y > 4 ? '#00A651' : '#E4E1D7') + '"/>' : ''; }).join(''); }).join('');
+  });
+
+  /* ---------- clock ---------- */
+  var clock = document.getElementById('clock');
+  var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit', hour12: false });
+  function tick() { clock.textContent = fmt.format(new Date()); } tick(); setInterval(tick, 15000);
+
+  /* ---------- main loop ---------- */
+  var mb = document.getElementById('menubar'), mbState = document.getElementById('mb-state');
+  var wxState = document.getElementById('wx-state'), wxAmp = document.getElementById('wx-amp'), wxLast = document.getElementById('wx-last');
+  var wxc = document.getElementById('wx-trace').getContext('2d');
+  var last = performance.now(), acc = 0, T = 0;
+  function frame(now) {
+    var dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
+    var a = -2 * W.z * W.w0 * W.v - W.w0 * W.w0 * W.x; W.v += a * dt; W.x += W.v * dt;
+    if (!LIVE && T > W.next) { kick(.7 + Math.random() * 1.6); W.next = T + 16 + Math.random() * 18; }
+    W.e = Math.min(1, Math.hypot(W.x, W.v / W.w0) * .5);
+    ms[0] += (mouse[0] - ms[0]) * .03; ms[1] += (mouse[1] - ms[1]) * .03;
+    acc += dt;
+    if (acc > 1 / 30) {
+      acc = 0;
+      if (prog) { gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, T); gl.uniform1f(uE, W.e); gl.uniform2f(uM, ms[0], ms[1]); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+      placeLighthouse(T, ms);
+      W.hist.push(W.x); if (W.hist.length > 144) W.hist.shift();
+      var word = weatherWord(W.e);
+      mbState.textContent = word; wxState.textContent = word; wxAmp.textContent = W.e.toFixed(2);
+      if (W.last) wxLast.textContent = 'last tremor ' + fmt.format(W.last);
+      // instrument: 1-bit trace
+      wxc.fillStyle = '#0D0E0B'; wxc.fillRect(0, 0, 288, 90);
+      for (var i = 0; i < 288; i += 8) { wxc.fillStyle = '#34352F'; wxc.fillRect(i, 45, 4, 1); }
+      wxc.fillStyle = W.e > .42 ? '#00A651' : '#CFCBBE';
+      W.hist.forEach(function (y, k) { var py = Math.round(45 - Math.max(-40, Math.min(40, y * 24))); wxc.fillRect(k * 2, py, 2, 2); });
+      // the system shakes on a real impulse, then settles
+      var jx = W.e > .45 && Math.random() < W.e * .5 ? ((Math.random() - .5) * 6 * W.e).toFixed(1) + 'px' : '0px';
+      document.documentElement.style.setProperty('--jx', jx);
+      mb.classList.toggle('slip', jx !== '0px');
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- boot ---------- */
+  var boot = document.getElementById('boot'), log = document.getElementById('boot-log'), pc = document.getElementById('boot-pc'), msg = document.getElementById('boot-msg');
+  var bc = document.getElementById('boot-curve').getContext('2d');
+  var LINES = [
+    'BENTLIK BIOS 1.0                       (c) 1994-2026',
+    '',
+    'CPU     one trader, one notebook, three bulldogs',
+    'MEMORY  640K ........................... OK',
+    'DOS     loading ........................ OK',
+    'WIN95   loading ........................ OK',
+    'WEB     loading ........................ OK',
+    'MARKETS loading ........................ OK',
+    ''
+  ];
+  var done = false;
+  function finish() { if (done) return; done = true; boot.classList.add('done'); try { sessionStorage.setItem('bentlik-booted', '1'); } catch (e) {} setTimeout(function () { boot.hidden = true; }, 800); }
+  document.getElementById('boot-skip').addEventListener('click', finish);
+  boot.addEventListener('pointerdown', finish);
+  addEventListener('keydown', function () { if (!done) finish(); }, { once: false });
+  var seen = false; try { seen = sessionStorage.getItem('bentlik-booted') === '1'; } catch (e) {}
+  requestAnimationFrame(frame);
+  if (reduced || seen) { finish(); boot.hidden = true; return; }
+  var li = 0;
+  (function typeLine() {
+    if (done) return;
+    if (li < LINES.length) { log.textContent += LINES[li++] + '\n'; setTimeout(typeLine, li < 3 ? 160 : 120); return; }
+    var t0 = performance.now(), dur = 2000;
+    (function draw(now) {
+      if (done) return;
+      var k = Math.min(1, (now - t0) / dur), wv = bc.canvas.width, hv = bc.canvas.height;
+      bc.clearRect(0, 0, wv, hv); bc.fillStyle = '#34352F'; for (var x = 0; x < wv; x += 16) bc.fillRect(x, hv / 2, 8, 2);
+      bc.fillStyle = k < 1 ? '#CFCBBE' : '#00A651';
+      var n = Math.floor(k * 280);
+      for (var i = 0; i <= n; i++) { var s = i / 280, y = Math.exp(-3.4 * s) * Math.sin(2 * Math.PI * 3.2 * s); bc.fillRect(Math.round(s * (wv - 8)), Math.round(hv / 2 - y * (hv / 2 - 8)), 6, 6); }
+      pc.textContent = Math.round(k * 100);
+      if (k < 1) requestAnimationFrame(draw); else { msg.textContent = 'Equilibrium reached'; setTimeout(finish, 650); }
+    })(performance.now());
+  })();
+})();
+</script>
+
 </body>
 </html>

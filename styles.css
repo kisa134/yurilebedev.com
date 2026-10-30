@@ -20,16 +20,16 @@
 
 :root {
   /* Paper and ink */
-  --paper: #F3EFE6;
-  --paper-2: #EAE4D6;
-  --ink: #1D1C1A;
-  --ink-2: #57534B;
-  --ink-3: #8C867A;
-  --rule: #D6CFBF;
-  --dot: rgba(29, 28, 26, 0.13);
+  --paper: #0D0E0B;
+  --paper-2: #1A1B17;
+  --ink: #E4E1D7;
+  --ink-2: #B9B6AC;
+  --ink-3: #8F8C82;
+  --rule: #34352F;
+  --dot: rgba(207, 203, 190, 0.07);
   /* One accent: Yuri's green marker. --green for marks and fills, --green-ink for text */
   --green: #00A651;
-  --green-ink: #007A3B;
+  --green-ink: #1FC46E;
   --green-soft: rgba(0, 166, 81, 0.12);
 
   --serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
@@ -86,7 +86,7 @@ body {
 /* paper grain over everything, never intercepts the pointer */
 body::after {
   content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 100;
-  opacity: 0.05; mix-blend-mode: multiply;
+  opacity: 0.04; mix-blend-mode: screen;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 h1, h2, h3, p, ul, dl, dd, figure, blockquote { margin: 0; }
@@ -139,7 +139,7 @@ svg { display: block; }
 /* ---------- Header ---------- */
 .masthead {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(243, 239, 230, 0.86);
+  background: rgba(13, 14, 11, 0.88);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--rule);
 }
