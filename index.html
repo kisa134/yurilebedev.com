@@ -158,6 +158,26 @@ kbd { font: 500 10px/14px var(--mono); padding: 0 4px; border: 1px solid var(--l
 #boot .skip { color: var(--dim); }
 
 /* small screens: windows stack and scroll over the wallpaper */
+
+/* loupe and guides: the design-tool frame over the world */
+.guide { position: fixed; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 400ms var(--ease); }
+.gh { left: 0; right: 0; top: 0; height: 0; border-top: 1px dashed rgba(228, 225, 215, .16); }
+.gv { top: 0; bottom: 0; left: 0; width: 0; border-left: 1px dashed rgba(228, 225, 215, .16); }
+#loupe { position: fixed; left: 0; top: 0; width: 260px; height: 170px; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 400ms var(--ease); outline: 1px solid rgba(228, 225, 215, .5); }
+#loupe i { position: absolute; width: 6px; height: 6px; background: var(--text); }
+#loupe i:nth-child(1) { left: -3px; top: -3px; } #loupe i:nth-child(2) { right: -3px; top: -3px; }
+#loupe i:nth-child(3) { left: -3px; bottom: -3px; } #loupe i:nth-child(4) { right: -3px; bottom: -3px; }
+#loupe span { position: absolute; left: -1px; top: calc(100% + 6px); white-space: pre; color: var(--ink); background: var(--text); padding: 1px 6px; font-size: 10px; letter-spacing: .06em; }
+/* a line set in serif on the wallpaper, like a caption on a print */
+@font-face { font-family: 'Newsreader'; src: url('fonts/Newsreader.woff2') format('woff2'); font-weight: 200 800; font-display: swap; }
+.motto { position: fixed; right: max(28px, env(safe-area-inset-right, 0px)); bottom: 28px; z-index: 1; margin: 0; pointer-events: none;
+  font: 350 clamp(28px, 3.4vw, 52px)/1 'Newsreader', Georgia, serif; letter-spacing: -.03em; color: #E9F2CF; text-align: left; opacity: .92; }
+/* idle: the windows step back */
+.icons, .win, .motto { transition: opacity 1200ms var(--ease); }
+body.idle .win, body.idle .icons, body.idle .menubar .item { opacity: .06; }
+body.idle .motto { opacity: 1; }
+@media (max-width: 720px) { .motto { display: none; } }
+
 @media (max-width: 720px) {
   body { overflow: auto; }
   .menubar .item kbd, .menubar .hide-sm { display: none; }
@@ -179,6 +199,9 @@ kbd { font: 500 10px/14px var(--mono); padding: 0 4px; border: 1px solid var(--l
 
 <canvas id="world" aria-hidden="true"></canvas>
 <nav class="sr-only" aria-label="Pages"><a href="writing/point-zero.html">Point zero: what I carried with me</a> <a href="writing/building-in-public.html">Why I’m building my trading tools in public</a> <a href="privacy.html">Privacy</a> <a href="https://x.com/Cogit08">X</a></nav>
+<div class="guide gh" aria-hidden="true"></div><div class="guide gh" aria-hidden="true"></div><div class="guide gv" aria-hidden="true"></div><div class="guide gv" aria-hidden="true"></div>
+<div id="loupe" aria-hidden="true"><i></i><i></i><i></i><i></i><span id="loupe-lab" class="mono"></span></div>
+<p class="motto" aria-hidden="true">Every impulse<br>returns to equilibrium.</p>
 <button id="lh-hit" type="button" aria-label="Open Bentlik"><span class="mono">bentlik</span></button>
 
 <header class="menubar" id="menubar">
@@ -313,10 +336,10 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   /* ---------- the world: raymarched island, 8x8 Bayer dither, two tones and one green ---------- */
   var cv = document.getElementById('world');
   var gl = cv.getContext('webgl', { antialias: false, preserveDrawingBuffer: false });
-  var SCALE = 3, prog, uR, uT, uE, uM;
+  var SCALE = 2, prog, uR, uT, uE, uM, uLp, slowFrames = 0, coarse = false;
   var FS = [
     'precision highp float;',
-    'uniform vec2 R; uniform float T; uniform float E; uniform vec2 M;',
+    'uniform vec2 R; uniform float T; uniform float E; uniform vec2 M; uniform vec4 Lp;',
     'const vec2 LP = vec2(.38,-.12); const float TH = .36;',
     'float h2(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h2(i),h2(i+vec2(1,0)),f.x),mix(h2(i+vec2(0,1)),h2(i+vec2(1,1)),f.x),f.y);}',
@@ -357,10 +380,18 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     '  if(sc>0.&&tc>0.&&(hitT<0.||sc<hitT)){float q=length(w0+rd*sc-D*tc); float wd=.006+tc*.02;',
     '   g+=exp(-q*q/(wd*wd))*exp(-tc*.3)*.6;}}',
     ' { vec3 w0=ro-lamp; float sc=max(dot(lamp-ro,rd),0.); float q=length(w0+rd*sc); if(hitT<0.||sc<hitT) g+=exp(-q*q*4000.)*1.4; }',
-    ' if(E>.25){float col=floor(fc.x/2.); float r=h2(vec2(col,floor(fc.y/7.+T*26.+h2(vec2(col,1.))*40.))); if(r>1.-(E-.25)*.08) lum+=.55;}'+'\n'+' if(E>.6 && h2(vec2(floor(T*7.),3.))>.95) lum+=.18;',
+    ' if(E>.25){float col=floor(fc.x/2.); float r=h2(vec2(col,floor(fc.y/7.+T*26.+h2(vec2(col,1.))*40.))); if(r>1.-(E-.25)*.05) lum+=.55;}'+'\n'+' if(E>.6 && h2(vec2(floor(T*7.),3.))>.95) lum+=.18;',
     ' lum=clamp(lum,0.,1.); float th=B8(gl_FragCoord.xy)+.004;',
     ' vec3 INK=vec3(.051,.055,.043), PAP=vec3(.812,.796,.745), GR=vec3(0.,.651,.318);',
-    ' vec3 col=lum>th?PAP:INK; if(g>th) col=GR;',
+    ' vec3 LIME=vec3(.80,.93,.36), CREAM=vec3(.94,.96,.84), DEEP=vec3(.03,.16,.08);',
+    ' float gr=(h2(gl_FragCoord.xy+fract(T*7.)*91.)-.5);',
+    ' bool inL=gl_FragCoord.x>Lp.x&&gl_FragCoord.x<Lp.z&&gl_FragCoord.y>Lp.y&&gl_FragCoord.y<Lp.w;',
+    ' vec3 col;',
+    ' if(inL){float l=clamp(lum*1.05+g*.6+gr*.07,0.,1.);',
+    '  col=l<.35?mix(INK,DEEP,l/.35):l<.7?mix(DEEP,LIME,(l-.35)/.35):mix(LIME,CREAM,(l-.7)/.3);}',
+    ' else {col=lum>th?PAP:INK; float gg=clamp(g,0.,1.4);',
+    '  vec3 gc=mix(GR,mix(LIME,CREAM,clamp(g-1.,0.,1.)),clamp(g*.8,0.,1.));',
+    '  col=mix(col,gc,clamp(gg*.8,0.,.92)); col+=gr*.05*smoothstep(.02,.3,gg);}',
     ' gl_FragColor=vec4(col,1.);',
     '}'
   ].join('\n');
@@ -372,11 +403,11 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
       var loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-      uR = gl.getUniformLocation(prog, 'R'); uT = gl.getUniformLocation(prog, 'T'); uE = gl.getUniformLocation(prog, 'E'); uM = gl.getUniformLocation(prog, 'M');
+      uLp = gl.getUniformLocation(prog, 'Lp'); uR = gl.getUniformLocation(prog, 'R'); uT = gl.getUniformLocation(prog, 'T'); uE = gl.getUniformLocation(prog, 'E'); uM = gl.getUniformLocation(prog, 'M');
     }
   }
   function resize() {
-    SCALE = innerWidth > 1600 ? 4 : 3;
+    SCALE = coarse ? 3 : (innerWidth > 2200 ? 3 : 2);
     cv.width = Math.ceil(innerWidth / SCALE); cv.height = Math.ceil(innerHeight / SCALE);
     if (gl) gl.viewport(0, 0, cv.width, cv.height);
   }
@@ -517,6 +548,43 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   function tick() { clock.textContent = fmt.format(new Date()); } tick(); setInterval(tick, 15000);
 
   /* ---------- main loop ---------- */
+  /* ---------- loupe: an analog window into the dithered world ---------- */
+  var LW = 260, LH = 170, lp = [innerWidth * .7, innerHeight * .45], lpT = lp.slice(), lpOn = false, lpA = 0;
+  var lpEl = document.getElementById('loupe'), lpLab = document.getElementById('loupe-lab'), guides = document.querySelectorAll('.guide');
+  var fine = matchMedia('(pointer: fine)').matches;
+  addEventListener('pointermove', function (e) {
+    lpT = [e.clientX, e.clientY];
+    var t = e.target;
+    lpOn = fine && !reduced && (t === document.body || t.id === 'world' || t.classList.contains('desk') || t.id === 'lh-hit');
+  });
+  addEventListener('pointerleave', function () { lpOn = false; });
+  document.addEventListener('mouseleave', function () { lpOn = false; });
+  function placeLoupe() {
+    var on = lpA > .5, x = Math.round(lp[0] - LW / 2), y = Math.round(lp[1] - LH / 2);
+    lpEl.style.opacity = on ? 1 : 0;
+    lpEl.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    guides[0].style.transform = 'translateY(' + y + 'px)'; guides[1].style.transform = 'translateY(' + (y + LH) + 'px)';
+    guides[2].style.transform = 'translateX(' + x + 'px)'; guides[3].style.transform = 'translateX(' + (x + LW) + 'px)';
+    guides.forEach(function (g) { g.style.opacity = on ? 1 : 0; });
+    if (on) lpLab.textContent = 'ANALOG  x' + String(Math.round(lp[0])).padStart(4, '0') + ' y' + String(Math.round(lp[1])).padStart(4, '0') + '  ' + LW + '×' + LH;
+  }
+
+  /* ---------- small things ---------- */
+  // the tab title follows the weather; when you leave, the light stays on
+  var baseTitle = document.title, lastWord = '';
+  document.addEventListener('visibilitychange', function () { document.title = document.hidden ? 'the light is still on' : baseTitle; });
+  function titleWeather(word) {
+    if (document.hidden || word === lastWord) return; lastWord = word;
+    document.title = word === 'calm' ? baseTitle : 'Bentlik OS · ' + word;
+  }
+  // idle: after a minute without input the windows step back and the island is left alone
+  var idleT = null;
+  function wake() { document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(function () { document.body.classList.add('idle'); }, 60000); }
+  ['pointermove', 'keydown', 'pointerdown', 'wheel', 'touchstart'].forEach(function (ev) { addEventListener(ev, wake, { passive: true }); });
+  wake();
+  // for whoever opens the console
+  try { console.log('%c\n      ▲\n     ▐█▌   bentlik os\n     ▐▒▌   the light is on.\n  ~~~▐█▌~~~~~~~~~~~~~~~~\n\n  you read source code. respect.\n  say hi: x.com/Cogit08\n', 'font-family:monospace;color:#00A651'); } catch (e) {}
+
   var mb = document.getElementById('menubar'), mbState = document.getElementById('mb-state');
   var wxState = document.getElementById('wx-state'), wxAmp = document.getElementById('wx-amp'), wxLast = document.getElementById('wx-last');
   var wxc = document.getElementById('wx-trace').getContext('2d');
@@ -530,11 +598,17 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     acc += dt;
     if (acc > 1 / 30) {
       acc = 0;
-      if (prog) { gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, T); gl.uniform1f(uE, W.e); gl.uniform2f(uM, ms[0], ms[1]); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+      // finer dither, but fall back to coarse pixels if this machine can't keep up
+      if (!coarse) { if (dt > .045) slowFrames++; else slowFrames = Math.max(0, slowFrames - 1); if (slowFrames > 40) { coarse = true; resize(); } }
+      // the loupe: a frame that follows the cursor and shows the world without the dither
+      lp[0] += (lpT[0] - lp[0]) * .18; lp[1] += (lpT[1] - lp[1]) * .18; lpA += ((lpOn ? 1 : 0) - lpA) * .2;
+      placeLoupe();
+      if (prog) { if (uLp) { if (lpA > .5) { var x0 = (lp[0] - LW / 2) / SCALE, y0 = (innerHeight - lp[1] - LH / 2) / SCALE; gl.uniform4f(uLp, x0, y0, x0 + LW / SCALE, y0 + LH / SCALE); } else gl.uniform4f(uLp, -1, -1, -1, -1); }
+        gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, T); gl.uniform1f(uE, W.e); gl.uniform2f(uM, ms[0], ms[1]); gl.drawArrays(gl.TRIANGLES, 0, 3); }
       placeLighthouse(T, ms);
       W.hist.push(W.x); if (W.hist.length > 144) W.hist.shift();
       var word = weatherWord(W.e);
-      mbState.textContent = word; wxState.textContent = word; wxAmp.textContent = W.e.toFixed(2);
+      titleWeather(word); mbState.textContent = word; wxState.textContent = word; wxAmp.textContent = W.e.toFixed(2);
       if (W.last) wxLast.textContent = 'last tremor ' + fmt.format(W.last);
       // instrument: 1-bit trace
       wxc.fillStyle = '#0D0E0B'; wxc.fillRect(0, 0, 288, 90);
