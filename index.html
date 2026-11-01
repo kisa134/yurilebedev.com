@@ -19,7 +19,10 @@
 :root {
   --ink: #0D0E0B;      /* the dark half of every dithered pixel */
   --paper: #CFCBBE;    /* the light half */
-  --green: #00A651;    /* the one marker colour: light, live state, focus */
+  --green: #00A651;    /* signal: light, live state, focus. The palette is one family, nothing outside it: */
+  --deep: #08291A;     /* green in shadow */
+  --lime: #CCED5C;     /* green in full light (glow, swarm at night) */
+  --cream: #F0F5D6;    /* the hottest point of the beam */
   --win: #121310;
   --win-2: #1A1B17;
   --line: #34352F;
@@ -170,7 +173,7 @@ kbd { font: 500 10px/14px var(--mono); padding: 0 4px; border: 1px solid var(--l
 #loupe span { position: absolute; left: -1px; top: calc(100% + 6px); white-space: pre; color: var(--ink); background: var(--text); padding: 1px 6px; font-size: 10px; letter-spacing: .06em; }
 /* a line set in serif on the wallpaper, like a caption on a print */
 @font-face { font-family: 'Newsreader'; src: url('fonts/Newsreader.woff2') format('woff2'); font-weight: 200 800; font-display: swap; }
-.motto { position: fixed; right: max(28px, env(safe-area-inset-right, 0px)); bottom: 28px; z-index: 1; margin: 0; pointer-events: none;
+.motto { position: fixed; right: max(28px, env(safe-area-inset-right, 0px)); top: 52px; z-index: 1; margin: 0; pointer-events: none;
   font: 350 clamp(28px, 3.4vw, 52px)/1 'Newsreader', Georgia, serif; letter-spacing: -.03em; color: #E9F2CF; text-align: left; opacity: .92; }
 /* idle: the windows step back */
 .icons, .win, .motto { transition: opacity 1200ms var(--ease); }
@@ -209,6 +212,164 @@ body.bare .win { opacity: 0 !important; pointer-events: none; }
 .icon:hover .fan .c2, .icon:focus-visible .fan .c2 { transform: translate(134px, -30px) rotate(10deg); transition-delay: 80ms; }
 .fan .card:has(img) { width: 92px; padding: 4px; min-height: 0; }
 
+
+
+/* ---------- life on the island + render modes ---------- */
+#glyph, #life { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; display: block; }
+#glyph { display: none; }
+body.m-glyph #world, body.m-dots #world { opacity: 0; }
+body.m-glyph #glyph, body.m-dots #glyph { display: block; }
+.sys .body { padding: 12px 14px 14px; }
+.sys-lede { margin: 0 0 10px; }
+.sysrow { display: grid; grid-template-columns: 54px 1fr 44px; align-items: center; gap: 8px; height: 26px; border-top: 1px solid var(--line); }
+.sysrow .k { color: var(--dim); text-transform: uppercase; font-size: 9px; letter-spacing: .12em; }
+.sysrow canvas { width: 100%; height: 22px; display: block; image-rendering: pixelated; }
+.sysrow .v { text-align: right; }
+.legend { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 8px; color: var(--dim); font-size: 10px; }
+.legend b { color: var(--paper); font-weight: 500; } .legend b.g { color: var(--green); } .legend b.l { color: var(--lime); }
+.log { height: 64px; overflow: hidden; font-size: 10px; line-height: 16px; color: var(--dim); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 4px 0;
+  -webkit-mask: linear-gradient(#000 60%, transparent); mask: linear-gradient(#000 60%, transparent); }
+.log div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.log div:first-child { color: var(--text); }
+.log .t { color: var(--green); margin-right: 6px; }
+.modes { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 10px; border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+.modes button { height: 24px; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); transition: color 300ms var(--ease), background-color 300ms var(--ease); }
+.modes button + button { border-left: 1px solid var(--line); }
+.modes button:hover { color: var(--text); }
+.modes button[aria-pressed="true"] { background: var(--green); color: var(--ink); }
+.sys-help { margin: 8px 0 0; font-size: 10px; }
+
+/* ---------- Things: objects on the desk ---------- */
+:root { --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.win .bar-r { display: flex; align-items: center; gap: 2px; }
+.nav-b { width: 22px; height: 20px; border-radius: 3px; color: var(--dim); font: 12px/1 var(--mono); transition: color 300ms var(--ease), background-color 300ms var(--ease); }
+.nav-b:hover { color: var(--text); background: var(--line); }
+.shelf { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 14px 14px 12px; scrollbar-width: none; }
+.shelf::-webkit-scrollbar { display: none; }
+.thing { margin: 0; flex: none; width: 196px; scroll-snap-align: start; }
+.thing figcaption { display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; font-size: 13px; }
+.tile { position: relative; width: 100%; height: 196px; border-radius: 18px; display: grid; place-items: center; overflow: hidden; padding: 0; text-align: left;
+  background: radial-gradient(120% 90% at 50% 0%, #23241F 0%, #161713 62%, #121310 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), inset 0 0 0 1px rgba(255,255,255,.035); }
+.tile::after { content: ''; position: absolute; inset: 0; background: var(--noise); opacity: .05; mix-blend-mode: overlay; pointer-events: none; }
+button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green); outline-offset: -4px; }
+
+/* notebook: leather cover, elastic band, ribbon */
+.mole { position: relative; width: 104px; height: 140px; perspective: 700px; display: block; }
+.mole .pages { position: absolute; inset: 3px 0 3px 4px; padding: 16px 10px 10px 14px; display: grid; align-content: start; gap: 5px; border-radius: 2px 7px 7px 2px;
+  font-size: 7.5px; line-height: 10px; color: #3A3832; letter-spacing: .02em;
+  background: repeating-linear-gradient(0deg, transparent 0 9px, rgba(60,80,60,.12) 9px 10px), linear-gradient(90deg, #E6E0D0, #F2EDE0 30%);
+  box-shadow: inset -3px 0 0 #D9D2BF, inset -4px 0 0 #CBC3AE, 0 22px 26px -10px rgba(0,0,0,.8); }
+.mole .pages b { color: #0E3B21; font-weight: 600; }
+.mole .cover { position: absolute; inset: 0; border-radius: 3px 9px 9px 3px; transform-origin: 0 50%; transform-style: preserve-3d; transition: transform 800ms var(--ease);
+  background: var(--noise), radial-gradient(140% 100% at 30% 0%, #34352F 0%, #1B1C19 55%, #0F100E 100%); background-blend-mode: overlay, normal;
+  box-shadow: inset 3px 0 0 rgba(255,255,255,.05), inset 0 1px 0 rgba(255,255,255,.08), inset -1px 0 0 rgba(0,0,0,.7), 0 24px 30px -12px rgba(0,0,0,.9); }
+.mole .band { position: absolute; top: -2px; bottom: -2px; right: 15px; width: 6px; border-radius: 3px;
+  background: linear-gradient(90deg, #070807, #2E2F2B 45%, #0A0B0A); box-shadow: 0 0 0 .5px rgba(0,0,0,.6), 1px 0 2px rgba(0,0,0,.6); }
+.mole .deb { position: absolute; left: 14px; bottom: 14px; font: 400 13px/1 'Newsreader', Georgia, serif; letter-spacing: -.01em; color: rgba(255,255,255,.07); text-shadow: 0 -1px 0 rgba(0,0,0,.8), 0 1px 0 rgba(255,255,255,.04); }
+.mole .ribbon { position: absolute; left: 46px; bottom: -24px; width: 5px; height: 32px; transform-origin: 50% 0; transition: transform 900ms var(--ease);
+  background: linear-gradient(90deg, #007A3B, #00A651 50%, #006A33); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%); }
+.thing:hover .mole .cover, .tile:focus-visible .mole .cover { transform: rotateY(-42deg); }
+.thing:hover .mole .ribbon { transform: rotate(9deg); }
+
+/* seismograph: brushed aluminium, live screen, LED, a real button */
+.seis { width: 150px; padding: 10px; border-radius: 16px;
+  background: repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, rgba(0,0,0,.03) 1px 3px), linear-gradient(180deg, #E0DFD9 0%, #B9B8B1 55%, #A3A29B 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), inset 0 -2px 3px rgba(0,0,0,.25), 0 1px 0 #6E6D67, 0 24px 30px -12px rgba(0,0,0,.9); }
+.seis .screen { position: relative; height: 54px; border-radius: 7px; overflow: hidden; background: #08100B;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,.9), inset 0 0 0 1px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.7); }
+.seis canvas { width: 100%; height: 100%; display: block; }
+.seis .scan { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0 1px, transparent 1px 3px), radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,.08), transparent 60%); pointer-events: none; }
+.seis .rd { position: absolute; left: 6px; top: 4px; font-size: 7px; line-height: 8px; color: #2BD27A; text-shadow: 0 0 4px rgba(0,166,81,.8); }
+.seis .row { display: flex; align-items: center; gap: 8px; margin-top: 9px; }
+.seis .led { width: 6px; height: 6px; border-radius: 50%; background: #2A3A30; box-shadow: inset 0 1px 1px rgba(0,0,0,.6); transition: background-color 200ms, box-shadow 200ms; }
+.seis .led.on { background: #3BF08F; box-shadow: 0 0 6px 1px rgba(0,166,81,.9), inset 0 -1px 1px rgba(0,0,0,.3); }
+.seis .eng { flex: 1; font-size: 7px; letter-spacing: .08em; color: rgba(0,0,0,.45); text-shadow: 0 1px 0 rgba(255,255,255,.6); }
+.seis .cap { width: 26px; height: 26px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, #2B2C28, #121310 70%); box-shadow: 0 0 0 2px #8F8E88, 0 0 0 3px #CFCEC8, 0 3px 4px rgba(0,0,0,.5), inset 0 1px 1px rgba(255,255,255,.15);
+  transition: transform 120ms var(--ease), box-shadow 120ms var(--ease); }
+.seis .cap::after { content: ''; display: block; width: 8px; height: 8px; margin: 9px auto; border-radius: 50%; background: #00A651; box-shadow: 0 0 6px rgba(0,166,81,.8); }
+.seis .cap:active { transform: translateY(1.5px); box-shadow: 0 0 0 2px #8F8E88, 0 0 0 3px #CFCEC8, 0 1px 1px rgba(0,0,0,.5), inset 0 2px 3px rgba(0,0,0,.6); }
+
+/* the zero dial: knurled aluminium knob over an engraved scale */
+.dial { position: relative; width: 136px; height: 136px; border-radius: 50%; touch-action: none; cursor: grab;
+  background: radial-gradient(circle at 50% 40%, #1F201C, #0E0F0C 70%); box-shadow: inset 0 2px 6px rgba(0,0,0,.8), 0 1px 0 rgba(255,255,255,.05); }
+.dial.drag { cursor: grabbing; }
+.dial .ticks { position: absolute; inset: 6px; border-radius: 50%;
+  background: repeating-conic-gradient(from -.75deg, rgba(228,225,215,.4) 0 1.5deg, transparent 1.5deg 10deg);
+  -webkit-mask: radial-gradient(circle, transparent 58px, #000 58px, #000 62px, transparent 62px); mask: radial-gradient(circle, transparent 58px, #000 58px, #000 62px, transparent 62px); }
+.dial .zero { position: absolute; left: 50%; top: 2px; width: 2px; height: 10px; margin-left: -1px; background: #00A651; box-shadow: 0 0 6px rgba(0,166,81,.9); border-radius: 1px; }
+.dial .knurl { position: absolute; inset: 22px; border-radius: 50%; transform: rotate(var(--a, 0deg));
+  background: repeating-conic-gradient(#5E5D58 0 3deg, #C9C8C2 3deg 6deg); padding: 4px; box-shadow: 0 10px 18px -4px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.6); }
+.dial .cap2 { position: relative; display: block; width: 100%; height: 100%; border-radius: 50%;
+  background: conic-gradient(from 20deg, #D7D6D0, #8C8B85, #EDECE6, #8E8D87, #CFCEC8, #7B7A74, #E9E8E2, #9A9993, #D7D6D0);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.8), inset 0 -2px 4px rgba(0,0,0,.35); }
+.dial .mark { position: absolute; left: 50%; top: 6px; width: 3px; height: 14px; margin-left: -1.5px; border-radius: 2px; background: #00A651; box-shadow: 0 0 4px rgba(0,166,81,.7); }
+.dial .b { position: absolute; left: 0; right: 0; top: 50%; margin-top: -6px; text-align: center; font-size: 10px; line-height: 12px; color: rgba(0,0,0,.35); text-shadow: 0 1px 0 rgba(255,255,255,.6); }
+.tile .readout { position: absolute; left: 0; right: 0; bottom: 10px; text-align: center; color: var(--dim); font-size: 10px; }
+
+/* polaroids of the dogs, with a label-maker strip */
+.pola { position: relative; width: 150px; height: 120px; display: block; }
+.pola .p { position: absolute; left: 50%; top: 4px; width: 78px; height: 94px; margin-left: -39px; padding: 6px 6px 22px; background: #F1EFE8; border-radius: 2px;
+  box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, 0 12px 18px -6px rgba(0,0,0,.85); transition: transform 600ms var(--ease); }
+.pola .p::after { content: ''; position: absolute; inset: 0; background: var(--noise); opacity: .12; mix-blend-mode: multiply; pointer-events: none; }
+.pola .p canvas, .pola .p img { position: absolute; left: 6px; top: 6px; width: 66px; height: 66px; object-fit: cover; image-rendering: pixelated; }
+.pola .p img { opacity: 0; transition: opacity 500ms var(--ease); }
+.pola .p:hover img { opacity: 1; }
+.pola .p0 { transform: rotate(-9deg) translate(-6px, 4px); } .pola .p1 { transform: rotate(4deg) translate(4px, 0); } .pola .p2 { transform: rotate(11deg) translate(10px, 6px); }
+.thing:hover .pola .p0 { transform: rotate(-14deg) translate(-44px, 6px); }
+.thing:hover .pola .p1 { transform: rotate(-1deg) translate(0, -6px); }
+.thing:hover .pola .p2 { transform: rotate(13deg) translate(44px, 8px); }
+.dymo { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%) rotate(-2deg); padding: 3px 10px; font-weight: 600; font-size: 9px; letter-spacing: .22em; color: #F2F2EE;
+  background: var(--noise), linear-gradient(#1B1C1A, #0E0F0D); background-blend-mode: overlay, normal; border-radius: 2px; text-shadow: 0 -1px 0 rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.25);
+  box-shadow: 0 2px 3px rgba(0,0,0,.6); }
+
+/* cassette: smoked plastic, screws, label, reels that turn while the sea plays */
+.tape { position: relative; display: block; width: 152px; height: 98px; border-radius: 8px;
+  background: var(--noise), linear-gradient(180deg, #2E2F2B, #1A1B18); background-blend-mode: overlay, normal;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 0 1px rgba(0,0,0,.6), 0 20px 26px -10px rgba(0,0,0,.9); }
+.tape .screw { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #BDBCB6, #5F5E59); box-shadow: inset 0 0 0 .5px rgba(0,0,0,.6); }
+.tape .screw::after { content: ''; position: absolute; left: 1px; right: 1px; top: 2.5px; height: 1px; background: rgba(0,0,0,.6); transform: rotate(35deg); }
+.tape .s1 { left: 5px; top: 5px; } .tape .s2 { right: 5px; top: 5px; } .tape .s3 { left: 5px; bottom: 5px; } .tape .s4 { right: 5px; bottom: 5px; }
+.tape .lbl { position: absolute; left: 14px; right: 14px; top: 9px; height: 54px; border-radius: 3px; padding: 4px 7px; display: flex; justify-content: space-between; align-items: start;
+  background: linear-gradient(180deg, #ECE7D9 0 60%, #00A651 60% 68%, #ECE7D9 68%); color: #22241E; font-size: 8px; line-height: 10px; letter-spacing: .06em; }
+.tape .lbl b { font-size: 10px; letter-spacing: .14em; }
+.tape .win2 { position: absolute; left: 34px; right: 34px; top: 34px; height: 22px; border-radius: 11px; display: flex; justify-content: space-between; align-items: center; padding: 0 8px;
+  background: rgba(10,10,9,.92); box-shadow: inset 0 1px 3px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.08); }
+.tape .reel { width: 16px; height: 16px; border-radius: 50%; background: repeating-conic-gradient(#EDEDE8 0 18deg, #2B2C28 18deg 60deg); box-shadow: 0 0 0 3px #0A2B18; animation: reel 1.8s linear infinite paused; }
+.tape .r2 { box-shadow: 0 0 0 1.5px #0A2B18; }
+.tape.on .reel { animation-play-state: running; }
+@keyframes reel { to { transform: rotate(-360deg); } }
+
+/* cartridges */
+.carts2 { position: relative; display: block; width: 130px; height: 130px; }
+.cg { position: absolute; width: 96px; height: 112px; border-radius: 4px 4px 10px 4px; clip-path: polygon(0 0, 100% 0, 100% 100%, 12% 100%, 0 92%);
+  background: var(--noise), linear-gradient(180deg, #C8C6BF, #A7A59E); background-blend-mode: overlay, normal; box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+  transition: transform 650ms var(--ease); filter: drop-shadow(0 16px 14px rgba(0,0,0,.7)); }
+.cg .ridge { position: absolute; left: 10px; right: 10px; top: 6px; height: 12px; background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, rgba(255,255,255,.35) 1px 3px); border-radius: 2px; }
+.cg .clab { position: absolute; left: 10px; right: 10px; top: 24px; bottom: 16px; border-radius: 3px; padding: 7px; display: grid; align-content: space-between;
+  background: #0E140F; color: #3BF08F; font-size: 7px; line-height: 9px; letter-spacing: .08em; box-shadow: inset 0 0 0 1px rgba(0,0,0,.6), inset 0 0 18px rgba(0,166,81,.18); }
+.cg .clab b { font-size: 11px; line-height: 12px; color: #E9F2CF; letter-spacing: .04em; }
+.cg.back { left: 30px; top: 2px; transform: rotate(8deg); }
+.cg.front { left: 6px; top: 14px; transform: rotate(-4deg); }
+.thing:hover .cg.front { transform: rotate(-9deg) translate(-8px, 10px); }
+.thing:hover .cg.back { transform: rotate(10deg) translate(14px, -14px); }
+
+/* membership card: dark green metal, chip, tilt with the cursor */
+.pass { position: relative; display: block; width: 168px; height: 106px; border-radius: 10px; padding: 12px; color: #E9F2CF; text-decoration: none; overflow: hidden;
+  background: var(--noise), linear-gradient(135deg, #124A2A 0%, #0A2B18 55%, #061A0E 100%); background-blend-mode: overlay, normal;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), inset 0 0 0 1px rgba(255,255,255,.06), 0 22px 26px -10px rgba(0,0,0,.9);
+  transform: perspective(500px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 500ms var(--ease); }
+.pass.live { transition: transform 80ms linear; }
+.pass .sheen { position: absolute; inset: -40%; background: radial-gradient(closest-side at var(--mx, 30%) var(--my, 20%), rgba(233,242,207,.28), transparent 60%); pointer-events: none; }
+.pass .chip { position: absolute; left: 12px; top: 34px; width: 24px; height: 18px; border-radius: 3px;
+  background: linear-gradient(135deg, #D9D8D2, #8E8D87 60%, #CFCEC8); box-shadow: inset 0 0 0 .5px rgba(0,0,0,.4); }
+.pass .chip::after { content: ''; position: absolute; inset: 4px 3px; border: 1px solid rgba(0,0,0,.25); border-radius: 2px; background: linear-gradient(90deg, transparent 45%, rgba(0,0,0,.25) 45% 55%, transparent 55%); }
+.pass .pname { position: absolute; left: 12px; top: 8px; font: 400 18px/1 'Newsreader', Georgia, serif; letter-spacing: -.02em; }
+.pass .pmeta { position: absolute; left: 46px; top: 38px; font-size: 7px; letter-spacing: .12em; color: rgba(233,242,207,.7); }
+.pass .pfoot { position: absolute; left: 12px; right: 12px; bottom: 10px; display: flex; justify-content: space-between; font-size: 8px; letter-spacing: .12em; text-shadow: 0 -1px 0 rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.12); }
+@media (prefers-reduced-motion: reduce) { .tape .reel { animation: none; } }
+
 @media (max-width: 720px) {
   body { overflow: auto; }
   .menubar .item kbd, .menubar .hide-sm { display: none; }
@@ -229,6 +390,8 @@ body.bare .win { opacity: 0 !important; pointer-events: none; }
 
 
 <canvas id="world" aria-hidden="true"></canvas>
+<canvas id="glyph" aria-hidden="true"></canvas>
+<canvas id="life" aria-hidden="true"></canvas>
 <nav class="sr-only" aria-label="Pages"><a href="writing/point-zero.html">Point zero: what I carried with me</a> <a href="writing/building-in-public.html">Why I’m building my trading tools in public</a> <a href="privacy.html">Privacy</a> <a href="https://x.com/Cogit08">X</a></nav>
 <div class="guide gh" aria-hidden="true"></div><div class="guide gh" aria-hidden="true"></div><div class="guide gv" aria-hidden="true"></div><div class="guide gv" aria-hidden="true"></div>
 <div id="loupe" aria-hidden="true"><i></i><i></i><i></i><i></i><span id="loupe-lab" class="mono"></span></div>
@@ -250,6 +413,8 @@ body.bare .win { opacity: 0 !important; pointer-events: none; }
     <button class="item" data-open="weather" type="button">Weather <kbd>W</kbd></button>
     <button class="item" data-open="dogs" type="button">Dogs <kbd>D</kbd></button>
     <button class="item hide-sm" data-open="games" type="button">Games <kbd>G</kbd></button>
+    <button class="item" data-open="things" type="button">Things <kbd>T</kbd></button>
+    <button class="item hide-sm" data-open="systems" type="button">Systems <kbd>S</kbd></button>
     <button class="item hide-sm" data-open="about" type="button">About <kbd>A</kbd></button>
   </div>
   <div class="right">
@@ -264,6 +429,7 @@ body.bare .win { opacity: 0 !important; pointer-events: none; }
   <button class="icon" data-open="weather" type="button"><svg data-px="weather" aria-hidden="true"></svg><span class="mono">Weather</span></button>
   <button class="icon" data-open="dogs" type="button"><svg data-px="dog" aria-hidden="true"></svg><span class="mono">Dogs</span></button>
   <button class="icon" data-open="games" type="button"><svg data-px="cart" aria-hidden="true"></svg><span class="mono">Games</span></button>
+  <button class="icon" data-open="things" type="button"><svg data-px="box" aria-hidden="true"></svg><span class="mono">Things</span></button>
   <button class="icon" data-open="about" type="button"><svg data-px="info" aria-hidden="true"></svg><span class="mono">About.txt</span></button>
 </nav>
 
@@ -291,7 +457,7 @@ body.bare .win { opacity: 0 !important; pointer-events: none; }
     <div class="body" id="nb-body"></div>
   </section>
 
-  <section class="win wx" id="w-weather" data-x="0.075" data-y="0.62" data-w="320" aria-label="Weather">
+  <section class="win wx" id="w-weather" data-x="0.075" data-y="0.62" data-w="320" hidden aria-label="Weather">
     <header class="bar"><span class="t mono">Weather</span><button class="x" type="button" aria-label="Close">×</button></header>
     <div class="body">
       <div class="now"><b id="wx-state">calm</b><span class="mono dim" id="wx-last">no tremor yet</span></div>
@@ -317,6 +483,107 @@ body.bare .win { opacity: 0 !important; pointer-events: none; }
         <div class="cart"><div class="notch"></div><div class="label"><b>Ant Kitchen</b><span class="mono">PROTOTYPE</span></div><p class="mono">An ant explores a kitchen. Playtests next.</p></div>
         <div class="cart"><div class="notch"></div><div class="label"><b>BomberMeme</b><span class="mono">NEW EDITION</span></div><p class="mono">A standalone edition, no crypto. Release prep.</p></div>
       </div>
+    </div>
+  </section>
+
+  <section class="win things" id="w-things" data-x="0.075" data-y="0.64" data-w="780" aria-label="Things">
+    <header class="bar"><span class="t mono">Things on the desk</span><span class="bar-r"><button class="nav-b" type="button" data-shelf="-1" aria-label="Scroll left">←</button><button class="nav-b" type="button" data-shelf="1" aria-label="Scroll right">→</button><button class="x" type="button" aria-label="Close">×</button></span></header>
+    <div class="body shelf" id="shelf">
+
+      <figure class="thing">
+        <button class="tile" type="button" data-open="notebook" aria-label="Open the notebook">
+          <span class="mole">
+            <span class="pages mono"><b>~/notebook</b><span>001 Point zero</span><span>002 Building in public</span><span>003 …</span></span>
+            <span class="cover"><span class="band"></span><span class="deb">Cogito</span></span>
+            <span class="ribbon"></span>
+          </span>
+        </button>
+        <figcaption><span>Notebook</span><span class="mono dim">open it</span></figcaption>
+      </figure>
+
+      <figure class="thing">
+        <div class="tile">
+          <div class="seis">
+            <div class="screen"><canvas id="seis-c" width="224" height="88" aria-hidden="true"></canvas><i class="scan"></i><span class="mono rd" id="seis-w">CALM</span></div>
+            <div class="row"><i class="led" id="seis-led"></i><span class="eng mono">RINGDOWN · M1</span><button class="cap" id="seis-b" type="button" aria-label="Send an impulse"></button></div>
+          </div>
+        </div>
+        <figcaption><span>Seismograph</span><span class="mono dim">live · press it</span></figcaption>
+      </figure>
+
+      <figure class="thing">
+        <div class="tile">
+          <div class="dial" id="dial" role="slider" tabindex="0" aria-label="Bentlik zero dial" aria-valuemin="-180" aria-valuemax="180" aria-valuenow="0">
+            <i class="ticks"></i><i class="zero"></i>
+            <span class="knurl"><span class="cap2"><i class="mark"></i><span class="eng b">B</span></span></span>
+          </div>
+          <span class="mono readout" id="dial-r">0.0°</span>
+        </div>
+        <figcaption><span>Bentlik</span><span class="mono dim">turn it, let go</span></figcaption>
+      </figure>
+
+      <figure class="thing">
+        <button class="tile" type="button" data-open="dogs" aria-label="Open the dogs">
+          <span class="pola">
+            <span class="p p0"><canvas></canvas><img alt=""></span>
+            <span class="p p1"><canvas></canvas><img alt=""></span>
+            <span class="p p2"><canvas></canvas><img alt=""></span>
+          </span>
+          <span class="dymo mono">MY DOGS</span>
+        </button>
+        <figcaption><span>Dogs</span><span class="mono dim">hover a print</span></figcaption>
+      </figure>
+
+      <figure class="thing">
+        <button class="tile" type="button" id="tape-b" aria-pressed="false" aria-label="Play the sea">
+          <span class="tape" id="tape">
+            <i class="screw s1"></i><i class="screw s2"></i><i class="screw s3"></i><i class="screw s4"></i>
+            <span class="lbl mono"><b>SEA</b><span>SIDE A · 90</span></span>
+            <span class="win2"><i class="reel r1"></i><i class="reel r2"></i></span>
+          </span>
+        </button>
+        <figcaption><span>Sea</span><span class="mono dim" id="tape-h">click to play</span></figcaption>
+      </figure>
+
+      <figure class="thing">
+        <button class="tile" type="button" data-open="games" aria-label="Open the games">
+          <span class="carts2">
+            <span class="cg back"><i class="ridge"></i><span class="clab mono"><b>BOMBER<br>MEME</b><span>NEW EDITION</span></span></span>
+            <span class="cg front"><i class="ridge"></i><span class="clab mono"><b>ANT<br>KITCHEN</b><span>PROTOTYPE</span></span></span>
+          </span>
+        </button>
+        <figcaption><span>Games</span><span class="mono dim">two cartridges</span></figcaption>
+      </figure>
+
+      <figure class="thing">
+        <div class="tile">
+          <a class="pass" id="pass" href="https://x.com/Cogit08" aria-label="Follow @Cogit08 on X">
+            <i class="sheen"></i><i class="chip"></i>
+            <span class="pname">Cogito</span>
+            <span class="pmeta mono">TRADER · BUILDER · DUBAI</span>
+            <span class="pfoot mono"><span>@COGIT08</span><span>VALID THRU ∞</span></span>
+          </a>
+        </div>
+        <figcaption><span>Card</span><span class="mono dim">tap to follow</span></figcaption>
+      </figure>
+
+    </div>
+  </section>
+
+  <section class="win sys" id="w-systems" data-x="0.80" data-y="0.55" data-w="290" aria-label="Systems">
+    <header class="bar"><span class="t mono">systems · live</span><button class="x" type="button" aria-label="Close">×</button></header>
+    <div class="body">
+      <p class="mono dim sys-lede">Four systems share the island. None of them is scripted.</p>
+      <div class="sysrow"><span class="k mono">Sea</span><canvas data-s="0" width="120" height="22"></canvas><span class="v mono" id="sv-0">0.00</span></div>
+      <div class="sysrow"><span class="k mono">Colony</span><canvas data-s="1" width="120" height="22"></canvas><span class="v mono" id="sv-1">0</span></div>
+      <div class="sysrow"><span class="k mono">Swarm</span><canvas data-s="2" width="120" height="22"></canvas><span class="v mono" id="sv-2">0</span></div>
+      <div class="sysrow"><span class="k mono">Drift</span><canvas data-s="3" width="120" height="22"></canvas><span class="v mono" id="sv-3">0</span></div>
+      <p class="mono legend"><span><b>+</b> node</span><span><b class="g">•</b> signal</span><span><b>~</b> drift</span><span><b class="l">˙</b> swarm</span></p>
+      <div class="log mono" id="sys-log" aria-live="off"></div>
+      <div class="modes mono" role="group" aria-label="How the world is drawn">
+        <button type="button" data-mode="dither" aria-pressed="true">Dither</button><button type="button" data-mode="glyph" aria-pressed="false">Glyph</button><button type="button" data-mode="dots" aria-pressed="false">Dots</button>
+      </div>
+      <p class="mono dim sys-help">Click the island to plant a node. <kbd>M</kbd> changes the render.</p>
     </div>
   </section>
 
@@ -539,7 +806,8 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   document.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { openWin(b.dataset.open); }); });
   addEventListener('keydown', function (e) {
     if (e.metaKey || e.ctrlKey || e.altKey || /input|textarea/i.test(e.target.tagName)) return;
-    var k = e.key.toLowerCase(), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik' };
+    var k = e.key.toLowerCase(), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik', t: 'things', s: 'systems' };
+    if (k === 'm' && document.getElementById('boot').classList.contains('done')) cycleMode();
     if (map[k] && document.getElementById('boot').classList.contains('done')) openWin(map[k]);
     if (e.key === 'Escape' && document.getElementById('ctx').hidden) { var t = document.querySelector('.win.top'); if (t) { t.hidden = true; pickTop(); } }
   });
@@ -592,6 +860,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     weather: ['........', '..##....', '.#..##..', '#.....#.', '.######.', '..#.#.#.', '.#.#.#..', '........'],
     dog: ['#.....#.', '##...##.', '.#####..', '.#.#.#..', '.#####..', '..#.#...', '.#####..', '........'],
     cart: ['.######.', '.#.##.#.', '.######.', '.#....#.', '.#.##.#.', '.#....#.', '.######.', '.#.#.#..'],
+    box: ['........', '.######.', '#......#', '########', '#.#..#.#', '#......#', '#......#', '########'],
     info: ['.######.', '.#....#.', '.#.##.#.', '.#....#.', '.#.##.#.', '.#.##.#.', '.#....#.', '.######.']
   };
   document.querySelectorAll('svg[data-px]').forEach(function (s) {
@@ -740,6 +1009,267 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   // for whoever opens the console
   try { console.log('%c\n      ▲\n     ▐█▌   bentlik os\n     ▐▒▌   the light is on.\n  ~~~▐█▌~~~~~~~~~~~~~~~~\n\n  you read source code. respect.\n  say hi: x.com/Cogit08\n', 'font-family:monospace;color:#00A651'); } catch (e) {}
 
+
+  /* ---------- Things: the objects on the desk ---------- */
+  (function () {
+    var shelf = document.getElementById('shelf');
+    document.querySelectorAll('[data-shelf]').forEach(function (b) { b.addEventListener('click', function () { shelf.scrollBy({ left: +b.dataset.shelf * 208, behavior: reduced ? 'auto' : 'smooth' }); }); });
+    shelf.addEventListener('wheel', function (e) { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { shelf.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive: false });
+    // polaroids get the same dither as everything else
+    document.querySelectorAll('.pola .p').forEach(function (p, i) {
+      var img = p.querySelector('img'), c = p.querySelector('canvas');
+      img.onload = function () {
+        var w = 66, h = 66, x = c.getContext('2d'); c.width = w; c.height = h;
+        var s = Math.min(img.naturalWidth, img.naturalHeight); x.drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, 0, 0, w, h);
+        var d = x.getImageData(0, 0, w, h), q = d.data;
+        for (var yy = 0; yy < h; yy++) for (var xx = 0; xx < w; xx++) { var o = (yy * w + xx) * 4, l = (q[o] * .3 + q[o + 1] * .59 + q[o + 2] * .11) / 255; l = Math.min(1, Math.max(0, (l - .12) * 1.35)); var on = l > bayer4(xx, yy); q[o] = on ? 207 : 13; q[o + 1] = on ? 203 : 14; q[o + 2] = on ? 190 : 11; }
+        x.putImageData(d, 0, 0);
+      };
+      img.src = DOG_IMGS[i % DOG_IMGS.length];
+    });
+    // the cassette is the sound switch
+    var tapeB = document.getElementById('tape-b'), tape = document.getElementById('tape'), tapeH = document.getElementById('tape-h');
+    tapeB.addEventListener('click', function () { sBtn.click(); });
+    new MutationObserver(function () { var on = sBtn.getAttribute('aria-pressed') === 'true'; tape.classList.toggle('on', on); tapeB.setAttribute('aria-pressed', String(on)); tapeH.textContent = on ? 'playing · click to stop' : 'click to play'; }).observe(sBtn, { attributes: true });
+    // the seismograph: a button you can actually press
+    document.getElementById('seis-b').addEventListener('click', function () { kick(2.6); });
+    // the card tilts toward the cursor
+    var pass = document.getElementById('pass');
+    pass.addEventListener('pointermove', function (e) {
+      var r = pass.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      pass.classList.add('live'); pass.style.setProperty('--ry', ((x - .5) * 18).toFixed(1) + 'deg'); pass.style.setProperty('--rx', ((.5 - y) * 14).toFixed(1) + 'deg');
+      pass.style.setProperty('--mx', (x * 100).toFixed(0) + '%'); pass.style.setProperty('--my', (y * 100).toFixed(0) + '%');
+    });
+    pass.addEventListener('pointerleave', function () { pass.classList.remove('live'); pass.style.setProperty('--rx', '0deg'); pass.style.setProperty('--ry', '0deg'); });
+  })();
+  // Bentlik's dial: turn it anywhere, it always rings back to zero (the same damped spring as the weather)
+  var dial = document.getElementById('dial'), dialR = document.getElementById('dial-r'), knurl = dial.querySelector('.knurl');
+  var DL = { a: 0, v: 0, drag: false, a0: 0, p0: 0 };
+  function dAng(e) { var r = dial.getBoundingClientRect(); return Math.atan2(e.clientY - r.top - r.height / 2, e.clientX - r.left - r.width / 2) * 180 / Math.PI; }
+  dial.addEventListener('pointerdown', function (e) { DL.drag = true; DL.a0 = DL.a; DL.p0 = dAng(e); dial.classList.add('drag'); dial.setPointerCapture(e.pointerId); });
+  dial.addEventListener('pointermove', function (e) { if (!DL.drag) return; var d = dAng(e) - DL.p0; d = ((d + 540) % 360) - 180; DL.a = Math.max(-170, Math.min(170, DL.a0 + d)); DL.v = 0; });
+  dial.addEventListener('pointerup', function () { DL.drag = false; dial.classList.remove('drag'); if (Math.abs(DL.a) > 40) kick(Math.abs(DL.a) / 90); });
+  dial.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { DL.a = Math.min(170, DL.a + 30); e.preventDefault(); } if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { DL.a = Math.max(-170, DL.a - 30); e.preventDefault(); } });
+  var seisC = document.getElementById('seis-c').getContext('2d'), seisLed = document.getElementById('seis-led'), seisW = document.getElementById('seis-w');
+  function thingsTick(dt) {
+    if (!DL.drag) { var acc2 = -2 * .16 * 9 * DL.v - 81 * DL.a; DL.v += acc2 * dt; DL.a += DL.v * dt; }
+    knurl.style.setProperty('--a', DL.a.toFixed(2) + 'deg'); dialR.textContent = (DL.a >= 0 ? '+' : '') + DL.a.toFixed(1) + '°'; dial.setAttribute('aria-valuenow', Math.round(DL.a));
+    if (wins.things.hidden) return;
+    seisC.fillStyle = '#08100B'; seisC.fillRect(0, 0, 224, 88);
+    seisC.fillStyle = 'rgba(0,166,81,.18)'; for (var i = 0; i < 224; i += 16) seisC.fillRect(i, 0, 1, 88); for (var j = 0; j < 88; j += 22) seisC.fillRect(0, j, 224, 1);
+    seisC.fillStyle = '#3BF08F';
+    var hst = W.hist, n = hst.length; for (var k = 0; k < n; k++) { var py = Math.round(48 - Math.max(-38, Math.min(38, hst[k] * 22))); seisC.fillRect(224 - (n - k) * 1.56, py, 2, 2); }
+    seisLed.classList.toggle('on', W.e > .3 || (T % 2 < .08));
+    seisW.textContent = weatherWord(W.e).toUpperCase() + ' · ' + W.e.toFixed(2);
+  }
+
+  /* ---------- the island is alive ----------
+     Four systems that nobody scripts, only couples:
+     SEA    the market-driven oscillator. Storms break the colony and wash new seeds ashore.
+     DRIFT  flotsam on a current around the island; whatever reaches the coast can take root.
+     COLONY a network of nodes fed by the lighthouse beam. Charge piles up and topples to neighbours
+            (a sandpile: self-organised criticality). A big avalanche sends a tremor back into the sea.
+     SWARM  fireflies born from signals that reach the lighthouse; they graze the strongest nodes.
+            Predator and prey, so the populations cycle instead of settling. */
+  var lifeC = document.getElementById('life'), lx = lifeC.getContext('2d'), glyphC = document.getElementById('glyph'), gx = glyphC.getContext('2d');
+  var DPR = 1;
+  function lifeResize() { DPR = Math.min(2, devicePixelRatio || 1); [lifeC, glyphC].forEach(function (c) { c.width = Math.round(innerWidth * DPR); c.height = Math.round(innerHeight * DPR); }); }
+  addEventListener('resize', lifeResize); lifeResize();
+  var CAM = null;
+  function camera(T, M) {
+    var a = .7 + T * .02 + M[0] * .5, ro = [Math.sin(a) * 4.4, 1.35 + M[1] * .35, Math.cos(a) * 4.4];
+    var f = [-ro[0], .05 - ro[1], -ro[2]], fl = Math.hypot(f[0], f[1], f[2]); f = [f[0] / fl, f[1] / fl, f[2] / fl];
+    var r = [-f[2], 0, f[0]], rl = Math.hypot(r[0], r[2]); r = [r[0] / rl, 0, r[2] / rl];
+    var u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]];
+    CAM = { ro: ro, f: f, r: r, u: u, H: cv.height * SCALE };
+  }
+  function proj(x, y, z) {
+    var c = CAM, px = x - c.ro[0], py = y - c.ro[1], pz = z - c.ro[2];
+    var d = px * c.f[0] + py * c.f[1] + pz * c.f[2]; if (d < .2) return null;
+    var sx = (px * c.r[0] + pz * c.r[2]) / d * 1.9 + .3, sy = (px * c.u[0] + py * c.u[1] + pz * c.u[2]) / d * 1.9;
+    return [sx * c.H + innerWidth / 2, innerHeight / 2 - sy * c.H, d];
+  }
+  var LAND = [];
+  for (var gxi = -1.5; gxi <= 1.5; gxi += .05) for (var gzi = -1.4; gzi <= 1.4; gzi += .05) { var hh = ter(gxi, gzi); if (hh > .02) LAND.push([gxi, gzi]); }
+  var LAMP = [LPX, LBH + .33, LPZ];
+  var NODES = [], PK = [], DR = [], FF = [], FX = [], nid = 0;
+  var STAT = { av: 0, avMax: 0, hist: [[], [], [], []] };
+  function alive() { return NODES.filter(function (n) { return !n.dead; }); }
+  function addNode(x, z, e, fixed) {
+    var n = { x: x, z: z, y: ter(x, z) + .015, e: e, c: Math.random() * .7, f: 0, fixed: !!fixed, dead: false, nb: [], id: ++nid, born: 1 };
+    NODES.forEach(function (m) { if (m.dead || n.nb.length >= 3 || m.nb.length >= 4) return; if (Math.hypot(m.x - x, m.z - z) < (fixed || m.fixed ? .5 : .3)) { n.nb.push(m); m.nb.push(n); } });
+    NODES.push(n); return n;
+  }
+  function kill(n) { n.dead = true; n.nb.forEach(function (m) { m.nb = m.nb.filter(function (q) { return q !== n; }); }); n.nb = []; FX.push({ x: n.x, y: n.y, z: n.z, t: 1, k: 'x' }); }
+  var bent = addNode(LPX, LPZ, 1, true);
+  for (var si = 0; si < 22; si++) { var lp0 = LAND[Math.floor(h2(si, 7) * LAND.length)]; addNode(lp0[0], lp0[1], .45 + .4 * h2(si, 3)); }
+  var LOG = document.getElementById('sys-log'), logLast = {};
+  function say(kind, txt) {
+    var now = performance.now(); if (logLast[kind] && now - logLast[kind] < 2500) return; logLast[kind] = now;
+    var d = document.createElement('div'); d.innerHTML = '<span class="t">' + fmtS.format(new Date()) + '</span>' + txt;
+    LOG.insertBefore(d, LOG.firstChild); while (LOG.children.length > 5) LOG.lastChild.remove();
+  }
+  var fmtS = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+  var wasStorm = false, gathered = 0, lastTremor = -99;
+
+  function lifeStep(T) {
+    var nodes = alive(), e = W.e;
+    // the beam feeds what it sweeps
+    for (var s = 0; s < 2; s++) {
+      var ang = T * .8 + s * Math.PI;
+      nodes.forEach(function (n) { if (n.fixed) return; var ph = Math.atan2(n.z - LPZ, n.x - LPX), d = Math.abs(((ph - ang) % (2 * Math.PI) + 3 * Math.PI) % (2 * Math.PI) - Math.PI); if (d < .14) { n.e = Math.min(1, n.e + .02); n.c += .05; n.lit = 1; } });
+    }
+    // sandpile: charge accumulates, topples to neighbours; avalanches travel the network
+    var q = [], size = 0, origin = null;
+    nodes.forEach(function (n) { n.c += .0025 * (1 + SKY.day) * (n.fixed ? 0 : 1); n.f *= .9; n.lit = (n.lit || 0) * .85; n.born *= .94; if (!n.fixed) n.e -= .0005; if (n.c >= 1) q.push(n); });
+    while (q.length && size < 400) {
+      var n = q.shift(); if (n.c < 1 || n.dead) continue;
+      n.c -= 1; n.f = 1; size++; if (!origin) origin = n;
+      if (n.nb.length) { var to = n.nb[Math.floor(Math.random() * n.nb.length)]; if (PK.length < 160) PK.push({ a: n, b: to, t: 0 }); }
+      var share = .8 / Math.max(1, n.nb.length); n.nb.forEach(function (m) { if (m.fixed) return; m.c += share; if (m.c >= 1) q.push(m); });
+    }
+    if (size) { STAT.av = size; STAT.avMax = Math.max(STAT.avMax * .999, size); }
+    if (size >= 6 && origin && FX.length < 24) { FX.push({ x: origin.x, y: origin.y, z: origin.z, t: 1, k: 'o', s: size }); say('av', 'avalanche of ' + size + ' nodes'); }
+    if (size >= 16 && T - lastTremor > 20) { lastTremor = T; kick(Math.min(2.2, .4 + size * .035)); say('avk', 'avalanche of ' + size + ' → tremor at sea'); }
+    // signals travel the links; at the lighthouse they become fireflies
+    for (var i = PK.length - 1; i >= 0; i--) { var p = PK[i]; p.t += .05; if (p.a.dead || p.b.dead) { PK.splice(i, 1); continue; }
+      if (p.t >= 1) { PK.splice(i, 1); p.b.e = Math.min(1, p.b.e + .03); if (p.b.fixed && FF.length < 120) { spawnFly(LAMP[0], LAMP[1], LAMP[2], .8); if (Math.random() < .08) say('ff', 'a signal reached the lighthouse'); } else if (Math.random() < .25 && p.b.nb.length && PK.length < 160) { var nx = p.b.nb[Math.floor(Math.random() * p.b.nb.length)]; if (nx !== p.a) PK.push({ a: p.b, b: nx, t: 0 }); } } }
+    // the sea: storms break nodes
+    if (e > .3) nodes.forEach(function (n) { if (!n.fixed && Math.random() < e * e * .01) n.e -= .35; });
+    var died = 0; nodes.forEach(function (n) { if (!n.fixed && n.e <= 0) { kill(n); died++; } });
+    if (died > 1) say('die', 'the sea took ' + died + ' nodes');
+    if (e > .45 && !wasStorm) say('storm', 'storm. the colony holds on'); wasStorm = e > .45;
+    // calm: the colony grows from its strongest nodes
+    if (e < .15 && nodes.length < 110 && Math.random() < .06) {
+      var par = nodes[Math.floor(Math.random() * nodes.length)];
+      if (par && par.e > .55) { var best = null, bd = 9; for (var t = 0; t < 12; t++) { var c = LAND[Math.floor(Math.random() * LAND.length)], dd = Math.hypot(c[0] - par.x, c[1] - par.z); if (dd > .07 && dd < .24 && dd < bd) { bd = dd; best = c; } }
+        if (best) { addNode(best[0], best[1], .32); par.e -= .2; if (Math.random() < .2) say('grow', 'the colony grew to ' + (nodes.length + 1)); } }
+    }
+    // drift: a current around the island, stronger in a storm. What reaches the coast can take root
+    if (DR.length < 140 && Math.random() < .12 + e * 1.4) { var a0 = Math.random() * 6.283, r0 = 2.1 + Math.random() * .5; DR.push({ x: Math.cos(a0) * r0, z: Math.sin(a0) * r0, l: 1 }); }
+    for (var k = DR.length - 1; k >= 0; k--) { var d = DR[k], rr = Math.hypot(d.x, d.z) || 1, sp = .003 + e * .018;
+      var cx = -d.z / rr, cz = d.x / rr, inx = -d.x / rr, inz = -d.z / rr, w = n2(d.x * 1.7 + T * .1, d.z * 1.7) - .5;
+      d.x += (cx * .8 + inx * (.35 + w)) * sp; d.z += (cz * .8 + inz * (.35 - w)) * sp; d.l -= .0015;
+      if (ter(d.x, d.z) > -.035) { DR.splice(k, 1); if (Math.random() < .35 && nodes.length < 110) { var near = null, nd = .2; LAND.forEach(function (c) { var q2 = Math.hypot(c[0] - d.x, c[1] - d.z); if (q2 < nd) { nd = q2; near = c; } }); if (near) { var nn = addNode(near[0], near[1], .3); nn.born = 1; say('seed', 'a seed washed ashore'); } } continue; }
+      if (d.l <= 0) DR.splice(k, 1); }
+    // swarm: fireflies seek the strongest nodes, keep their distance, flee the cursor and storms
+    var night = 1 - SKY.day;
+    for (var j = FF.length - 1; j >= 0; j--) { var b = FF[j];
+      var tg = null, td = .9; nodes.forEach(function (n) { if (n.fixed || n.e < .35) return; var q3 = Math.hypot(n.x - b.x, n.z - b.z); if (q3 < td) { td = q3; tg = n; } });
+      var ax = 0, ay = 0, az = 0;
+      if (gathered > 0) { ax += (LAMP[0] - b.x) * .002; az += (LAMP[2] - b.z) * .002; ay += (LAMP[1] + .05 - b.y) * .002; }
+      else if (tg) { ax += (tg.x - b.x) * .0016; az += (tg.z - b.z) * .0016; ay += (tg.y + .06 - b.y) * .002; if (td < .05) { tg.e -= .012; b.l = Math.min(2.2, b.l + .02); } }
+      else { ax += (LAMP[0] - b.x) * .0008 * (.5 + night); az += (LAMP[2] - b.z) * .0008 * (.5 + night); ay += (LAMP[1] - b.y) * .001; }
+      for (var o = 0; o < FF.length; o += 2) { var c2 = FF[o]; if (c2 === b) continue; var dx = b.x - c2.x, dz = b.z - c2.z, q4 = dx * dx + dz * dz; if (q4 < .0016 && q4 > 0) { ax += dx * .02; az += dz * .02; } }
+      if (b.sx !== undefined && fine) { var mx = lpT[0] - b.sx, my = lpT[1] - b.sy, md = Math.hypot(mx, my); if (md < 90) { var push = (90 - md) / 90 * .004; ax -= CAM.r[0] * (mx / md) * push; az -= CAM.r[2] * (mx / md) * push; ay += (my / md) * push * .6; } }
+      ax += (Math.random() - .5) * .0016 * (1 + e * 6); az += (Math.random() - .5) * .0016 * (1 + e * 6); ay += (Math.random() - .5) * .0008;
+      b.vx = (b.vx + ax) * .95; b.vy = (b.vy + ay) * .95; b.vz = (b.vz + az) * .95;
+      var vm = Math.hypot(b.vx, b.vz), mxv = .018 + e * .02; if (vm > mxv) { b.vx *= mxv / vm; b.vz *= mxv / vm; }
+      b.x += b.vx; b.y = Math.max(ter(b.x, b.z) + .03, Math.min(.75, b.y + b.vy)); b.z += b.vz;
+      b.l -= .0028 + e * .006; b.ph += .2;
+      if (b.l > 1.8 && FF.length < 120) { b.l *= .5; spawnFly(b.x, b.y, b.z, b.l); }
+      if (b.l <= 0 || Math.hypot(b.x, b.z) > 2.6) FF.splice(j, 1);
+    }
+    if (gathered > 0) gathered -= 1;
+    for (var m = FX.length - 1; m >= 0; m--) { FX[m].t -= .03; if (FX[m].t <= 0) FX.splice(m, 1); }
+  }
+  function spawnFly(x, y, z, l) { FF.push({ x: x, y: y, z: z, vx: (Math.random() - .5) * .02, vy: (Math.random() - .5) * .01, vz: (Math.random() - .5) * .02, l: l, ph: Math.random() * 6 }); }
+  for (var fi = 0; fi < 26; fi++) spawnFly(LPX + (Math.random() - .5) * .6, .3, LPZ + (Math.random() - .5) * .6, 1);
+
+  var COL = { paper: '207,203,190', green: '0,166,81', lime: '204,237,92', ink: '13,14,11', cream: '240,245,214' };
+  function lifeDraw() {
+    var c = lx; c.setTransform(DPR, 0, 0, DPR, 0, 0); c.clearRect(0, 0, innerWidth, innerHeight);
+    if (document.body.classList.contains('bare-life')) return;
+    var day = SKY.day, base = day > .5 ? COL.ink : COL.paper, nodes = alive();
+    nodes.forEach(function (n) { n.s = proj(n.x, n.y, n.z); });
+    // links: dotted, like a circuit drawn in pencil
+    c.lineWidth = 1; c.setLineDash([1, 3]); c.strokeStyle = 'rgba(' + COL.green + ',.7)'; c.beginPath();
+    nodes.forEach(function (n) { if (!n.s) return; n.nb.forEach(function (m) { if (m.id < n.id || !m.s) return; c.moveTo(n.s[0], n.s[1]); c.lineTo(m.s[0], m.s[1]); }); });
+    c.stroke(); c.setLineDash([]);
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    // drift
+    c.font = '500 10px "Geist Mono", ui-monospace, monospace';
+    DR.forEach(function (d) { var p = proj(d.x, .005, d.z); if (!p) return; c.fillStyle = 'rgba(' + base + ',' + (.18 + .3 * Math.min(1, d.l)).toFixed(2) + ')'; c.fillText('~', p[0], p[1]); });
+    // nodes: the glyph is the state
+    nodes.forEach(function (n) { if (!n.s || n.fixed) return; var p = n.s, sz = Math.max(8, Math.min(15, 40 / p[2]));
+      var g = n.e < .25 ? '·' : n.e < .5 ? ':' : n.e < .75 ? '+' : '#';
+      c.font = '500 ' + sz.toFixed(0) + 'px "Geist Mono", ui-monospace, monospace';
+      c.fillStyle = 'rgba(' + COL.ink + ',.82)'; c.fillRect(p[0] - sz * .38, p[1] - sz * .5, sz * .76, sz);
+      if (n.f > .15 || n.lit > .2) { c.fillStyle = 'rgba(' + COL.green + ',' + Math.max(n.f, n.lit * .8).toFixed(2) + ')'; c.fillText(n.f > .15 ? '@' : g, p[0], p[1]); }
+      if (n.f <= .15) { c.fillStyle = 'rgba(' + (n.c > .85 ? COL.lime : COL.paper) + ',' + (.45 + .55 * n.e).toFixed(2) + ')'; c.fillText(g, p[0], p[1]); }
+      if (n.born > .1) { c.strokeStyle = 'rgba(' + COL.green + ',' + n.born.toFixed(2) + ')'; c.strokeRect(p[0] - 7, p[1] - 7, 14, 14); }
+    });
+    // signals
+    c.fillStyle = 'rgb(' + COL.green + ')'; c.font = '600 11px "Geist Mono", ui-monospace, monospace';
+    PK.forEach(function (k) { var a = k.a.s, b = k.b.s; if (!a || !b) return; c.fillText('•', a[0] + (b[0] - a[0]) * k.t, a[1] + (b[1] - a[1]) * k.t); });
+    // swarm: at night they glow, by day they are specks of ink
+    var night = 1 - day;
+    FF.forEach(function (b) { var p = proj(b.x, b.y, b.z); if (!p) { b.sx = undefined; return; } b.sx = p[0]; b.sy = p[1];
+      var tw = .55 + .45 * Math.sin(b.ph), a = Math.min(1, b.l) * tw;
+      if (night > .3) { c.fillStyle = 'rgba(' + COL.lime + ',' + (a * .22).toFixed(2) + ')'; c.fillRect(p[0] - 3, p[1] - 3, 6, 6); c.fillStyle = 'rgba(' + COL.cream + ',' + a.toFixed(2) + ')'; c.fillRect(p[0] - 1, p[1] - 1, 2, 2); }
+      else { c.fillStyle = 'rgba(' + COL.ink + ',' + (a * .85).toFixed(2) + ')'; c.fillRect(p[0] - 1, p[1] - 1, 2, 2); }
+    });
+    // effects: rings for avalanches, a cross where a node was lost
+    FX.forEach(function (f) { var p = proj(f.x, f.y, f.z); if (!p) return;
+      if (f.k === 'o') { var r = (1 - f.t) * (14 + Math.min(f.s, 30) * 2); c.strokeStyle = 'rgba(' + COL.green + ',' + f.t.toFixed(2) + ')'; c.setLineDash([2, 3]); c.beginPath(); c.arc(p[0], p[1], r, 0, 6.283); c.stroke(); c.setLineDash([]); }
+      else { c.font = '500 12px "Geist Mono", ui-monospace, monospace'; c.fillStyle = 'rgba(' + base + ',' + f.t.toFixed(2) + ')'; c.fillText('×', p[0], p[1] - (1 - f.t) * 10); } });
+  }
+  // plant a node where you click on the island
+  addEventListener('click', function (e) {
+    var t = e.target; if (!(t === document.body || t.id === 'world' || t.classList.contains('desk'))) return; if (!CAM) return;
+    var best = null, bd = 26; LAND.forEach(function (l) { var p = proj(l[0], ter(l[0], l[1]), l[1]); if (!p) return; var d = Math.hypot(p[0] - e.clientX, p[1] - e.clientY); if (d < bd) { bd = d; best = l; } });
+    if (best) { var n = addNode(best[0], best[1], .7); n.c = .99; say('plant', 'you planted a node'); sfx('open'); }
+  });
+  // type "bentlik": the swarm comes home
+  var typed = '';
+  addEventListener('keydown', function (e) { if (e.key.length !== 1) return; typed = (typed + e.key.toLowerCase()).slice(-7); if (typed === 'bentlik') { gathered = 240; say('home', 'bentlik called. everyone came home'); } });
+
+  // render modes: the same world drawn as dither, as glyphs, or as halftone dots
+  var MODE = 'dither', pix = null, MODES = ['dither', 'glyph', 'dots'];
+  try { var mSaved = localStorage.getItem('bentlik-mode'); if (MODES.indexOf(mSaved) >= 0) MODE = mSaved; } catch (e) {}
+  function setMode(m) {
+    MODE = m; document.body.classList.toggle('m-glyph', m === 'glyph'); document.body.classList.toggle('m-dots', m === 'dots');
+    document.querySelectorAll('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.mode === m)); });
+    try { localStorage.setItem('bentlik-mode', m); } catch (e) {}
+  }
+  function cycleMode() { setMode(MODES[(MODES.indexOf(MODE) + 1) % 3]); say('mode', 'render: ' + MODE); }
+  document.querySelectorAll('[data-mode]').forEach(function (b) { b.addEventListener('click', function () { setMode(b.dataset.mode); }); });
+  setMode(MODE);
+  var RAMP = ' .·:-=+*%#@';
+  function glyphPass() {
+    if (MODE === 'dither' || !gl) return;
+    var w = cv.width, h = cv.height; if (!pix || pix.length !== w * h * 4) pix = new Uint8Array(w * h * 4);
+    gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pix);
+    var cell = MODE === 'glyph' ? Math.max(4, Math.round(11 / SCALE)) : Math.max(3, Math.round(8 / SCALE)), css = cell * SCALE;
+    var c = gx; c.setTransform(DPR, 0, 0, DPR, 0, 0); c.fillStyle = '#0D0E0B'; c.fillRect(0, 0, innerWidth, innerHeight);
+    c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '500 ' + (css + 1) + 'px "Geist Mono", ui-monospace, monospace';
+    var greens = [], paths = { p: new Path2D(), g: new Path2D() };
+    for (var cy = 0; cy < h; cy += cell) for (var cx = 0; cx < w; cx += cell) {
+      var L = 0, G = 0, nn = 0;
+      for (var yy = cy; yy < Math.min(h, cy + cell); yy += 1) for (var xx = cx; xx < Math.min(w, cx + cell); xx += 1) { var o = (yy * w + xx) * 4; L += pix[o] + pix[o + 1] + pix[o + 2]; G += pix[o + 1] - pix[o]; nn++; }
+      L = L / (nn * 765); G = G / nn; if (L < .07) continue;
+      var X = (cx + cell / 2) * SCALE, Y = innerHeight - (cy + cell / 2) * SCALE, isG = G > 50;
+      if (MODE === 'glyph') { var ch = RAMP[Math.min(RAMP.length - 1, Math.floor(L * 1.2 * RAMP.length))]; if (ch === ' ') continue; if (isG) greens.push(ch, X, Y); else { c.fillStyle = '#CFCBBE'; c.fillText(ch, X, Y); } }
+      else { if (L < .1) continue; var rad = Math.min(css * .6, Math.pow(L, .75) * css * .6); var P = isG ? paths.g : paths.p; P.moveTo(X + rad, Y); P.arc(X, Y, rad, 0, 6.283); }
+    }
+    if (MODE === 'glyph') { c.fillStyle = '#00A651'; for (var i = 0; i < greens.length; i += 3) c.fillText(greens[i], greens[i + 1], greens[i + 2]); }
+    else { c.fillStyle = '#CFCBBE'; c.fill(paths.p); c.fillStyle = '#00A651'; c.fill(paths.g); }
+  }
+  // the systems window: one sparkline per system
+  var sparks = Array.prototype.map.call(document.querySelectorAll('.sysrow canvas'), function (cc) { return cc.getContext('2d'); });
+  var svs = [0, 1, 2, 3].map(function (i) { return document.getElementById('sv-' + i); });
+  var statT = 0;
+  function sysTick(T) {
+    if (T - statT < .5) return; statT = T;
+    var nodes = alive().length - 1, vals = [W.e, nodes, FF.length, DR.length], maxs = [1, 110, 120, 140];
+    vals.forEach(function (v, i) { var hs = STAT.hist[i]; hs.push(v); if (hs.length > 60) hs.shift(); });
+    if (wins.systems.hidden) return;
+    vals.forEach(function (v, i) { svs[i].textContent = i ? String(v) : v.toFixed(2);
+      var c = sparks[i], hs = STAT.hist[i]; c.fillStyle = '#121310'; c.fillRect(0, 0, 120, 22); c.fillStyle = '#34352F'; c.fillRect(0, 21, 120, 1);
+      c.fillStyle = i === 0 && v > .42 ? '#00A651' : i === 2 ? '#CCED5C' : '#CFCBBE';
+      hs.forEach(function (y, k) { var hgt = Math.max(1, Math.round(Math.min(1, y / maxs[i]) * 20)); c.fillRect(k * 2, 21 - hgt, 1, hgt); }); });
+  }
+
   var mb = document.getElementById('menubar'), mbState = document.getElementById('mb-state');
   var wxState = document.getElementById('wx-state'), wxAmp = document.getElementById('wx-amp'), wxLast = document.getElementById('wx-last');
   var wxc = document.getElementById('wx-trace').getContext('2d');
@@ -761,7 +1291,11 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       if (prog) { if (uLp) { if (lpA > .5) { var x0 = (lp[0] - LW / 2) / SCALE, y0 = (innerHeight - lp[1] - LH / 2) / SCALE; gl.uniform4f(uLp, x0, y0, x0 + LW / SCALE, y0 + LH / SCALE); } else gl.uniform4f(uLp, -1, -1, -1, -1); }
         if (uDy) { gl.uniform1f(uDy, SKY.day); gl.uniform1f(uFg, SKY.fog); }
         gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, T); gl.uniform1f(uE, W.e); gl.uniform2f(uM, ms[0], ms[1]); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+      if (MODE !== 'dither') glyphPass();
       placeLighthouse(T, ms);
+      camera(T, ms);
+      if (!reduced) lifeStep(T);
+      lifeDraw(); thingsTick(1 / 30); sysTick(T);
       soundTick(T, W.e);
       drawFav(Math.abs(Math.cos(T * .8 - .9)) > .93);
       W.hist.push(W.x); if (W.hist.length > 144) W.hist.shift();
