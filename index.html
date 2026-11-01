@@ -239,6 +239,47 @@ body.m-glyph #glyph, body.m-dots #glyph { display: block; }
 .modes button[aria-pressed="true"] { background: var(--green); color: var(--ink); }
 .sys-help { margin: 8px 0 0; font-size: 10px; }
 
+
+/* ---------- small things, part two ---------- */
+::selection { background: var(--green); color: var(--ink); }
+/* windows switch off like a CRT */
+.win.closing { animation: crt 260ms cubic-bezier(.7, 0, .84, 0) forwards; pointer-events: none; }
+@keyframes crt { 0% { transform: none; filter: none; } 55% { transform: scale(1, .006); filter: brightness(3); } 100% { transform: scale(0, .006); filter: brightness(4); opacity: 0; } }
+/* the lighthouse beam sweeps across the desktop and catches the window frames */
+.win { transition: border-color 600ms var(--ease), box-shadow 600ms var(--ease); }
+.win.lit { border-color: rgba(0, 166, 81, .75); box-shadow: 0 0 0 1px rgba(0, 166, 81, .25), 0 0 40px -6px rgba(0, 166, 81, .35); transition-duration: 80ms; }
+/* the clock breathes */
+#clock .c { animation: blink 2s steps(1) infinite; } @keyframes blink { 50% { opacity: .25; } }
+/* menubar state light pulses faster when the sea is rough */
+.menubar .state i { animation: pulse var(--pulse, 3s) var(--ease) infinite; } @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0, 166, 81, .7); } 60% { box-shadow: 0 0 0 5px rgba(0, 166, 81, 0); } }
+/* hold Shift: the desktop becomes a drawing, every window gets its dimensions */
+body.measure .win::after { content: attr(data-dim); position: absolute; left: -1px; top: calc(100% + 6px); font: 10px/14px var(--mono); letter-spacing: .06em; color: var(--ink); background: var(--green); padding: 0 6px; white-space: pre; }
+body.measure .win::before { content: ''; position: absolute; inset: -7px; border: 1px dashed rgba(0, 166, 81, .7); pointer-events: none; }
+body.measure #world { filter: contrast(.85) brightness(.7); }
+.ruler { position: fixed; pointer-events: none; z-index: 60; background: rgba(0, 166, 81, .55); display: none; }
+body.measure .ruler { display: block; }
+.ruler.h { left: 0; right: 0; height: 1px; } .ruler.v { top: 0; bottom: 0; width: 1px; }
+.ruler-lab { position: fixed; z-index: 61; pointer-events: none; display: none; font: 10px/14px var(--mono); color: var(--green); padding: 2px 4px; }
+body.measure .ruler-lab { display: block; }
+/* ripples where you touch the sea */
+.ripple { position: fixed; z-index: 3; pointer-events: none; width: 10px; height: 10px; margin: -5px 0 0 -5px; border: 1px dashed var(--paper); border-radius: 50%; transform: scaleY(.38); animation: ripple 1400ms var(--ease) forwards; }
+.ripple.r2 { animation-delay: 160ms; opacity: 0; }
+@keyframes ripple { 0% { opacity: .9; width: 10px; height: 10px; margin: -5px 0 0 -5px; } 100% { opacity: 0; width: 180px; height: 180px; margin: -90px 0 0 -90px; } }
+/* the dogs walk across the desktop now and then */
+.walker { position: fixed; bottom: 6px; left: 0; z-index: 9; width: 32px; height: 32px; cursor: pointer; image-rendering: pixelated; }
+.walker svg { width: 100%; height: 100%; display: block; }
+.walker.flip svg { transform: scaleX(-1); }
+.walker .say { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 10px/14px var(--mono); color: var(--ink); background: var(--paper); padding: 1px 6px; opacity: 0; transition: opacity 200ms; }
+.walker .say::after { content: ''; position: absolute; left: 50%; top: 100%; margin-left: -3px; border: 3px solid transparent; border-top-color: var(--paper); }
+.walker.talk .say { opacity: 1; }
+/* scrambled hover on the menu, like a terminal resolving a word */
+.menubar .item .w { display: inline-block; }
+/* toast */
+.toast { position: fixed; left: 50%; bottom: 22px; z-index: 80; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; font: 11px/16px var(--mono); color: var(--ink); background: var(--paper); padding: 6px 10px; transition: transform 400ms var(--ease), opacity 400ms var(--ease); }
+.toast.on { transform: translate(-50%, 0); opacity: 1; }
+.toast b { color: var(--deep); }
+@media (prefers-reduced-motion: reduce) { .walker, .ripple { display: none; } .win.closing { animation: none; } }
+
 /* ---------- Things: objects on the desk ---------- */
 :root { --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 .win .bar-r { display: flex; align-items: center; gap: 2px; }
@@ -392,6 +433,9 @@ button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green)
 <canvas id="world" aria-hidden="true"></canvas>
 <canvas id="glyph" aria-hidden="true"></canvas>
 <canvas id="life" aria-hidden="true"></canvas>
+<div class="ruler h" id="rul-h"></div><div class="ruler v" id="rul-v"></div><div class="ruler-lab" id="rul-l"></div>
+<div class="toast" id="toast" role="status"></div>
+
 <nav class="sr-only" aria-label="Pages"><a href="writing/point-zero.html">Point zero: what I carried with me</a> <a href="writing/building-in-public.html">Why I’m building my trading tools in public</a> <a href="privacy.html">Privacy</a> <a href="https://x.com/Cogit08">X</a></nav>
 <div class="guide gh" aria-hidden="true"></div><div class="guide gh" aria-hidden="true"></div><div class="guide gv" aria-hidden="true"></div><div class="guide gv" aria-hidden="true"></div>
 <div id="loupe" aria-hidden="true"><i></i><i></i><i></i><i></i><span id="loupe-lab" class="mono"></span></div>
@@ -752,7 +796,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     var id = w.id.slice(2); wins[id] = w;
     if (w.dataset.w) w.style.width = w.dataset.w + 'px';
     w.addEventListener('pointerdown', function () { focusWin(w); });
-    w.querySelector('.x').addEventListener('click', function (e) { e.stopPropagation(); w.hidden = true; pickTop(); saveWins(); sfx('close'); });
+    w.querySelector('.x').addEventListener('click', function (e) { e.stopPropagation(); closeWin(w); });
     var bar = w.querySelector('.bar'), sx, sy, ox, oy, drag = false;
     bar.addEventListener('pointerdown', function (e) {
       if (small() || e.target.closest('.x')) return;
@@ -795,6 +839,12 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       w.dataset.placed = '1';
     });
   }
+  function closeWin(w) {
+    sfx('close');
+    if (reduced) { w.hidden = true; pickTop(); saveWins(); return; }
+    w.classList.add('closing');
+    setTimeout(function () { w.classList.remove('closing'); w.hidden = true; pickTop(); saveWins(); }, 260);
+  }
   function focusWin(w) { w.style.zIndex = ++zTop; document.querySelectorAll('.win.top').forEach(function (o) { o.classList.remove('top'); }); w.classList.add('top'); }
   function pickTop() { var best = null; Object.keys(wins).forEach(function (k) { var w = wins[k]; if (!w.hidden && (!best || +w.style.zIndex > +best.style.zIndex)) best = w; }); if (best) focusWin(best); }
   function openWin(id) {
@@ -809,7 +859,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     var k = e.key.toLowerCase(), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik', t: 'things', s: 'systems' };
     if (k === 'm' && document.getElementById('boot').classList.contains('done')) cycleMode();
     if (map[k] && document.getElementById('boot').classList.contains('done')) openWin(map[k]);
-    if (e.key === 'Escape' && document.getElementById('ctx').hidden) { var t = document.querySelector('.win.top'); if (t) { t.hidden = true; pickTop(); } }
+    if (e.key === 'Escape' && document.getElementById('ctx').hidden) { var t = document.querySelector('.win.top'); if (t && !t.hidden) closeWin(t); }
   });
   addEventListener('resize', function () { Object.keys(wins).forEach(function (k) { delete wins[k].dataset.placed; }); layout(); });
   layout(); focusWin(wins.about);
@@ -871,7 +921,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   /* ---------- clock ---------- */
   var clock = document.getElementById('clock');
   var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit', hour12: false });
-  function tick() { clock.textContent = fmt.format(new Date()); } tick(); setInterval(tick, 15000);
+  function tick() { var tp = fmt.format(new Date()).split(':'); clock.innerHTML = tp[0] + '<span class="c">:</span>' + tp[1]; } tick(); setInterval(tick, 15000);
 
   /* ---------- main loop ---------- */
   /* ---------- loupe: an analog window into the dithered world ---------- */
@@ -1218,7 +1268,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   addEventListener('click', function (e) {
     var t = e.target; if (!(t === document.body || t.id === 'world' || t.classList.contains('desk'))) return; if (!CAM) return;
     var best = null, bd = 26; LAND.forEach(function (l) { var p = proj(l[0], ter(l[0], l[1]), l[1]); if (!p) return; var d = Math.hypot(p[0] - e.clientX, p[1] - e.clientY); if (d < bd) { bd = d; best = l; } });
-    if (best) { var n = addNode(best[0], best[1], .7); n.c = .99; say('plant', 'you planted a node'); sfx('open'); }
+    if (best) { var n = addNode(best[0], best[1], .7); n.c = .99; say('plant', 'you planted a node'); sfx('open'); } else { ripple(e.clientX, e.clientY); W.v += (Math.random() - .5) * .6; }
   });
   // type "bentlik": the swarm comes home
   var typed = '';
@@ -1270,6 +1320,74 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       hs.forEach(function (y, k) { var hgt = Math.max(1, Math.round(Math.min(1, y / maxs[i]) * 20)); c.fillRect(k * 2, 21 - hgt, 1, hgt); }); });
   }
 
+  /* ---------- small things, part two ---------- */
+  var toastEl = document.getElementById('toast'), toastT = null;
+  function toast(html) { toastEl.innerHTML = html; toastEl.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove('on'); }, 2400); }
+  // menu words resolve from noise on hover
+  var NOISE = '░▒▓#%&*+=-:·01';
+  function scramble(el) {
+    if (reduced || el.dataset.busy) return; var txt = el.dataset.txt || (el.dataset.txt = el.textContent); el.dataset.busy = 1; var k = 0;
+    var iv = setInterval(function () { k++; el.textContent = txt.split('').map(function (ch, i) { return i < k / 2 || ch === ' ' ? ch : NOISE[Math.floor(Math.random() * NOISE.length)]; }).join(''); if (k / 2 >= txt.length) { clearInterval(iv); el.textContent = txt; delete el.dataset.busy; } }, 28);
+  }
+  document.querySelectorAll('.menubar .item[data-open]').forEach(function (b) {
+    var tn = b.firstChild; if (!tn || tn.nodeType !== 3) return; var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = tn.textContent.trim(); b.replaceChild(sp, tn); b.insertBefore(document.createTextNode(''), sp.nextSibling);
+    b.addEventListener('pointerenter', function () { scramble(sp); });
+  });
+  var stateEl = document.getElementById('mb-state'), lastState = 'calm';
+  function stateWord(word) { if (word === lastState) return; lastState = word; stateEl.dataset.txt = word; stateEl.textContent = word; scramble(stateEl); document.documentElement.style.setProperty('--pulse', word === 'calm' ? '3s' : word === 'ripple' ? '1.8s' : word === 'swell' ? '1s' : '.45s'); }
+  // hold Shift: measure the desktop
+  var rh = document.getElementById('rul-h'), rv = document.getElementById('rul-v'), rl = document.getElementById('rul-l'), measuring = false;
+  function measure(on) {
+    if (on === measuring || small()) return; measuring = on; document.body.classList.toggle('measure', on);
+    if (on) Object.keys(wins).forEach(function (k) { var w = wins[k]; w.dataset.dim = w.offsetWidth + ' × ' + w.offsetHeight + '   @ ' + w.offsetLeft + ',' + w.offsetTop; });
+  }
+  addEventListener('keydown', function (e) { if (e.key === 'Shift') measure(true); });
+  addEventListener('keyup', function (e) { if (e.key === 'Shift') measure(false); });
+  addEventListener('blur', function () { measure(false); });
+  addEventListener('pointermove', function (e) { if (!measuring) return; rh.style.top = e.clientY + 'px'; rv.style.left = e.clientX + 'px'; rl.style.left = (e.clientX + 8) + 'px'; rl.style.top = (e.clientY + 6) + 'px'; rl.textContent = 'x ' + e.clientX + '  y ' + e.clientY; });
+  // ripples where you touch the sea (the island takes a node instead)
+  function ripple(x, y) { if (reduced) return; ['', ' r2'].forEach(function (c) { var r = document.createElement('i'); r.className = 'ripple' + c; r.style.left = x + 'px'; r.style.top = y + 'px'; document.body.appendChild(r); setTimeout(function () { r.remove(); }, 1700); }); }
+  // the dial clicks as you turn it
+  var lastDet = 0;
+  function dialTick() { var det = Math.round(DL.a / 10); if (det !== lastDet) { lastDet = det; if (AC && soundOn) { var o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime; o.type = 'square'; o.frequency.value = 2400; g.gain.setValueAtTime(.012, t); g.gain.exponentialRampToValueAtTime(.0001, t + .015); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + .02); } } }
+  // the beam sweeps across the desktop and catches the window frames
+  function beamSweep(T) {
+    if (!CAM || small()) return;
+    var hits = [];
+    for (var s2 = 0; s2 < 2; s2++) { var ang = T * .8 + s2 * Math.PI, p2 = proj(LAMP[0] + Math.cos(ang) * 5, LAMP[1] - .25, LAMP[2] + Math.sin(ang) * 5); if (p2) hits.push([0, p2[0]]); }
+    Object.keys(wins).forEach(function (k) { var w = wins[k]; if (w.hidden) return; var l = w.offsetLeft, r = l + w.offsetWidth, on = false;
+      hits.forEach(function (h) { if (h[1] > l - 20 && h[1] < r + 20) on = true; });
+      w.classList.toggle('lit', on); });
+  }
+  // the dogs walk across the desktop now and then. Badrik runs, Sonechka strolls. Click one.
+  var DOGPX = { a: ['#.....#.', '##...##.', '.#####..', '.#.#.#..', '.#####..', '..#.#...', '.#####..', '.#...#..'], b: ['#.....#.', '##...##.', '.#####..', '.#.#.#..', '.#####..', '..#.#...', '.#####..', '..#.#...'] };
+  function dogSvg(frame, fill) { return '<svg viewBox="0 0 8 8" aria-hidden="true">' + DOGPX[frame].map(function (row, y) { return row.split('').map(function (ch, x) { return ch === '#' ? '<rect x="' + x + '" y="' + y + '" width="1" height="1" fill="' + fill + '"/>' : ''; }).join(''); }).join('') + '</svg>'; }
+  var WHO = [
+    { name: 'Badrik', fill: '#E4E1D7', speed: 2.6, lines: ['wuf!', 'zoomies', 'catch me', 'WUF WUF'] },
+    { name: 'Sonechka', fill: '#5E5D58', speed: .8, lines: ['…', 'calm down', 'zzz', 'hm.'] }
+  ];
+  function walk() {
+    if (reduced || small() || document.hidden) { setTimeout(walk, 30000); return; }
+    var d = WHO[Math.random() < .55 ? 0 : 1], dir = Math.random() < .5 ? 1 : -1, x = dir > 0 ? -40 : innerWidth + 8, el = document.createElement('button');
+    el.type = 'button'; el.className = 'walker' + (dir < 0 ? ' flip' : ''); el.setAttribute('aria-label', d.name); el.innerHTML = dogSvg('a', d.fill) + '<span class="say"></span>';
+    document.body.appendChild(el); var f = 0, t0 = 0, pause = 0, bub = el.querySelector('.say');
+    el.addEventListener('click', function () { bub.textContent = d.lines[Math.floor(Math.random() * d.lines.length)]; el.classList.add('talk'); pause = 50; setTimeout(function () { el.classList.remove('talk'); }, 1400);
+      if (d.name === 'Badrik') { kick(1.2); bub.textContent = 'WUF!'; } else { W.v *= .3; } say('dog', d.name + (d.name === 'Badrik' ? ' barked. the sea answered' : ' sat down. the sea calmed')); });
+    (function step() {
+      if (pause > 0) pause--; else { x += dir * d.speed * (d.name === 'Badrik' ? (1 + .6 * Math.sin(t0 * .3)) : 1); t0++; }
+      if (t0 % (d.name === 'Badrik' ? 4 : 9) === 0) { f ^= 1; el.querySelector('svg').outerHTML = dogSvg(f ? 'b' : 'a', d.fill); }
+      el.style.transform = 'translateX(' + x.toFixed(1) + 'px)' + (d.name === 'Badrik' ? ' translateY(' + (-Math.abs(Math.sin(t0 * .35)) * 4).toFixed(1) + 'px)' : '');
+      if (x < -60 || x > innerWidth + 60) { el.remove(); setTimeout(walk, 40000 + Math.random() * 50000); return; }
+      requestAnimationFrame(step);
+    })();
+  }
+  setTimeout(walk, 12000);
+  // copying text: a polite note
+  document.addEventListener('copy', function () { toast('copied. <b>credit @Cogit08</b> if you post it'); });
+  // the konami code: the whole world turns to glyphs for a while, the swarm doubles
+  var KON = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'], kp = 0;
+  addEventListener('keydown', function (e) { kp = e.key === KON[kp] ? kp + 1 : (e.key === KON[0] ? 1 : 0); if (kp === KON.length) { kp = 0; var prev = MODE; setMode('glyph'); for (var i = 0; i < 40; i++) spawnFly(LPX + (Math.random() - .5), .3, LPZ + (Math.random() - .5), 1.2); kick(2); toast('<b>cheat accepted.</b> 30 lives. no, wait. 40 fireflies'); setTimeout(function () { setMode(prev); }, 12000); } });
+
   var mb = document.getElementById('menubar'), mbState = document.getElementById('mb-state');
   var wxState = document.getElementById('wx-state'), wxAmp = document.getElementById('wx-amp'), wxLast = document.getElementById('wx-last');
   var wxc = document.getElementById('wx-trace').getContext('2d');
@@ -1295,12 +1413,12 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       placeLighthouse(T, ms);
       camera(T, ms);
       if (!reduced) lifeStep(T);
-      lifeDraw(); thingsTick(1 / 30); sysTick(T);
+      lifeDraw(); thingsTick(1 / 30); sysTick(T); dialTick(); beamSweep(T);
       soundTick(T, W.e);
       drawFav(Math.abs(Math.cos(T * .8 - .9)) > .93);
       W.hist.push(W.x); if (W.hist.length > 144) W.hist.shift();
       var word = weatherWord(W.e);
-      titleWeather(word); mbState.textContent = word; wxState.textContent = word; wxAmp.textContent = W.e.toFixed(2);
+      titleWeather(word); stateWord(word); wxState.textContent = word; wxAmp.textContent = W.e.toFixed(2);
       if (W.last) wxLast.textContent = 'last tremor ' + fmt.format(W.last);
       // instrument: 1-bit trace
       wxc.fillStyle = '#0D0E0B'; wxc.fillRect(0, 0, 288, 90);
