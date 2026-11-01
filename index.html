@@ -158,6 +158,57 @@ kbd { font: 500 10px/14px var(--mono); padding: 0 4px; border: 1px solid var(--l
 #boot .skip { color: var(--dim); }
 
 /* small screens: windows stack and scroll over the wallpaper */
+
+/* loupe and guides: the design-tool frame over the world */
+.guide { position: fixed; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 400ms var(--ease); }
+.gh { left: 0; right: 0; top: 0; height: 0; border-top: 1px dashed rgba(228, 225, 215, .16); }
+.gv { top: 0; bottom: 0; left: 0; width: 0; border-left: 1px dashed rgba(228, 225, 215, .16); }
+#loupe { position: fixed; left: 0; top: 0; width: 260px; height: 170px; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 400ms var(--ease); outline: 1px solid rgba(228, 225, 215, .5); }
+#loupe i { position: absolute; width: 6px; height: 6px; background: var(--text); }
+#loupe i:nth-child(1) { left: -3px; top: -3px; } #loupe i:nth-child(2) { right: -3px; top: -3px; }
+#loupe i:nth-child(3) { left: -3px; bottom: -3px; } #loupe i:nth-child(4) { right: -3px; bottom: -3px; }
+#loupe span { position: absolute; left: -1px; top: calc(100% + 6px); white-space: pre; color: var(--ink); background: var(--text); padding: 1px 6px; font-size: 10px; letter-spacing: .06em; }
+/* a line set in serif on the wallpaper, like a caption on a print */
+@font-face { font-family: 'Newsreader'; src: url('fonts/Newsreader.woff2') format('woff2'); font-weight: 200 800; font-display: swap; }
+.motto { position: fixed; right: max(28px, env(safe-area-inset-right, 0px)); bottom: 28px; z-index: 1; margin: 0; pointer-events: none;
+  font: 350 clamp(28px, 3.4vw, 52px)/1 'Newsreader', Georgia, serif; letter-spacing: -.03em; color: #E9F2CF; text-align: left; opacity: .92; }
+/* idle: the windows step back */
+.icons, .win, .motto { transition: opacity 1200ms var(--ease); }
+body.idle .win, body.idle .icons, body.idle .menubar .item { opacity: .06; }
+body.idle .motto { opacity: 1; }
+@media (max-width: 720px) { .motto { display: none; } }
+
+
+/* crosshair over the world, normal cursor over the system */
+body { cursor: crosshair; }
+.win, .menubar, .icons, #ctx, #boot { cursor: default; }
+button, a, .icon, .photo, .win .bar { cursor: pointer; }
+.win .bar { cursor: grab; }
+/* window trails */
+.trail { position: fixed; pointer-events: none; border: 1px solid rgba(0, 166, 81, .55); animation: trail 700ms var(--ease) forwards; }
+@keyframes trail { from { opacity: .7; } to { opacity: 0; } }
+/* context menu */
+.ctx { position: fixed; z-index: 1500; min-width: 200px; padding: 4px; background: var(--win); border: 1px solid #4A4B44; box-shadow: 6px 6px 0 rgba(0,0,0,.45); }
+.ctx button { display: block; width: 100%; text-align: left; padding: 6px 10px; border-radius: 3px; font-size: 13px; }
+.ctx button:hover, .ctx button:focus-visible { background: var(--green); color: var(--ink); }
+.ctx hr { border: 0; border-top: 1px solid var(--line); margin: 4px 2px; }
+body.bare .win { opacity: 0 !important; pointer-events: none; }
+/* folder fans */
+.icon { position: relative; }
+.icons:hover, .icons:focus-within { z-index: 800; }
+.fan { position: absolute; left: 64px; top: 0; width: 0; height: 0; pointer-events: none; z-index: 5; }
+.fan .card { position: absolute; left: 0; top: 0; width: 132px; min-height: 84px; padding: 8px; background: var(--paper); color: var(--ink); border: 1px solid var(--ink);
+  box-shadow: 4px 4px 0 rgba(0,0,0,.5); display: grid; align-content: space-between; gap: 6px; text-align: left; font-size: 12px; line-height: 15px;
+  opacity: 0; transform: translate(-30px, 0) rotate(0deg) scale(.6); transform-origin: 0 50%; transition: transform 420ms var(--ease), opacity 260ms var(--ease); }
+.fan .card b { font-weight: 600; }
+.fan .card .g { color: var(--green-ink, #007A3B); }
+.fan .card img { width: 100%; height: 92px; object-fit: cover; filter: grayscale(1) contrast(1.5) brightness(.95); image-rendering: pixelated; display: block; }
+.icon:hover .fan .card, .icon:focus-visible .fan .card { opacity: 1; }
+.icon:hover .fan .c0, .icon:focus-visible .fan .c0 { transform: translate(14px, -26px) rotate(-7deg); }
+.icon:hover .fan .c1, .icon:focus-visible .fan .c1 { transform: translate(74px, -6px) rotate(4deg); transition-delay: 40ms; }
+.icon:hover .fan .c2, .icon:focus-visible .fan .c2 { transform: translate(134px, -30px) rotate(10deg); transition-delay: 80ms; }
+.fan .card:has(img) { width: 92px; padding: 4px; min-height: 0; }
+
 @media (max-width: 720px) {
   body { overflow: auto; }
   .menubar .item kbd, .menubar .hide-sm { display: none; }
@@ -179,7 +230,18 @@ kbd { font: 500 10px/14px var(--mono); padding: 0 4px; border: 1px solid var(--l
 
 <canvas id="world" aria-hidden="true"></canvas>
 <nav class="sr-only" aria-label="Pages"><a href="writing/point-zero.html">Point zero: what I carried with me</a> <a href="writing/building-in-public.html">Why I’m building my trading tools in public</a> <a href="privacy.html">Privacy</a> <a href="https://x.com/Cogit08">X</a></nav>
-<button id="lh-hit" type="button" aria-label="Open Bentlik"><span class="mono">bentlik</span></button>
+<div class="guide gh" aria-hidden="true"></div><div class="guide gh" aria-hidden="true"></div><div class="guide gv" aria-hidden="true"></div><div class="guide gv" aria-hidden="true"></div>
+<div id="loupe" aria-hidden="true"><i></i><i></i><i></i><i></i><span id="loupe-lab" class="mono"></span></div>
+<p class="motto" aria-hidden="true">Every impulse<br>returns to equilibrium.</p>
+<div id="ctx" class="ctx" role="menu" hidden>
+  <button type="button" role="menuitem" data-act="kick">Send an impulse</button>
+  <button type="button" role="menuitem" data-act="toggle">Hide windows</button>
+  <button type="button" role="menuitem" data-act="notebook">Open the notebook</button>
+  <hr>
+  <button type="button" role="menuitem" data-act="bentlik">About this lighthouse</button>
+  <button type="button" role="menuitem" data-act="copy">Copy link</button>
+</div>
+<button id="lh-hit" type="button" title="Shift-click to send an impulse" aria-label="Open Bentlik"><span class="mono">bentlik</span></button>
 
 <header class="menubar" id="menubar">
   <div class="left">
@@ -192,6 +254,7 @@ kbd { font: 500 10px/14px var(--mono); padding: 0 4px; border: 1px solid var(--l
   </div>
   <div class="right">
     <span class="mono state"><i></i><span id="mb-state">calm</span></span>
+    <button class="mono item hide-sm" id="sound" type="button" aria-pressed="false">sound off</button>
     <span class="mono hide-sm">DXB <span id="clock">--:--</span></span>
   </div>
 </header>
@@ -313,10 +376,10 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   /* ---------- the world: raymarched island, 8x8 Bayer dither, two tones and one green ---------- */
   var cv = document.getElementById('world');
   var gl = cv.getContext('webgl', { antialias: false, preserveDrawingBuffer: false });
-  var SCALE = 3, prog, uR, uT, uE, uM;
+  var SCALE = 2, prog, uR, uT, uE, uM, uLp, uDy, uFg, slowFrames = 0, coarse = false;
   var FS = [
     'precision highp float;',
-    'uniform vec2 R; uniform float T; uniform float E; uniform vec2 M;',
+    'uniform vec2 R; uniform float T; uniform float E; uniform vec2 M; uniform vec4 Lp; uniform float Dy; uniform float Fg;',
     'const vec2 LP = vec2(.38,-.12); const float TH = .36;',
     'float h2(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h2(i),h2(i+vec2(1,0)),f.x),mix(h2(i+vec2(0,1)),h2(i+vec2(1,1)),f.x),f.y);}',
@@ -339,12 +402,12 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     ' vec3 L=normalize(vec3(.35,.75,.55)); float lum=0., g=0.;',
     ' if(kind==1){vec3 p=ro+rd*hitT; vec2 e=vec2(.01,0.);',
     '  vec3 n=normalize(vec3(ter(p.xz-e.xy)-ter(p.xz+e.xy),2.*e.x,ter(p.xz-e.yx)-ter(p.xz+e.yx)));',
-    '  float df=max(dot(n,L),0.); lum=.02+.95*pow(df,1.8)+(fbm(p.xz*24.)-.5)*.22; lum*=mix(1.,.75,E);}',
+    '  float df=max(dot(n,L),0.); lum=.02+.95*pow(df,1.8)+(fbm(p.xz*24.)-.5)*.22; lum*=mix(1.,.75,E)*(.82+.18*Dy);}',
     ' else if(kind==2){vec3 p=ro+rd*hitT; vec2 e=vec2(.02,0.);',
     '  vec3 n=normalize(vec3(wat(p.xz-e.xy)-wat(p.xz+e.xy),2.*e.x,wat(p.xz-e.yx)-wat(p.xz+e.yx)));',
     '  float fr=pow(1.-max(dot(-rd,n),0.),3.); float sp=pow(max(dot(reflect(rd,n),L),0.),36.);',
     '  float am=.01+E*.06; lum=.005+.05*fr+sp*(1.-.6*E)*.7+smoothstep(.6,1.,wat(p.xz)/(am*2.2))*(.12+.12*E); lum+=smoothstep(.03,0.,abs(ter(p.xz)-p.y))*.5; }',
-    ' else {float y=max(rd.y,0.); lum=.01+.05*(1.-y);'+'\n'+' if(h2(floor(fc*.5))>.996-.0*E) lum+=.8*(1.-E);',
+    ' else {float y=max(rd.y,0.); lum=.01+(.05+.2*Dy)*(1.-y*.7);'+'\n'+' if(h2(floor(fc*.5))>.996) lum+=.8*(1.-E)*(1.-Dy);',
     '  float c=fbm(rd.xz/(rd.y+.12)*1.1+vec2(T*.015*(1.+E*8.),0.)); lum+=smoothstep(.55-.3*E,.95,c)*(.12+.18*E);}',
     ' float bh=ter(LP); vec2 o2=ro.xz-LP; vec2 d2=rd.xz; float tt=-dot(o2,d2)/dot(d2,d2);',
     ' float dist=length(o2+d2*tt); float ty=ro.y+rd.y*tt;',
@@ -357,10 +420,19 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     '  if(sc>0.&&tc>0.&&(hitT<0.||sc<hitT)){float q=length(w0+rd*sc-D*tc); float wd=.006+tc*.02;',
     '   g+=exp(-q*q/(wd*wd))*exp(-tc*.3)*.6;}}',
     ' { vec3 w0=ro-lamp; float sc=max(dot(lamp-ro,rd),0.); float q=length(w0+rd*sc); if(hitT<0.||sc<hitT) g+=exp(-q*q*4000.)*1.4; }',
-    ' if(E>.25){float col=floor(fc.x/2.); float r=h2(vec2(col,floor(fc.y/7.+T*26.+h2(vec2(col,1.))*40.))); if(r>1.-(E-.25)*.08) lum+=.55;}'+'\n'+' if(E>.6 && h2(vec2(floor(T*7.),3.))>.95) lum+=.18;',
+    ' if(E>.25){float col=floor(fc.x/2.); float r=h2(vec2(col,floor(fc.y/7.+T*26.+h2(vec2(col,1.))*40.))); if(r>1.-(E-.25)*.05) lum+=.55;}'+'\n'+' if(E>.6 && h2(vec2(floor(T*7.),3.))>.95) lum+=.18;',
+    ' if(kind==2) lum+=.06*Dy; if(Fg>0.){float fd=hitT<0.?1.:1.-exp(-hitT*.45); lum=mix(lum,.32,Fg*fd*.8);}',
     ' lum=clamp(lum,0.,1.); float th=B8(gl_FragCoord.xy)+.004;',
     ' vec3 INK=vec3(.051,.055,.043), PAP=vec3(.812,.796,.745), GR=vec3(0.,.651,.318);',
-    ' vec3 col=lum>th?PAP:INK; if(g>th) col=GR;',
+    ' vec3 LIME=vec3(.80,.93,.36), CREAM=vec3(.94,.96,.84), DEEP=vec3(.03,.16,.08);',
+    ' float gr=(h2(gl_FragCoord.xy+fract(T*7.)*91.)-.5);',
+    ' bool inL=gl_FragCoord.x>Lp.x&&gl_FragCoord.x<Lp.z&&gl_FragCoord.y>Lp.y&&gl_FragCoord.y<Lp.w;',
+    ' vec3 col;',
+    ' if(inL){float l=clamp(lum*1.05+g*.6+gr*.07,0.,1.);',
+    '  col=l<.35?mix(INK,DEEP,l/.35):l<.7?mix(DEEP,LIME,(l-.35)/.35):mix(LIME,CREAM,(l-.7)/.3);}',
+    ' else {col=lum>th?PAP:INK; float gg=clamp(g,0.,1.4);',
+    '  vec3 gc=mix(GR,mix(LIME,CREAM,clamp(g-1.,0.,1.)),clamp(g*.8,0.,1.));',
+    '  col=mix(col,gc,clamp(gg*.8,0.,.92)); col+=gr*.05*smoothstep(.02,.3,gg);}',
     ' gl_FragColor=vec4(col,1.);',
     '}'
   ].join('\n');
@@ -372,11 +444,11 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
       var loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-      uR = gl.getUniformLocation(prog, 'R'); uT = gl.getUniformLocation(prog, 'T'); uE = gl.getUniformLocation(prog, 'E'); uM = gl.getUniformLocation(prog, 'M');
+      uDy = gl.getUniformLocation(prog, 'Dy'); uFg = gl.getUniformLocation(prog, 'Fg'); uLp = gl.getUniformLocation(prog, 'Lp'); uR = gl.getUniformLocation(prog, 'R'); uT = gl.getUniformLocation(prog, 'T'); uE = gl.getUniformLocation(prog, 'E'); uM = gl.getUniformLocation(prog, 'M');
     }
   }
   function resize() {
-    SCALE = innerWidth > 1600 ? 4 : 3;
+    SCALE = coarse ? 3 : (innerWidth > 2200 ? 3 : 2);
     cv.width = Math.ceil(innerWidth / SCALE); cv.height = Math.ceil(innerHeight / SCALE);
     if (gl) gl.viewport(0, 0, cv.width, cv.height);
   }
@@ -402,7 +474,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     var H = cv.height * SCALE;
     hit.style.left = (x * H + innerWidth / 2) + 'px'; hit.style.top = (innerHeight / 2 - y * H + 34) + 'px';
   }
-  hit.addEventListener('click', function () { openWin('bentlik'); });
+  hit.addEventListener('click', function (e) { if (e.shiftKey) { kick(2.6); return; } openWin('bentlik'); });
 
   var mouse = [0, 0], ms = [0, 0];
   addEventListener('pointermove', function (e) { mouse = [(e.clientX / innerWidth - .5) * 2, (e.clientY / innerHeight - .5) * -2]; });
@@ -413,24 +485,40 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     var id = w.id.slice(2); wins[id] = w;
     if (w.dataset.w) w.style.width = w.dataset.w + 'px';
     w.addEventListener('pointerdown', function () { focusWin(w); });
-    w.querySelector('.x').addEventListener('click', function (e) { e.stopPropagation(); w.hidden = true; pickTop(); });
+    w.querySelector('.x').addEventListener('click', function (e) { e.stopPropagation(); w.hidden = true; pickTop(); saveWins(); sfx('close'); });
     var bar = w.querySelector('.bar'), sx, sy, ox, oy, drag = false;
     bar.addEventListener('pointerdown', function (e) {
       if (small() || e.target.closest('.x')) return;
       drag = true; w.classList.add('drag'); sx = e.clientX; sy = e.clientY; ox = w.offsetLeft; oy = w.offsetTop; bar.setPointerCapture(e.pointerId);
     });
+    var lastTrail = 0;
     bar.addEventListener('pointermove', function (e) {
       if (!drag) return;
+      if (!reduced && performance.now() - lastTrail > 45) { lastTrail = performance.now(); trail(w); }
       var nx = Math.max(-w.offsetWidth + 80, Math.min(innerWidth - 80, ox + e.clientX - sx));
       var ny = Math.max(30, Math.min(innerHeight - 40, oy + e.clientY - sy));
       w.style.left = nx + 'px'; w.style.top = ny + 'px';
     });
-    bar.addEventListener('pointerup', function () { drag = false; w.classList.remove('drag'); });
+    bar.addEventListener('pointerup', function () { if (drag) saveWins(); drag = false; w.classList.remove('drag'); });
   });
+  var saved = {}; try { saved = JSON.parse(localStorage.getItem('bentlik-wins') || '{}') || {}; } catch (e) {}
+  Object.keys(saved).forEach(function (k) { if (wins[k] && typeof saved[k].open === 'boolean') wins[k].hidden = !saved[k].open; });
+  function saveWins() {
+    if (small()) return;
+    var o = {}; Object.keys(wins).forEach(function (k) { var w = wins[k]; o[k] = { open: !w.hidden }; if (w.dataset.placed) { o[k].x = w.offsetLeft; o[k].y = w.offsetTop; } });
+    try { localStorage.setItem('bentlik-wins', JSON.stringify(o)); } catch (e) {}
+  }
+  function trail(w) {
+    var t = document.createElement('div'); t.className = 'trail';
+    t.style.left = w.offsetLeft + 'px'; t.style.top = w.offsetTop + 'px'; t.style.width = w.offsetWidth + 'px'; t.style.height = w.offsetHeight + 'px'; t.style.zIndex = +w.style.zIndex - 1;
+    document.body.appendChild(t); setTimeout(function () { t.remove(); }, 700);
+  }
   function layout() {
     if (small()) return;
     Object.keys(wins).forEach(function (k) {
       var w = wins[k]; if (w.dataset.placed) return;
+      var sv = saved[k];
+      if (sv && typeof sv.x === 'number' && sv.x < innerWidth - 80 && sv.y < innerHeight - 40) { w.style.left = sv.x + 'px'; w.style.top = sv.y + 'px'; if (w.dataset.h) w.style.maxHeight = Math.round(innerHeight * parseFloat(w.dataset.h)) + 'px'; w.dataset.placed = '1'; return; }
       var ww = Math.min(parseFloat(w.dataset.w || 360), innerWidth - 32);
       var x = Math.round(Math.min(innerWidth - ww - 16, Math.max(110, innerWidth * parseFloat(w.dataset.x))));
       var y = Math.round(Math.max(44, innerHeight * parseFloat(w.dataset.y)));
@@ -445,7 +533,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   function openWin(id) {
     var w = wins[id]; if (!w) return;
     var was = w.hidden; w.hidden = false; layout(); focusWin(w);
-    if (was) { w.classList.remove('opening'); void w.offsetWidth; w.classList.add('opening'); }
+    if (was) { w.classList.remove('opening'); void w.offsetWidth; w.classList.add('opening'); sfx('open'); saveWins(); }
     if (small()) w.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
   }
   document.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { openWin(b.dataset.open); }); });
@@ -453,7 +541,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     if (e.metaKey || e.ctrlKey || e.altKey || /input|textarea/i.test(e.target.tagName)) return;
     var k = e.key.toLowerCase(), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik' };
     if (map[k] && document.getElementById('boot').classList.contains('done')) openWin(map[k]);
-    if (e.key === 'Escape') { var t = document.querySelector('.win.top'); if (t) { t.hidden = true; pickTop(); } }
+    if (e.key === 'Escape' && document.getElementById('ctx').hidden) { var t = document.querySelector('.win.top'); if (t) { t.hidden = true; pickTop(); } }
   });
   addEventListener('resize', function () { Object.keys(wins).forEach(function (k) { delete wins[k].dataset.placed; }); layout(); });
   layout(); focusWin(wins.about);
@@ -517,6 +605,141 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   function tick() { clock.textContent = fmt.format(new Date()); } tick(); setInterval(tick, 15000);
 
   /* ---------- main loop ---------- */
+  /* ---------- loupe: an analog window into the dithered world ---------- */
+  var LW = 260, LH = 170, lp = [innerWidth * .7, innerHeight * .45], lpT = lp.slice(), lpOn = false, lpA = 0;
+  var lpEl = document.getElementById('loupe'), lpLab = document.getElementById('loupe-lab'), guides = document.querySelectorAll('.guide');
+  var fine = matchMedia('(pointer: fine)').matches;
+  addEventListener('pointermove', function (e) {
+    lpT = [e.clientX, e.clientY];
+    var t = e.target;
+    lpOn = fine && !reduced && (t === document.body || t.id === 'world' || t.classList.contains('desk') || t.id === 'lh-hit');
+  });
+  addEventListener('pointerleave', function () { lpOn = false; });
+  document.addEventListener('mouseleave', function () { lpOn = false; });
+  function placeLoupe() {
+    var on = lpA > .5, x = Math.round(lp[0] - LW / 2), y = Math.round(lp[1] - LH / 2);
+    lpEl.style.opacity = on ? 1 : 0;
+    lpEl.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    guides[0].style.transform = 'translateY(' + y + 'px)'; guides[1].style.transform = 'translateY(' + (y + LH) + 'px)';
+    guides[2].style.transform = 'translateX(' + x + 'px)'; guides[3].style.transform = 'translateX(' + (x + LW) + 'px)';
+    guides.forEach(function (g) { g.style.opacity = on ? 1 : 0; });
+    if (on) lpLab.textContent = 'ANALOG  x' + String(Math.round(lp[0])).padStart(4, '0') + ' y' + String(Math.round(lp[1])).padStart(4, '0') + '  ' + LW + '×' + LH;
+  }
+
+  /* ---------- time of day in Dubai: dawn fog, day sky, night stars (try ?hour=6.5) ---------- */
+  var SKY = { day: 0, fog: 0 }, hourOverride = null;
+  try { var hq = new URLSearchParams(location.search).get('hour'); if (hq !== null && hq !== '') hourOverride = parseFloat(hq); } catch (e) {}
+  var hourFmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', hour: 'numeric', minute: 'numeric', hour12: false });
+  function sstep(a, b, x) { var t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
+  function updateSky() {
+    var h = hourOverride;
+    if (h === null || isNaN(h)) { var pp = hourFmt.format(new Date()).split(':'); h = (+pp[0]) + (+pp[1]) / 60; }
+    SKY.day = sstep(5.5, 8, h) * (1 - sstep(17.5, 19.5, h));
+    SKY.fog = Math.max(0, 1 - Math.abs(h - 6.8) / 1.4);
+    SKY.word = h < 5 || h >= 20 ? 'night' : h < 8 ? 'dawn' : h < 17.5 ? 'day' : 'dusk';
+  }
+  updateSky(); setInterval(updateSky, 60000);
+
+  /* ---------- favicon: a tiny lighthouse that blinks with the beam ---------- */
+  var fav = document.querySelector('link[rel="icon"]'), fc = document.createElement('canvas'); fc.width = fc.height = 32;
+  var fx = fc.getContext('2d'), favLit = null;
+  function drawFav(lit) {
+    if (lit === favLit) return; favLit = lit;
+    fx.fillStyle = '#0D0E0B'; fx.fillRect(0, 0, 32, 32);
+    fx.fillStyle = '#CFCBBE'; fx.fillRect(13, 12, 6, 16); fx.fillStyle = '#0D0E0B'; fx.fillRect(13, 17, 6, 2); fx.fillRect(13, 23, 6, 2);
+    fx.fillStyle = '#CFCBBE'; fx.fillRect(4, 28, 24, 2);
+    fx.fillStyle = lit ? '#00A651' : '#34352F'; fx.fillRect(12, 6, 8, 6);
+    if (lit) { fx.fillStyle = 'rgba(0,166,81,.55)'; fx.fillRect(20, 7, 12, 3); fx.fillRect(0, 7, 12, 3); }
+    try { fav.href = fc.toDataURL('image/png'); } catch (e) {}
+  }
+
+  /* ---------- sound: the sea, wind in a storm, a click for windows. Off until asked. ---------- */
+  var AC = null, seaGain, seaFilt, soundOn = false, sBtn = document.getElementById('sound');
+  function startSound() {
+    var Ctx = window.AudioContext || window.webkitAudioContext; if (!Ctx) return false;
+    AC = new Ctx();
+    var len = AC.sampleRate * 4, buf = AC.createBuffer(1, len, AC.sampleRate), d = buf.getChannelData(0), last = 0;
+    for (var i = 0; i < len; i++) { var wn = Math.random() * 2 - 1; last = (last + .02 * wn) / 1.02; d[i] = last * 3.5; }
+    var src = AC.createBufferSource(); src.buffer = buf; src.loop = true;
+    seaFilt = AC.createBiquadFilter(); seaFilt.type = 'lowpass'; seaFilt.frequency.value = 420;
+    seaGain = AC.createGain(); seaGain.gain.value = 0;
+    src.connect(seaFilt); seaFilt.connect(seaGain); seaGain.connect(AC.destination); src.start();
+    return true;
+  }
+  function soundTick(T, e) {
+    if (!AC || !soundOn) return;
+    var swell = .5 + .5 * Math.sin(T * .45) * Math.sin(T * .17 + 1);
+    seaGain.gain.setTargetAtTime(.05 + .07 * swell + .16 * e, AC.currentTime, .3);
+    seaFilt.frequency.setTargetAtTime(320 + 260 * swell + 2400 * e, AC.currentTime, .3);
+  }
+  function sfx(kind) {
+    if (!AC || !soundOn) return;
+    var o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime;
+    o.type = 'square'; o.frequency.setValueAtTime(kind === 'open' ? 1320 : 660, t); o.frequency.exponentialRampToValueAtTime(kind === 'open' ? 1760 : 440, t + .04);
+    g.gain.setValueAtTime(.025, t); g.gain.exponentialRampToValueAtTime(.0001, t + .06);
+    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + .07);
+  }
+  sBtn.addEventListener('click', function () {
+    if (!AC && !startSound()) return;
+    soundOn = !soundOn;
+    if (soundOn && AC.state === 'suspended') AC.resume();
+    if (!soundOn) seaGain.gain.setTargetAtTime(0, AC.currentTime, .2);
+    sBtn.textContent = soundOn ? 'sound on' : 'sound off'; sBtn.setAttribute('aria-pressed', String(soundOn));
+    if (soundOn) sfx('open');
+  });
+
+  /* ---------- right click on the wallpaper ---------- */
+  var cm = document.getElementById('ctx');
+  function closeCtx() { cm.hidden = true; }
+  addEventListener('contextmenu', function (e) {
+    var t = e.target;
+    if (small() || !(t === document.body || t.id === 'world' || t.classList.contains('desk') || t.id === 'lh-hit')) return;
+    e.preventDefault();
+    cm.hidden = false;
+    cm.style.left = Math.min(e.clientX, innerWidth - cm.offsetWidth - 8) + 'px';
+    cm.style.top = Math.min(e.clientY, innerHeight - cm.offsetHeight - 8) + 'px';
+    cm.querySelector('[data-act="toggle"]').textContent = document.body.classList.contains('bare') ? 'Show windows' : 'Hide windows';
+    sfx('open');
+  });
+  cm.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var a = b.dataset.act;
+    if (a === 'kick') kick(2.6);
+    if (a === 'toggle') document.body.classList.toggle('bare');
+    if (a === 'notebook' || a === 'bentlik') openWin(a);
+    if (a === 'copy') { try { navigator.clipboard.writeText(location.origin + '/'); b.textContent = 'Link copied'; setTimeout(function () { b.textContent = 'Copy link'; }, 1200); return; } catch (err) {} }
+    closeCtx();
+  });
+  addEventListener('pointerdown', function (e) { if (!cm.hidden && !e.target.closest('#ctx')) closeCtx(); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCtx(); });
+
+  /* ---------- folders on the desktop fan out a preview on hover ---------- */
+  function fanFor(icon, cards) {
+    var f = document.createElement('div'); f.className = 'fan'; f.setAttribute('aria-hidden', 'true');
+    cards.forEach(function (c, i) { var d = document.createElement('div'); d.className = 'card c' + i; d.innerHTML = c; f.appendChild(d); });
+    icon.appendChild(f);
+  }
+  var icNb = document.querySelector('.icon[data-open="notebook"]'), icDogs = document.querySelector('.icon[data-open="dogs"]'), icGames = document.querySelector('.icon[data-open="games"]');
+  if (icNb) fanFor(icNb, ESSAYS.map(function (e, i) { return '<span class="mono g">' + String(i + 1).padStart(3, '0') + '</span><b>' + e.title + '</b>'; }));
+  if (icDogs) fanFor(icDogs, DOG_IMGS.map(function (src) { return '<img src="' + src + '" alt="">'; }));
+  if (icGames) fanFor(icGames, ['<b>Ant Kitchen</b><span class="mono">PROTOTYPE</span>', '<b>BomberMeme</b><span class="mono">NEW EDITION</span>']);
+
+  /* ---------- small things ---------- */
+  // the tab title follows the weather; when you leave, the light stays on
+  var baseTitle = document.title, lastWord = '';
+  document.addEventListener('visibilitychange', function () { document.title = document.hidden ? 'the light is still on' : baseTitle; });
+  function titleWeather(word) {
+    if (document.hidden || word === lastWord) return; lastWord = word;
+    document.title = word === 'calm' ? baseTitle : 'Bentlik OS · ' + word;
+  }
+  // idle: after a minute without input the windows step back and the island is left alone
+  var idleT = null;
+  function wake() { document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(function () { document.body.classList.add('idle'); }, 60000); }
+  ['pointermove', 'keydown', 'pointerdown', 'wheel', 'touchstart'].forEach(function (ev) { addEventListener(ev, wake, { passive: true }); });
+  wake();
+  // for whoever opens the console
+  try { console.log('%c\n      ▲\n     ▐█▌   bentlik os\n     ▐▒▌   the light is on.\n  ~~~▐█▌~~~~~~~~~~~~~~~~\n\n  you read source code. respect.\n  say hi: x.com/Cogit08\n', 'font-family:monospace;color:#00A651'); } catch (e) {}
+
   var mb = document.getElementById('menubar'), mbState = document.getElementById('mb-state');
   var wxState = document.getElementById('wx-state'), wxAmp = document.getElementById('wx-amp'), wxLast = document.getElementById('wx-last');
   var wxc = document.getElementById('wx-trace').getContext('2d');
@@ -530,11 +753,20 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     acc += dt;
     if (acc > 1 / 30) {
       acc = 0;
-      if (prog) { gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, T); gl.uniform1f(uE, W.e); gl.uniform2f(uM, ms[0], ms[1]); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+      // finer dither, but fall back to coarse pixels if this machine can't keep up
+      if (!coarse) { if (dt > .045) slowFrames++; else slowFrames = Math.max(0, slowFrames - 1); if (slowFrames > 40) { coarse = true; resize(); } }
+      // the loupe: a frame that follows the cursor and shows the world without the dither
+      lp[0] += (lpT[0] - lp[0]) * .18; lp[1] += (lpT[1] - lp[1]) * .18; lpA += ((lpOn ? 1 : 0) - lpA) * .2;
+      placeLoupe();
+      if (prog) { if (uLp) { if (lpA > .5) { var x0 = (lp[0] - LW / 2) / SCALE, y0 = (innerHeight - lp[1] - LH / 2) / SCALE; gl.uniform4f(uLp, x0, y0, x0 + LW / SCALE, y0 + LH / SCALE); } else gl.uniform4f(uLp, -1, -1, -1, -1); }
+        if (uDy) { gl.uniform1f(uDy, SKY.day); gl.uniform1f(uFg, SKY.fog); }
+        gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, T); gl.uniform1f(uE, W.e); gl.uniform2f(uM, ms[0], ms[1]); gl.drawArrays(gl.TRIANGLES, 0, 3); }
       placeLighthouse(T, ms);
+      soundTick(T, W.e);
+      drawFav(Math.abs(Math.cos(T * .8 - .9)) > .93);
       W.hist.push(W.x); if (W.hist.length > 144) W.hist.shift();
       var word = weatherWord(W.e);
-      mbState.textContent = word; wxState.textContent = word; wxAmp.textContent = W.e.toFixed(2);
+      titleWeather(word); mbState.textContent = word; wxState.textContent = word; wxAmp.textContent = W.e.toFixed(2);
       if (W.last) wxLast.textContent = 'last tremor ' + fmt.format(W.last);
       // instrument: 1-bit trace
       wxc.fillStyle = '#0D0E0B'; wxc.fillRect(0, 0, 288, 90);
@@ -563,6 +795,10 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     'MARKETS loading ........................ OK',
     ''
   ];
+  try {
+    var bd = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+    LINES.splice(LINES.length - 1, 0, 'DATE    ' + bd + ' GST', 'SKY     ' + SKY.word + ', ' + weatherWord(W.e) + ' at sea');
+  } catch (e) {}
   var done = false;
   function finish() { if (done) return; done = true; boot.classList.add('done'); try { sessionStorage.setItem('bentlik-booted', '1'); } catch (e) {} setTimeout(function () { boot.hidden = true; }, 800); }
   document.getElementById('boot-skip').addEventListener('click', finish);
