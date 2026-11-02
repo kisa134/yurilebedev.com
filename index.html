@@ -317,6 +317,48 @@ body.measure .ruler-lab { display: block; }
 .drow { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 8px; }
 .drow .dim { font-size: 10px; }
 
+
+/* ---------- harbour, helm, build, terminal ---------- */
+.harb .body { padding: 12px 14px 14px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--line); margin-right: 6px; display: inline-block; }
+.dot.on { background: var(--green); box-shadow: 0 0 6px rgba(0,166,81,.8); animation: pulse 2s infinite; }
+.store { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 3px; }
+.store > div { padding: 8px; display: grid; gap: 2px; } .store > div + div { border-left: 1px solid var(--line); }
+.store i { font-style: normal; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.store b { font-size: 18px; line-height: 22px; font-weight: 500; color: var(--text); }
+.store span { font-size: 9px; line-height: 12px; color: var(--dim); }
+.risk { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; margin-top: 10px; font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; }
+.risk b { color: var(--text); font-weight: 500; }
+.bar2 { height: 4px; background: var(--line); position: relative; overflow: hidden; }
+.bar2 i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, #08291A, #00A651 40%, #CCED5C 75%, #F0F5D6); transition: width 600ms var(--ease); }
+.harb h3 { margin-top: 16px; }
+.ev { margin: 8px 0 0; font-size: 11px; line-height: 16px; color: var(--dim); }
+.ev b { color: var(--text); font-weight: 500; } .ev .pos { color: var(--green); } .ev .neg { color: var(--lime); }
+.btn:disabled { opacity: .5; cursor: wait; }
+.tbl { font-size: 10px; line-height: 18px; }
+#hb-ships > div { display: grid; grid-template-columns: 1.3fr .7fr .7fr .7fr; gap: 6px; border-bottom: 1px solid var(--line); }
+.tbl.capt .hd, #hb-capt > div { display: grid; grid-template-columns: 1.1fr 1fr .5fr .5fr .5fr 1.1fr; gap: 6px; border-bottom: 1px solid var(--line); }
+.tbl .hd { color: var(--dim); text-transform: uppercase; letter-spacing: .08em; font-size: 9px; }
+.tbl .me { color: var(--lime); } .tbl .lead { color: var(--green); } .tbl .st { color: var(--dim); }
+.tbl p { margin: 0; font-size: 11px; }
+#hb-ledger { width: 100%; height: 100px; display: block; border: 1px solid var(--line); }
+.stats { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 8px 0 0; font-size: 10px; color: var(--dim); } .stats b { color: var(--text); font-weight: 500; }
+.me { margin: 4px 0 0; font-size: 10px; color: var(--lime); }
+.helm { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 70; width: min(560px, calc(100vw - 32px)); background: rgba(13,14,11,.88); border: 1px solid var(--green); padding: 10px 12px; box-shadow: 0 0 40px -10px rgba(0,166,81,.5); }
+.helm .hrow { display: flex; gap: 16px; align-items: center; } .helm .hrow span { display: grid; } .helm i { font-style: normal; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.helm b { font-size: 16px; font-weight: 500; color: var(--cream); } .helm button { margin-left: auto; color: var(--dim); font-size: 10px; border: 1px solid var(--line); padding: 4px 8px; border-radius: 3px; }
+.helm #helm-msg { margin: 6px 0 2px; color: var(--lime); font-size: 12px; } .helm .keys { margin: 0; color: var(--dim); font-size: 10px; }
+body.helming .win, body.helming .icons, body.helming .motto { opacity: .12; pointer-events: none; }
+body.helming #loupe, body.helming .guide { display: none; }
+.build { position: fixed; z-index: 1400; min-width: 200px; padding: 6px; background: var(--win); border: 1px solid #4A4B44; box-shadow: 6px 6px 0 rgba(0,0,0,.45); }
+.build p { margin: 2px 6px 6px; font-size: 10px; }
+.build button { display: flex; justify-content: space-between; width: 100%; gap: 12px; text-align: left; padding: 6px 8px; border-radius: 3px; font-size: 12px; }
+.build button:hover { background: var(--green); color: var(--ink); } .build button:hover .dim { color: var(--ink); }
+.term .body { height: 260px; overflow: auto; font-size: 12px; line-height: 18px; background: var(--ink); padding: 10px 12px; cursor: text; }
+#term-out div { white-space: pre-wrap; word-break: break-word; } #term-out .c { color: var(--dim); } #term-out .g { color: var(--green); } #term-out .l { color: var(--lime); }
+.prompt { display: flex; gap: 6px; align-items: center; } .prompt input { flex: 1; background: transparent; border: 0; outline: 0; color: var(--text); font: inherit; caret-color: var(--green); }
+@media (max-width: 720px) { .store { grid-template-columns: repeat(2, 1fr); } .store > div:nth-child(3) { border-left: 0; } .helm .keys { display: none; } }
+
 /* ---------- Things: objects on the desk ---------- */
 :root { --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 .win .bar-r { display: flex; align-items: center; gap: 2px; }
@@ -474,6 +516,18 @@ button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green)
 <canvas id="life" aria-hidden="true"></canvas>
 <div class="ruler h" id="rul-h"></div><div class="ruler v" id="rul-v"></div><div class="ruler-lab" id="rul-l"></div>
 <div class="toast" id="toast" role="status"></div>
+<div class="helm mono" id="helm" hidden>
+  <div class="hrow"><span><i>speed</i><b id="helm-sp">0.0 kn</b></span><span><i>nets</i><b id="helm-net">0 / 25</b></span><span><i>heading</i><b id="helm-hd">000°</b></span><button type="button" id="helm-x">Esc · leave</button></div>
+  <p id="helm-msg">find a shoal (the bright dots)</p>
+  <p class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows · slow over a shoal to fish · bring the catch to the harbour · pull crews out of the water</p>
+</div>
+<div class="build mono" id="build" hidden>
+  <p class="dim" id="bm-wood">…</p>
+  <button type="button" data-build="house">⌂ Build a house <span class="dim">15 wood</span></button>
+  <button type="button" data-build="tree">▲ Plant a tree <span class="dim">free</span></button>
+  <button type="button" data-build="no" class="dim">cancel</button>
+</div>
+
 
 <nav class="sr-only" aria-label="Pages"><a href="writing/point-zero.html">Point zero: what I carried with me</a> <a href="writing/building-in-public.html">Why I’m building my trading tools in public</a> <a href="privacy.html">Privacy</a> <a href="https://x.com/Cogit08">X</a></nav>
 <div class="guide gh" aria-hidden="true"></div><div class="guide gh" aria-hidden="true"></div><div class="guide gv" aria-hidden="true"></div><div class="guide gv" aria-hidden="true"></div>
@@ -481,6 +535,8 @@ button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green)
 <p class="motto" aria-hidden="true">Every impulse<br>returns to equilibrium.</p>
 <div id="ctx" class="ctx" role="menu" hidden>
   <button type="button" role="menuitem" data-act="kick">Send an impulse</button>
+  <button type="button" role="menuitem" data-act="helm">Take the helm</button>
+  <button type="button" role="menuitem" data-act="postcard">Save a postcard</button>
   <button type="button" role="menuitem" data-act="toggle">Hide windows</button>
   <button type="button" role="menuitem" data-act="notebook">Open the notebook</button>
   <hr>
@@ -499,6 +555,8 @@ button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green)
     <button class="item" data-open="things" type="button">Things <kbd>T</kbd></button>
     <button class="item hide-sm" data-open="systems" type="button">Systems <kbd>S</kbd></button>
     <button class="item hide-sm" data-open="display" type="button">Display <kbd>V</kbd></button>
+    <button class="item" data-open="harbour" type="button">Harbour <kbd>P</kbd></button>
+    <button class="item hide-sm" data-open="terminal" type="button">Term <kbd>`</kbd></button>
     <button class="item hide-sm" data-open="about" type="button">About <kbd>A</kbd></button>
   </div>
   <div class="right">
@@ -514,6 +572,8 @@ button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green)
   <button class="icon" data-open="dogs" type="button"><svg data-px="dog" aria-hidden="true"></svg><span class="mono">Dogs</span></button>
   <button class="icon" data-open="games" type="button"><svg data-px="cart" aria-hidden="true"></svg><span class="mono">Games</span></button>
   <button class="icon" data-open="things" type="button"><svg data-px="box" aria-hidden="true"></svg><span class="mono">Things</span></button>
+  <button class="icon" data-open="harbour" type="button"><svg data-px="anchor" aria-hidden="true"></svg><span class="mono">Harbour</span></button>
+  <button class="icon" data-open="terminal" type="button"><svg data-px="term" aria-hidden="true"></svg><span class="mono">Terminal</span></button>
   <button class="icon" data-open="about" type="button"><svg data-px="info" aria-hidden="true"></svg><span class="mono">About.txt</span></button>
 </nav>
 
@@ -657,27 +717,29 @@ button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green)
   <section class="win sys" id="w-systems" data-x="0.79" data-y="0.30" data-w="300" aria-label="Systems">
     <header class="bar"><span class="t mono">systems · live</span><span class="bar-r"><button class="nav-b" id="sys-q" type="button" aria-expanded="false" aria-controls="sys-ex" title="What is this?">?</button><button class="x" type="button" aria-label="Close">×</button></span></header>
     <div class="body">
-      <p class="mono dim sys-lede">Four systems share the island. None of them is scripted. <button class="lnk" type="button" id="sys-q2">How it works</button></p>
+      <p class="mono dim sys-lede">An island economy under open sky. Nothing is scripted. <button class="lnk" type="button" id="sys-q2">How it works</button></p>
       <div class="explain" id="sys-ex" hidden>
-        <p><b>Sea</b> is the outside world. Every 30 seconds the site reads one-minute BTC candles from Hyperliquid. Only how unusual the last move is becomes an impulse; a damped spring turns it into weather. No price is ever shown.</p>
-        <p><b>Drift</b> rides a current around the island, faster in a storm. Whatever reaches the coast may take root as a new node.</p>
-        <p><b>Colony</b> is a network fed by the lighthouse beam. Each node stores charge; at 1 it topples and passes 80% to its neighbours. Most avalanches are tiny, a few are huge (self-organised criticality, the sandpile). A big one sends a tremor back to sea.</p>
-        <p><b>Swarm</b>: signals that reach the lighthouse become fireflies. They graze the strongest nodes, so colony and swarm chase each other in loops, like predator and prey.</p>
-        <pre class="mono flow">market ──▶ SEA ──storm──▶ COLONY ✕
-SEA ──▶ DRIFT ──seed──▶ COLONY +
-beam ──▶ COLONY ──avalanche──▶ SEA
-COLONY ──signal──▶ ⌂ ──▶ SWARM
-SWARM ──grazes──▶ COLONY −</pre>
-        <p class="dim">Heat on the island marks where things just happened. Window frames use the same scale for your attention. Nothing is animated by hand: these are rules, and the shapes are what the rules produce.</p>
+        <p><b>Sea</b> is the outside world. Every 30 seconds the site reads one-minute BTC candles from Hyperliquid; only how unusual the last move is becomes an impulse, and a damped spring turns it into wind and waves. No price is ever shown. Nobody on the island knows the next hour.</p>
+        <p><b>Fish</b> live in shoals that grow on a logistic curve: slowly when few, fast in the middle, slowly again near the limit. Storms scatter them. Fish a shoal faster than it grows back and it is gone.</p>
+        <p><b>Wood</b> grows on the slopes and drifts in on the current, more after a storm. A house costs 15.</p>
+        <p><b>Village</b>: every house eats from one shared store. Fishermen fill it, the horizon buys the surplus for shells. An empty store turns the lights off.</p>
+        <p><b>Captains</b>: five boats, five temperaments. Halima only goes out in calm water, Rafi goes in any weather, Noor goes when everyone else stays home, Sami follows the last good catch. Same sea, different results. Storms sink boats; the lighthouse beam and the harbour protect them.</p>
+        <p><b>Harbour</b> is shared by everyone who visits. Send a ship with part of the store: the cargo is your position size, the route is your horizon, the weather is the risk. In a storm the expectation turns negative and the right move is to wait.</p>
+        <pre class="mono flow">market ──▶ SEA ──storm──▶ fewer FISH, sunk BOATS
+SEA ──current──▶ DRIFTWOOD ──▶ WOOD ──▶ HOUSES
+FISH ◀──catch── BOATS ──landed──▶ STORE ──▶ VILLAGE
+STORE ──surplus──▶ MERCHANTS ──▶ SHELLS
+SHELLS ──expeditions──▶ more SHELLS, or nothing</pre>
+        <p class="dim">Heat on the map marks where things just happened. Click the island to build, press H to take a boat.</p>
       </div>
       <div class="sysrow"><span class="k mono">Sea</span><canvas data-s="0" width="120" height="22"></canvas><span class="v mono" id="sv-0">0.00</span></div>
-      <div class="sysrow"><span class="k mono">Colony</span><canvas data-s="1" width="120" height="22"></canvas><span class="v mono" id="sv-1">0</span></div>
-      <div class="sysrow"><span class="k mono">Swarm</span><canvas data-s="2" width="120" height="22"></canvas><span class="v mono" id="sv-2">0</span></div>
-      <div class="sysrow"><span class="k mono">Drift</span><canvas data-s="3" width="120" height="22"></canvas><span class="v mono" id="sv-3">0</span></div>
-      <p class="mono legend"><span><b>+</b> node</span><span><b class="g">•</b> signal</span><span><b>~</b> drift</span><span><b class="l">˙</b> swarm</span></p>
+      <div class="sysrow"><span class="k mono">Fish</span><canvas data-s="1" width="120" height="22"></canvas><span class="v mono" id="sv-1">0</span></div>
+      <div class="sysrow"><span class="k mono">Village</span><canvas data-s="2" width="120" height="22"></canvas><span class="v mono" id="sv-2">0</span></div>
+      <div class="sysrow"><span class="k mono">Fleet</span><canvas data-s="3" width="120" height="22"></canvas><span class="v mono" id="sv-3">0</span></div>
+      <p class="mono legend"><span><b class="l">∴</b> fish</span><span><b>⌂</b> house</span><span><b>▲</b> boat</span><span><b>=</b> driftwood</span><span><b class="g">!</b> crew in water</span></p>
       <div class="log mono" id="sys-log" aria-live="off"></div>
       <canvas id="phase" width="524" height="180" aria-label="Phase portraits of the sea and of colony against swarm"></canvas>
-      <div class="sys-foot"><p class="mono dim sys-help">Click the island to plant a node. <kbd>M</kbd> next render.</p><button class="ghost mono" type="button" id="sys-disp">Display ⌥</button></div>
+      <div class="sys-foot"><p class="mono dim sys-help">Click the island to build. <kbd>H</kbd> takes a boat. <kbd>P</kbd> harbour.</p><button class="ghost mono" type="button" id="sys-disp">Display ⌥</button></div>
     </div>
   </section>
 
@@ -696,8 +758,41 @@ SWARM ──grazes──▶ COLONY −</pre>
       <div class="seg mono"><button type="button" data-pal="paper">Paper</button><button type="button" data-pal="phosphor">Phosphor</button><button type="button" data-pal="heat">Heat</button></div>
       <p class="mono k2">Layers</p>
       <div class="seg mono"><button type="button" data-ov="heat">Heat map</button><button type="button" data-ov="life">Life</button></div>
-      <div class="drow"><span class="mono dim" id="disp-note"></span><button class="ghost mono" type="button" id="disp-reset">Reset</button></div>
+      <div class="drow"><span class="mono dim" id="disp-note"></span><span><button class="ghost mono" type="button" id="disp-pc">Postcard</button> <button class="ghost mono" type="button" id="disp-reset">Reset</button></span></div>
     </div>
+  </section>
+
+  <section class="win harb" id="w-harbour" data-x="0.52" data-y="0.06" data-w="360" data-h="0.86" hidden aria-label="Harbour">
+    <header class="bar"><span class="t mono">harbour · <span id="hb-net">connecting…</span></span><span class="bar-r"><i class="dot" id="hb-dot"></i><button class="x" type="button" aria-label="Close">×</button></span></header>
+    <div class="body">
+      <div class="store mono">
+        <div><i>fish</i><b id="hb-fish">–</b><span id="hb-fv"></span></div>
+        <div><i>wood</i><b id="hb-wood">–</b><span>house = 15</span></div>
+        <div><i>shells</i><b id="hb-shells">–</b><span>for expeditions</span></div>
+        <div><i>houses</i><b id="hb-houses">–</b><span id="hb-trees"></span></div>
+      </div>
+      <div class="risk mono"><span>storm risk now</span><span class="bar2"><i id="hb-riskbar"></i></span><b id="hb-risk">–</b></div>
+      <h3 class="mono k2">Send a ship</h3>
+      <label class="sl mono"><span>Cargo</span><input type="range" id="hb-cargo" min="1" max="200" step="1" value="20"><output id="hb-cv"></output></label>
+      <div class="seg mono"><button type="button" data-route="near" aria-pressed="true">Near · 2 min · ×1.25</button><button type="button" data-route="far" aria-pressed="false">Far · 5 min · ×1.7</button></div>
+      <p class="ev mono" id="hb-ev"></p>
+      <div class="drow"><button class="btn" type="button" id="hb-send">Send the ship</button><button class="ghost mono" type="button" id="hb-helm">Take a boat · H</button></div>
+      <h3 class="mono k2">At sea</h3>
+      <div class="tbl mono" id="hb-ships"></div>
+      <h3 class="mono k2">Island ledger</h3>
+      <canvas id="hb-ledger" width="640" height="200" aria-label="Equity of the island over time"></canvas>
+      <p class="mono stats" id="hb-stats"></p>
+      <p class="mono me" id="hb-me"></p>
+      <h3 class="mono k2">Captains <span class="dim">· who is winning this sea</span></h3>
+      <div class="tbl capt mono"><div class="hd"><span>name</span><span>style</span><span>trips</span><span>fish</span><span>lost</span><span>now</span></div><div id="hb-capt"></div></div>
+      <h3 class="mono k2">Harbour log</h3>
+      <div class="log mono" id="hb-log"></div>
+    </div>
+  </section>
+
+  <section class="win term" id="w-terminal" data-x="0.30" data-y="0.5" data-w="460" hidden aria-label="Terminal">
+    <header class="bar"><span class="t mono">bentlik:~</span><button class="x" type="button" aria-label="Close">×</button></header>
+    <div class="body mono" id="term-body"><div id="term-out"></div><label class="prompt"><span class="g">bentlik:~$</span> <input id="term-in" autocomplete="off" spellcheck="false" aria-label="Command"></label></div>
   </section>
 
   <section class="win bent" id="w-bentlik" data-x="0.40" data-y="0.30" data-w="320" hidden aria-label="Bentlik">
@@ -766,10 +861,10 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   /* ---------- the world: raymarched island, 8x8 Bayer dither, two tones and one green ---------- */
   var cv = document.getElementById('world');
   var gl = cv.getContext('webgl', { antialias: false, preserveDrawingBuffer: false });
-  var SCALE = 2, uMd, uCt, uBr, uPal, uGn, prog, uR, uT, uE, uM, uLp, uDy, uFg, slowFrames = 0, coarse = false;
+  var SCALE = 2, uCam, uCo, uMd, uCt, uBr, uPal, uGn, prog, uR, uT, uE, uM, uLp, uDy, uFg, slowFrames = 0, coarse = false;
   var FS = [
     'precision highp float;',
-    'uniform vec2 R; uniform float T; uniform float E; uniform vec2 M; uniform vec4 Lp; uniform float Dy; uniform float Fg; uniform float Md,Ct,Br,Pal,Gn;',
+    'uniform vec2 R; uniform float T; uniform float E; uniform vec2 M; uniform vec4 Lp; uniform float Dy; uniform float Fg; uniform float Md,Ct,Br,Pal,Gn; uniform vec4 Cam; uniform vec2 Co;',
     'const vec2 LP = vec2(.38,-.12); const float TH = .36;',
     'float h2(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h2(i),h2(i+vec2(1,0)),f.x),mix(h2(i+vec2(0,1)),h2(i+vec2(1,1)),f.x),f.y);}',
@@ -782,8 +877,8 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     'void main(){',
     ' vec2 fc=gl_FragCoord.xy; float row=floor(fc.y/2.);',
     ' if(E>.35 && h2(vec2(row,floor(T*16.)))>1.-E*.14) fc.x+=(h2(vec2(row,T))-.5)*40.*E;',
-    ' vec2 uv=(fc-.5*R)/R.y; uv.x-=.3;',
-    ' float a=.7+T*.02+M.x*.5; vec3 ro=vec3(sin(a)*4.4,1.35+M.y*.35,cos(a)*4.4); vec3 ta=vec3(0.,.05,0.);',
+    ' vec2 uv=(fc-.5*R)/R.y; uv.x-=Co.y;',
+    ' float a=Cam.x; vec3 ta=vec3(Cam.z,.05,Cam.w); vec3 ro=vec3(Cam.z+sin(a)*Cam.y,Co.x,Cam.w+cos(a)*Cam.y);',
     ' vec3 f=normalize(ta-ro); vec3 r=normalize(cross(f,vec3(0,1,0))); vec3 u=cross(r,f);',
     ' vec3 rd=normalize(f*1.9+uv.x*r+uv.y*u);',
     ' float t=.5,hitT=-1.; int kind=0;',
@@ -841,7 +936,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
       var loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
       uDy = gl.getUniformLocation(prog, 'Dy'); uFg = gl.getUniformLocation(prog, 'Fg'); uLp = gl.getUniformLocation(prog, 'Lp'); uR = gl.getUniformLocation(prog, 'R'); uT = gl.getUniformLocation(prog, 'T'); uE = gl.getUniformLocation(prog, 'E'); uM = gl.getUniformLocation(prog, 'M');
-      uMd = gl.getUniformLocation(prog, 'Md'); uCt = gl.getUniformLocation(prog, 'Ct'); uBr = gl.getUniformLocation(prog, 'Br'); uPal = gl.getUniformLocation(prog, 'Pal'); uGn = gl.getUniformLocation(prog, 'Gn');
+      uMd = gl.getUniformLocation(prog, 'Md'); uCt = gl.getUniformLocation(prog, 'Ct'); uBr = gl.getUniformLocation(prog, 'Br'); uPal = gl.getUniformLocation(prog, 'Pal'); uGn = gl.getUniformLocation(prog, 'Gn'); uCam = gl.getUniformLocation(prog, 'Cam'); uCo = gl.getUniformLocation(prog, 'Co');
     }
   }
   function resize() {
@@ -860,17 +955,6 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   function ter(x, y) { var d = Math.hypot(x, y * 1.2); var t = Math.min(1, Math.max(0, (d - 1.45) / (.1 - 1.45))); var m = t * t * (3 - 2 * t); return m * (.12 + .8 * fbm(x * 1.35 + 3, y * 1.35 + 3)) - .12; }
   var LPX = .38, LPZ = -.12, LBH = ter(LPX, LPZ);
   var hit = document.getElementById('lh-hit');
-  function placeLighthouse(T, M) {
-    var a = .7 + T * .02 + M[0] * .5, ro = [Math.sin(a) * 4.4, 1.35 + M[1] * .35, Math.cos(a) * 4.4];
-    var f = [-ro[0], .05 - ro[1], -ro[2]], fl = Math.hypot(f[0], f[1], f[2]); f = [f[0] / fl, f[1] / fl, f[2] / fl];
-    var r = [-f[2], 0, f[0]], rl = Math.hypot(r[0], r[2]); r = [r[0] / rl, 0, r[2] / rl];
-    var u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]];
-    var p = [LPX - ro[0], LBH + .36 * .8 - ro[1], LPZ - ro[2]];
-    var z = p[0] * f[0] + p[1] * f[1] + p[2] * f[2]; if (z <= 0) return;
-    var x = (p[0] * r[0] + p[1] * r[1] + p[2] * r[2]) / z * 1.9 + .3, y = (p[0] * u[0] + p[1] * u[1] + p[2] * u[2]) / z * 1.9;
-    var H = cv.height * SCALE;
-    hit.style.left = (x * H + innerWidth / 2) + 'px'; hit.style.top = (innerHeight / 2 - y * H + 34) + 'px';
-  }
   hit.addEventListener('click', function (e) { if (e.shiftKey) { kick(2.6); return; } openWin('bentlik'); });
 
   var mouse = [0, 0], ms = [0, 0];
@@ -942,7 +1026,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   document.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { openWin(b.dataset.open); }); });
   addEventListener('keydown', function (e) {
     if (e.metaKey || e.ctrlKey || e.altKey || /input|textarea/i.test(e.target.tagName)) return;
-    var k = e.key.toLowerCase(), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik', t: 'things', s: 'systems', v: 'display' };
+    var k = e.key.toLowerCase(), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik', t: 'things', s: 'systems', v: 'display', p: 'harbour', '`': 'terminal' };
     if (k === 'm' && document.getElementById('boot').classList.contains('done')) cycleMode();
     if (map[k] && document.getElementById('boot').classList.contains('done')) openWin(map[k]);
     if (e.key === 'Escape' && document.getElementById('ctx').hidden) { var t = document.querySelector('.win.top'); if (t && !t.hidden) closeWin(t); }
@@ -996,6 +1080,8 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     weather: ['........', '..##....', '.#..##..', '#.....#.', '.######.', '..#.#.#.', '.#.#.#..', '........'],
     dog: ['#.....#.', '##...##.', '.#####..', '.#.#.#..', '.#####..', '..#.#...', '.#####..', '........'],
     cart: ['.######.', '.#.##.#.', '.######.', '.#....#.', '.#.##.#.', '.#....#.', '.######.', '.#.#.#..'],
+    anchor: ['...##...', '...##...', '.######.', '...##...', '...##...', '#..##..#', '##.##.##', '.######.'],
+    term: ['########', '#......#', '#.#....#', '#..#...#', '#.#.##.#', '#......#', '########', '........'],
     box: ['........', '.######.', '#......#', '########', '#.#..#.#', '#......#', '#......#', '########'],
     info: ['.######.', '.#....#.', '.#.##.#.', '.#....#.', '.#.##.#.', '.#.##.#.', '.#....#.', '.######.']
   };
@@ -1110,6 +1196,8 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     var b = e.target.closest('button'); if (!b) return;
     var a = b.dataset.act;
     if (a === 'kick') kick(2.6);
+    if (a === 'helm') helm(true);
+    if (a === 'postcard') postcard();
     if (a === 'toggle') document.body.classList.toggle('bare');
     if (a === 'notebook' || a === 'bentlik') openWin(a);
     if (a === 'copy') { try { navigator.clipboard.writeText(location.origin + '/'); b.textContent = 'Link copied'; setTimeout(function () { b.textContent = 'Copy link'; }, 1200); return; } catch (err) {} }
@@ -1199,190 +1287,359 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     seisW.textContent = weatherWord(W.e).toUpperCase() + ' · ' + W.e.toFixed(2);
   }
 
-  /* ---------- the island is alive ----------
-     Four systems that nobody scripts, only couples:
-     SEA    the market-driven oscillator. Storms break the colony and wash new seeds ashore.
-     DRIFT  flotsam on a current around the island; whatever reaches the coast can take root.
-     COLONY a network of nodes fed by the lighthouse beam. Charge piles up and topples to neighbours
-            (a sandpile: self-organised criticality). A big avalanche sends a tremor back into the sea.
-     SWARM  fireflies born from signals that reach the lighthouse; they graze the strongest nodes.
-            Predator and prey, so the populations cycle instead of settling. */
+  /* ---------- the island: a small economy under open sky ----------
+     SEA       the outside world. Live market moves become wind, waves and storms. Nobody here knows the next hour.
+     FISH      shoals grow on a logistic curve, scatter in storms and can be fished out. Real, but finite.
+     WOOD      forest on the slopes, driftwood the current brings ashore. Capital you spend and must regrow.
+     VILLAGE   houses fed from one shared store. Empty store, dark houses.
+     CAPTAINS  five fishing boats, five temperaments. Same sea, different results.
+     HARBOUR   shared by every visitor (Supabase): the store, expeditions, the island's ledger. */
   var lifeC = document.getElementById('life'), lx = lifeC.getContext('2d'), glyphC = document.getElementById('glyph'), gx = glyphC.getContext('2d');
   var DPR = 1;
   function lifeResize() { DPR = Math.min(2, devicePixelRatio || 1); [lifeC, glyphC].forEach(function (c) { c.width = Math.round(innerWidth * DPR); c.height = Math.round(innerHeight * DPR); }); }
   addEventListener('resize', lifeResize); lifeResize();
-  var CAM = null;
+
+  // camera: orbits the island, or rides behind your boat
+  var CV = { a: .7, d: 4.4, tx: 0, tz: 0, h: 1.35, ox: .3 }, CAM = null;
+  function angLerp(a, b, k) { var d = ((b - a + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI; return a + d * k; }
   function camera(T, M) {
-    var a = .7 + T * .02 + M[0] * .5, ro = [Math.sin(a) * 4.4, 1.35 + M[1] * .35, Math.cos(a) * 4.4];
-    var f = [-ro[0], .05 - ro[1], -ro[2]], fl = Math.hypot(f[0], f[1], f[2]); f = [f[0] / fl, f[1] / fl, f[2] / fl];
+    var k = HELM.on ? .08 : .05;
+    if (HELM.on) { CV.a = angLerp(CV.a, Math.atan2(-Math.cos(HELM.hd), -Math.sin(HELM.hd)), k); CV.d += (1.85 - CV.d) * k; CV.tx += (HELM.x - CV.tx) * .2; CV.tz += (HELM.z - CV.tz) * .2; CV.h += (.68 - CV.h) * k; CV.ox += (0 - CV.ox) * k; }
+    else { CV.a = angLerp(CV.a, .7 + T * .02 + M[0] * .5, k); CV.d += (4.4 - CV.d) * k; CV.tx += (0 - CV.tx) * k; CV.tz += (0 - CV.tz) * k; CV.h += (1.35 + M[1] * .35 - CV.h) * k; CV.ox += (.3 - CV.ox) * k; }
+    var ro = [CV.tx + Math.sin(CV.a) * CV.d, CV.h, CV.tz + Math.cos(CV.a) * CV.d];
+    var f = [CV.tx - ro[0], .05 - ro[1], CV.tz - ro[2]], fl = Math.hypot(f[0], f[1], f[2]); f = [f[0] / fl, f[1] / fl, f[2] / fl];
     var r = [-f[2], 0, f[0]], rl = Math.hypot(r[0], r[2]); r = [r[0] / rl, 0, r[2] / rl];
     var u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]];
-    CAM = { ro: ro, f: f, r: r, u: u, H: cv.height * SCALE };
+    CAM = { ro: ro, f: f, r: r, u: u, H: cv.height * SCALE, ox: CV.ox };
   }
   function proj(x, y, z) {
     var c = CAM, px = x - c.ro[0], py = y - c.ro[1], pz = z - c.ro[2];
-    var d = px * c.f[0] + py * c.f[1] + pz * c.f[2]; if (d < .2) return null;
-    var sx = (px * c.r[0] + pz * c.r[2]) / d * 1.9 + .3, sy = (px * c.u[0] + py * c.u[1] + pz * c.u[2]) / d * 1.9;
+    var d = px * c.f[0] + py * c.f[1] + pz * c.f[2]; if (d < .15) return null;
+    var sx = (px * c.r[0] + pz * c.r[2]) / d * 1.9 + c.ox, sy = (px * c.u[0] + py * c.u[1] + pz * c.u[2]) / d * 1.9;
     return [sx * c.H + innerWidth / 2, innerHeight / 2 - sy * c.H, d];
   }
+  function placeLighthouse() { var p = proj(LPX, LBH + .29, LPZ); hit.style.display = p && !HELM.on ? '' : 'none'; if (p) { hit.style.left = p[0] + 'px'; hit.style.top = (p[1] + 34) + 'px'; } }
+
   var LAND = [];
   for (var gxi = -1.5; gxi <= 1.5; gxi += .05) for (var gzi = -1.4; gzi <= 1.4; gzi += .05) { var hh = ter(gxi, gzi); if (hh > .02) LAND.push([gxi, gzi]); }
   var LAMP = [LPX, LBH + .33, LPZ];
-  var NODES = [], PK = [], DR = [], FF = [], FX = [], nid = 0;
-  var STAT = { av: 0, avMax: 0, hist: [[], [], [], []] };
-  function alive() { return NODES.filter(function (n) { return !n.dead; }); }
-  function addNode(x, z, e, fixed) {
-    var n = { x: x, z: z, y: ter(x, z) + .015, e: e, c: Math.random() * .7, f: 0, fixed: !!fixed, dead: false, nb: [], id: ++nid, born: 1 };
-    NODES.forEach(function (m) { if (m.dead || n.nb.length >= 3 || m.nb.length >= 4) return; if (Math.hypot(m.x - x, m.z - z) < (fixed || m.fixed ? .5 : .3)) { n.nb.push(m); m.nb.push(n); } });
-    NODES.push(n); return n;
-  }
-  function kill(n) { heatAt(n.x, n.z, 1.2); n.dead = true; n.nb.forEach(function (m) { m.nb = m.nb.filter(function (q) { return q !== n; }); }); n.nb = []; FX.push({ x: n.x, y: n.y, z: n.z, t: 1, k: 'x' }); }
-  var bent = addNode(LPX, LPZ, 1, true);
-  for (var si = 0; si < 22; si++) { var lp0 = LAND[Math.floor(h2(si, 7) * LAND.length)]; addNode(lp0[0], lp0[1], .45 + .4 * h2(si, 3)); }
-  // activity heat map over the island: every event leaves heat, heat diffuses and cools
-  var HN = 44, HM = new Float32Array(HN * HN), HB = new Float32Array(HN * HN), hTick = 0;
-  function heatAt(x, z, v) { var i = Math.floor((x + 1.5) / 3 * HN), j = Math.floor((z + 1.5) / 3 * HN); if (i < 0 || j < 0 || i >= HN || j >= HN) return; HM[j * HN + i] = Math.min(4, HM[j * HN + i] + v); }
+  function sea(x, z) { return ter(x, z) < -.05; }
+  // the harbour sits on the coast below the lighthouse
+  var HB = (function () { var dx = LPX, dz = LPZ, l = Math.hypot(dx, dz); dx /= l; dz /= l; for (var r = .3; r < 2.5; r += .02) if (ter(dx * r, dz * r) < -.06) return { x: dx * (r + .1), z: dz * (r + .1), cx: dx * (r - .06), cz: dz * (r - .06), dx: dx, dz: dz }; return { x: 1.5, z: 0, cx: 1.3, cz: 0, dx: 1, dz: 0 }; })();
+
+  // heat map over island and sea: every event leaves heat, heat diffuses and cools
+  var HN = 72, HS = 6, HM = new Float32Array(HN * HN), HBF = new Float32Array(HN * HN), hTick = 0;
+  function heatAt(x, z, v) { var i = Math.floor((x + HS / 2) / HS * HN), j = Math.floor((z + HS / 2) / HS * HN); if (i < 0 || j < 0 || i >= HN || j >= HN) return; HM[j * HN + i] = Math.min(4, HM[j * HN + i] + v); }
   function heatStep() {
-    hTick++; for (var k = 0; k < HM.length; k++) HM[k] *= .968;
+    hTick++; for (var k = 0; k < HM.length; k++) HM[k] *= .972;
     if (hTick % 3) return;
-    for (var j = 1; j < HN - 1; j++) for (var i = 1; i < HN - 1; i++) { var o = j * HN + i; HB[o] = HM[o] * .6 + (HM[o - 1] + HM[o + 1] + HM[o - HN] + HM[o + HN]) * .1; }
-    HM.set(HB);
+    for (var j = 1; j < HN - 1; j++) for (var i = 1; i < HN - 1; i++) { var o = j * HN + i; HBF[o] = HM[o] * .6 + (HM[o - 1] + HM[o + 1] + HM[o - HN] + HM[o + HN]) * .1; }
+    HM.set(HBF);
   }
   function heatRGB(v) { var st = [[8, 41, 26], [0, 166, 81], [204, 237, 92], [240, 245, 214]]; v = Math.max(0, Math.min(1, v)) * 3; var i = Math.min(2, Math.floor(v)), f = v - i; return st[i].map(function (a, k) { return Math.round(a + (st[i + 1][k] - a) * f); }).join(','); }
   var LOG = document.getElementById('sys-log'), logLast = {};
+  var fmtS = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
   function say(kind, txt) {
     var now = performance.now(); if (logLast[kind] && now - logLast[kind] < 2500) return; logLast[kind] = now;
     var d = document.createElement('div'); d.innerHTML = '<span class="t">' + fmtS.format(new Date()) + '</span>' + txt;
     LOG.insertBefore(d, LOG.firstChild); while (LOG.children.length > 5) LOG.lastChild.remove();
   }
-  var fmtS = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-  var wasStorm = false, gathered = 0, lastTremor = -99;
+  var STAT = { hist: [[], [], [], []] }, PH = { sea: [], eco: [] };
+
+  /* FISH: shoals on a logistic curve. dn/dt = r·n·(1 − n/K) − catch */
+  var SHOALS = [];
+  for (var si = 0; si < 7; si++) { var sa = si / 7 * 6.283 + h2(si, 2), sr = 1.75 + h2(si, 5) * .8; SHOALS.push({ id: si, x: Math.cos(sa) * sr, z: Math.sin(sa) * sr, n: 20 + h2(si, 9) * 30, K: 60, hd: h2(si, 4) * 6.283, gone: 0 }); }
+  function fishTotal() { return SHOALS.reduce(function (s, q) { return s + q.n; }, 0); }
+  function shoalStep(dt) {
+    SHOALS.forEach(function (s) {
+      s.n += .045 * s.n * (1 - s.n / s.K) * dt; if (s.n < .4) s.n = .4;
+      s.hd += (n2(s.x * 1.3 + T * .05, s.z * 1.3) - .5) * .08 + (W.e > .4 ? (Math.random() - .5) * .3 : 0);
+      var sp = .0012 * (1 + W.e * 5), nx = s.x + Math.cos(s.hd) * sp, nz = s.z + Math.sin(s.hd) * sp, r = Math.hypot(nx, nz);
+      if (!sea(nx, nz) || r > 2.9 || r < 1.2) { s.hd += Math.PI * .7; return; }
+      s.x = nx; s.z = nz;
+    });
+  }
+
+  /* CAPTAINS: five temperaments in one sea */
+  var CAPT = [
+    { name: 'Halima', style: 'careful', note: 'only in calm water, stays near the light' },
+    { name: 'Omar', style: 'steady', note: 'goes out unless it is rough' },
+    { name: 'Rafi', style: 'bold', note: 'any weather, the biggest shoal' },
+    { name: 'Noor', style: 'contrarian', note: 'goes when everyone stays home' },
+    { name: 'Sami', style: 'follower', note: 'goes when the last boats came back full' }
+  ];
+  var lastHauls = [];
+  CAPT.forEach(function (c, i) { c.x = HB.x + (i - 2) * .05; c.z = HB.z + (i - 2) * .05 * HB.dx; c.hd = Math.atan2(HB.dz, HB.dx); c.st = 'dock'; c.t = 2 + i * 3; c.hold = 0; c.trips = 0; c.catch = 0; c.lost = 0; c.tl = []; });
+  function inBeam(x, z) { var ph = Math.atan2(z - LPZ, x - LPX); for (var s = 0; s < 2; s++) { var d = Math.abs(((ph - (T * .8 + s * Math.PI)) % 6.283 + 9.425) % 6.283 - 3.1416); if (d < .3) return true; } return Math.hypot(x - LPX, z - LPZ) < .7; }
+  function wantsOut(c) {
+    var e = W.e, docked = CAPT.filter(function (q) { return q.st === 'dock'; }).length;
+    if (c.style === 'careful') return e < .12;
+    if (c.style === 'steady') return e < .35;
+    if (c.style === 'bold') return true;
+    if (c.style === 'contrarian') return docked >= 3;
+    var avg = lastHauls.length ? lastHauls.reduce(function (a, b) { return a + b; }, 0) / lastHauls.length : 10; return avg > 9;
+  }
+  function pickShoal(c) {
+    var best = null, bs = -1;
+    SHOALS.forEach(function (s) { var d = Math.hypot(s.x - c.x, s.z - c.z), crowd = CAPT.filter(function (q) { return q !== c && q.tgt === s && q.st !== 'dock'; }).length, sc;
+      if (c.style === 'careful') { if (Math.hypot(s.x - LPX, s.z - LPZ) > 1.9) return; sc = s.n / (1 + d * 2); }
+      else if (c.style === 'bold') sc = s.n;
+      else if (c.style === 'contrarian') sc = s.n / (1 + crowd * 3) / (1 + d);
+      else sc = s.n / (1 + d);
+      if (sc > bs) { bs = sc; best = s; } });
+    return best;
+  }
+  function steer(o, tx, tz, sp) {
+    var want = Math.atan2(tz - o.z, tx - o.x); o.hd = angLerp(o.hd, want, .12);
+    for (var k = 0; k < 7; k++) { var nx = o.x + Math.cos(o.hd) * sp, nz = o.z + Math.sin(o.hd) * sp; if (sea(nx, nz) || Math.hypot(nx - HB.x, nz - HB.z) < .12) { o.x = nx; o.z = nz; return; } o.hd += .45; }
+  }
+  function captStep(dt) {
+    CAPT.forEach(function (c) {
+      c.t -= dt;
+      if (c.st === 'dock') { if (c.t <= 0) { if (wantsOut(c)) { c.tgt = pickShoal(c); if (c.tgt) { c.st = 'out'; say('cap' + c.name, c.name + ' (' + c.style + ') went out'); } } c.t = 4; } return; }
+      if (c.st === 'sunk') { if (c.t <= 0) { c.st = 'dock'; c.x = HB.x; c.z = HB.z; c.t = 10; c.saved = false; } return; }
+      var sp = .006 * (1 - W.e * .45);
+      if (c.st === 'out') { if (!c.tgt) { c.st = 'home'; return; } steer(c, c.tgt.x, c.tgt.z, sp); if (Math.hypot(c.tgt.x - c.x, c.tgt.z - c.z) < .1) { c.st = 'fish'; c.t = 5 + Math.random() * 4; } }
+      else if (c.st === 'fish') { var take = Math.min(c.tgt.n * .03, 20 - c.hold, .9); c.tgt.n -= take; c.hold += take; heatAt(c.x, c.z, .05); c.x += Math.cos(T + c.hd) * .0006; if (c.t <= 0 || c.hold >= 19.5 || c.tgt.n < 3) c.st = 'home'; if (c.style === 'careful' && W.e > .25) c.st = 'home'; }
+      else if (c.st === 'home') { steer(c, HB.x, HB.z, sp); if (Math.hypot(HB.x - c.x, HB.z - c.z) < .08) { c.trips++; c.catch += c.hold; lastHauls.push(c.hold); if (lastHauls.length > 4) lastHauls.shift(); say('land' + c.name, c.name + ' landed ' + Math.round(c.hold) + ' fish'); heatAt(HB.x, HB.z, .4); c.hold = 0; c.st = 'dock'; c.t = 6 + Math.random() * 6; c.tgt = null; } }
+      // the sea decides: storms sink boats, the beam and the harbour protect them
+      if (c.st !== 'dock' && c.st !== 'sunk') { var p = Math.pow(Math.max(0, W.e - .3), 2) * .03 * (c.style === 'bold' ? 1.3 : 1) * (inBeam(c.x, c.z) ? .35 : 1);
+        if (Math.random() < p) { c.st = 'sunk'; c.t = 40; c.lost++; c.hold = 0; heatAt(c.x, c.z, 2.5); say('sunk', c.name + '\'s boat went down. the crew is in the water'); if (soundOn) sfx('close'); } }
+      c.tl.push(c.x, c.z); if (c.tl.length > 24) c.tl.splice(0, 2);
+    });
+  }
+
+  /* DRIFT: wood on the current; storms bring more of it ashore */
+  var DR = [];
+  function driftStep() {
+    if (DR.length < 50 && Math.random() < .04 + W.e * .5) { var a0 = Math.random() * 6.283, r0 = 2.4 + Math.random() * .4; DR.push({ x: Math.cos(a0) * r0, z: Math.sin(a0) * r0, l: 1 }); }
+    for (var k = DR.length - 1; k >= 0; k--) { var d = DR[k], rr = Math.hypot(d.x, d.z) || 1, sp = .002 + W.e * .012, w = n2(d.x * 1.7 + T * .1, d.z * 1.7) - .5;
+      d.x += (-d.z / rr * .8 - d.x / rr * (.35 + w)) * sp; d.z += (d.x / rr * .8 - d.z / rr * (.35 - w)) * sp; d.l -= .001;
+      if (!sea(d.x, d.z)) { DR.splice(k, 1); heatAt(d.x, d.z, .5); WOODLOCAL++; continue; } if (d.l <= 0) DR.splice(k, 1); }
+  }
+  var WOODLOCAL = 0;
+
+  /* FOREST and VILLAGE: the forest grows on the slopes by itself; houses and planted trees are shared */
+  var FOREST = [];
+  LAND.forEach(function (l, i) { var h = ter(l[0], l[1]); if (h > .06 && h < .32 && h2(l[0] * 7, l[1] * 7) > .62) FOREST.push({ x: l[0] + (h2(i, 1) - .5) * .04, z: l[1] + (h2(i, 3) - .5) * .04, s: .6 + h2(i, 5) * .6 }); });
+  var MARKS = [];
+
+  /* HELM: your boat */
+  var HELM = { on: false, x: HB.x, z: HB.z, hd: Math.atan2(HB.dz, HB.dx), v: 0, nets: 0, keys: {}, tl: [], saved: 0, landed: 0 };
+  var hud = document.getElementById('helm'), hudSp = document.getElementById('helm-sp'), hudNet = document.getElementById('helm-net'), hudHd = document.getElementById('helm-hd'), hudMsg = document.getElementById('helm-msg');
+  function helm(on) {
+    HELM.on = on === undefined ? !HELM.on : on; document.body.classList.toggle('helming', HELM.on); hud.hidden = !HELM.on;
+    if (HELM.on) { if (HELM.v === 0 && Math.hypot(HELM.x - HB.x, HELM.z - HB.z) > 3) { HELM.x = HB.x; HELM.z = HB.z; } say('helm', 'you took the helm'); }
+  }
+  addEventListener('keydown', function (e) {
+    if (/input|textarea/i.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
+    var k = e.key.toLowerCase();
+    if (k === 'h' && document.getElementById('boot').classList.contains('done')) { helm(); e.preventDefault(); return; }
+    if (!HELM.on) return;
+    if (k === 'escape') { helm(false); e.stopPropagation(); return; }
+    if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].indexOf(k) >= 0) { HELM.keys[k] = true; e.preventDefault(); e.stopPropagation(); }
+  }, true);
+  addEventListener('keyup', function (e) { HELM.keys[e.key.toLowerCase()] = false; });
+  document.getElementById('helm-x').addEventListener('click', function () { helm(false); });
+  function helmStep() {
+    var K = HELM.keys, thr = (K.w || K.arrowup ? 1 : 0) - (K.s || K.arrowdown ? .6 : 0), turn = (K.d || K.arrowright ? 1 : 0) - (K.a || K.arrowleft ? 1 : 0);
+    if (!HELM.on) thr = 0, turn = 0;
+    HELM.v += thr * .0011 - HELM.v * .035; HELM.v = Math.max(-.008, Math.min(.024, HELM.v));
+    HELM.hd += turn * (.03 + Math.abs(HELM.v) * 1.6) + (Math.random() - .5) * W.e * .05;
+    var nx = HELM.x + Math.cos(HELM.hd) * HELM.v, nz = HELM.z + Math.sin(HELM.hd) * HELM.v;
+    if (sea(nx, nz) || Math.hypot(nx - HB.x, nz - HB.z) < .15) { HELM.x = nx; HELM.z = nz; } else HELM.v *= -.3;
+    if (Math.hypot(HELM.x, HELM.z) > 3.4) HELM.hd += .2;
+    if (!HELM.on) return;
+    // fishing: slow over a shoal and the nets fill
+    var msg = '';
+    SHOALS.forEach(function (s) { if (Math.hypot(s.x - HELM.x, s.z - HELM.z) < .2) { if (Math.abs(HELM.v) < .012 && HELM.nets < 25) { var t = Math.min(s.n * .02, 25 - HELM.nets, .5); s.n -= t; HELM.nets += t; heatAt(HELM.x, HELM.z, .08); msg = 'fishing… slow is good'; } else if (HELM.nets < 25) msg = 'shoal below. slow down to fish'; } });
+    // rescue a crew in the water
+    CAPT.forEach(function (c) { if (c.st === 'sunk' && !c.saved && Math.hypot(c.x - HELM.x, c.z - HELM.z) < .14) { c.saved = true; c.t = 3; HELM.saved++; heatAt(c.x, c.z, 1.5); toast('you pulled <b>' + c.name + '</b>\'s crew out of the water'); say('rescue', 'you rescued ' + c.name + '\'s crew'); } });
+    // the harbour buys your catch
+    if (Math.hypot(HB.x - HELM.x, HB.z - HELM.z) < .2 && HELM.nets >= 1 && T - HELM.lastLand > 3) { HELM.lastLand = T; var n = Math.round(HELM.nets); HELM.nets = 0; HELM.landed += n; landCatch(n); }
+    // a storm can turn you over if you push it
+    if (W.e > .6 && Math.abs(HELM.v) > .016 && Math.random() < .006) { HELM.nets = 0; HELM.v = 0; HELM.x = HB.x; HELM.z = HB.z; toast('capsized. <b>the sea was louder than your engine</b>'); say('cap', 'you capsized and swam home'); }
+    HELM.tl.push(HELM.x, HELM.z); if (HELM.tl.length > 60) HELM.tl.splice(0, 2);
+    hudSp.textContent = (Math.abs(HELM.v) * 600).toFixed(1) + ' kn'; hudNet.textContent = Math.floor(HELM.nets) + ' / 25';
+    hudHd.textContent = String(Math.round(((90 - HELM.hd * 180 / Math.PI) % 360 + 360) % 360)).padStart(3, '0') + '°';
+    hudMsg.textContent = msg || (HELM.nets >= 25 ? 'nets full. take it to the harbour' : HELM.nets >= 1 ? 'the harbour buys your catch' : W.e > .5 ? 'rough sea. go easy on the throttle' : 'find a shoal (the bright dots)');
+  }
+
+  /* MERCHANTS: when the store has surplus fish, ships come from the horizon */
+  var MER = [];
+  function merchantStep() {
+    var surplus = ISLAND && ISLAND.world.fish > 150;
+    if (surplus && MER.length < 2 && Math.random() < .002) { var a = Math.random() * 6.283; MER.push({ x: Math.cos(a) * 3.3, z: Math.sin(a) * 3.3, hd: a + Math.PI, st: 'in', t: 0 }); say('mer', 'a merchant is coming for the surplus fish'); }
+    for (var i = MER.length - 1; i >= 0; i--) { var m = MER[i];
+      if (m.st === 'in') { steer(m, HB.x, HB.z, .007); if (Math.hypot(HB.x - m.x, HB.z - m.z) < .15) { m.st = 'wait'; m.t = 6; heatAt(HB.x, HB.z, 1); } }
+      else if (m.st === 'wait') { m.t -= 1 / 30; if (m.t <= 0) { m.st = 'out'; m.hd += Math.PI; say('mer2', 'the merchant left with fish, the store got shells'); } }
+      else { m.x += Math.cos(m.hd) * .008; m.z += Math.sin(m.hd) * .008; if (Math.hypot(m.x, m.z) > 3.6) MER.splice(i, 1); } }
+  }
+
+  /* SHARED: the harbour, the store and the ledger live in Supabase, one island for everyone */
+  var SB = { url: 'https://ggdxnznxaviugnkjsyiz.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHhuem54YXZpdWdua2pzeWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM2MDQ4MjUsImV4cCI6MjEwOTE4MDgyNX0.Qd7X-8C2rl1tTd30Vn801Fo_WagQE-7_pmfFXHPaiik' };
+  var WHO = null; try { WHO = localStorage.getItem('bentlik-who'); } catch (e) {}
+  if (!WHO || !/^[a-z0-9]{6,16}$/.test(WHO)) { WHO = ''; for (var wi = 0; wi < 10; wi++) WHO += 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]; try { localStorage.setItem('bentlik-who', WHO); } catch (e) {} }
+  var ISLAND = null, ONLINE = false, SKEW = 0, seenEv = null, pulling = false;
+  function rpc(fn, args) { return fetch(SB.url + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: SB.key, Authorization: 'Bearer ' + SB.key, 'Content-Type': 'application/json' }, body: JSON.stringify(args) }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
+  function pull() {
+    if (pulling || document.hidden) return; pulling = true;
+    rpc('island_state', { p_who: WHO, p_weather: +W.e.toFixed(3) }).then(function (s) {
+      pulling = false; ISLAND = s; ONLINE = true; SKEW = new Date(s.now).getTime() - Date.now();
+      MARKS = s.marks.map(function (m) { return { kind: m.kind, x: +m.x, z: +m.z, alive: m.alive, id: m.id }; });
+      var myName = s.me && s.me.name;
+      if (seenEv !== null && myName) s.events.forEach(function (e) { var t = new Date(e.at).getTime(); if (t > seenEv && e.msg.indexOf(myName) === 0 && (e.kind === 'back' || e.kind === 'lost')) { toast(e.kind === 'back' ? '<b>your ship came home.</b> ' + e.msg.split(': ')[1] : '<b>your ship was lost.</b> the sea keeps the cargo'); if (e.kind === 'back') bell(); } });
+      if (s.events.length) seenEv = Math.max(seenEv || 0, new Date(s.events[0].at).getTime());
+      harbourRender();
+    }).catch(function () { pulling = false; ONLINE = false; harbourRender(); });
+  }
+  function landCatch(n) {
+    if (!ONLINE) { toast('landed ' + n + ' fish. <b>the harbour is offline</b>, the island keeps them locally'); return; }
+    rpc('land_catch', { p_who: WHO, p_fish: n }).then(function (r) { toast(r.ok ? 'the harbour bought <b>' + r.fish + ' fish</b>. the whole island eats better' : r.why); if (r.ok) { bell(); pull(); } }).catch(function () { toast('the harbour did not answer'); });
+  }
+  function build(kind, x, z) {
+    if (!ONLINE) { toast('the harbour is offline. <b>nothing to build with</b>'); return; }
+    MARKS.push({ kind: kind, x: x, z: z, alive: true, pending: true }); heatAt(x, z, 2);
+    rpc('build', { p_who: WHO, p_kind: kind, p_x: +x.toFixed(3), p_z: +z.toFixed(3) }).then(function (r) { toast(r.ok ? (kind === 'house' ? 'a new house. <b>one more mouth to feed</b>' : 'a tree. <b>wood, slowly</b>') : r.why); pull(); });
+  }
+  function sendShip(cargo, route) {
+    if (!ONLINE) { toast('the harbour is offline'); return Promise.resolve(); }
+    return rpc('send_ship', { p_who: WHO, p_cargo: cargo, p_route: route }).then(function (r) { toast(r.ok ? 'ship out: <b>' + r.cargo + ' shells</b>, ' + route + '. storm risk ' + Math.round(r.storm_p * (route === 'far' ? 160 : 100)) + '%' : r.why); if (r.ok) heatAt(HB.x, HB.z, 1.5); pull(); return r; });
+  }
+  function bell() { if (!AC || !soundOn) return; var t = AC.currentTime; [880, 1320].forEach(function (f, i) { var o = AC.createOscillator(), g = AC.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(.05 / (i + 1), t); g.gain.exponentialRampToValueAtTime(.0001, t + 1.6); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + 1.7); }); }
+  pull(); setInterval(pull, 15000); document.addEventListener('visibilitychange', function () { if (!document.hidden) pull(); });
+  function shipPos(s) {
+    var t0 = new Date(s.launched_at).getTime(), t1 = new Date(s.returns_at).getTime(), now = Date.now() + SKEW, u = Math.max(0, Math.min(1, (now - t0) / (t1 - t0)));
+    var R = s.route === 'far' ? 4.6 : 2.9, d = .15 + Math.sin(Math.PI * u) * R, a = s.heading, side = Math.sin(Math.PI * u * 2) * .25;
+    return { x: HB.x + Math.cos(a) * d - Math.sin(a) * side, z: HB.z + Math.sin(a) * d + Math.cos(a) * side, hd: a + (u > .5 ? Math.PI : 0), u: u };
+  }
 
   function lifeStep(T) {
-    var nodes = alive(), e = W.e;
-    // the beam feeds what it sweeps
-    for (var s = 0; s < 2; s++) {
-      var ang = T * .8 + s * Math.PI;
-      nodes.forEach(function (n) { if (n.fixed) return; var ph = Math.atan2(n.z - LPZ, n.x - LPX), d = Math.abs(((ph - ang) % (2 * Math.PI) + 3 * Math.PI) % (2 * Math.PI) - Math.PI); if (d < .14) { n.e = Math.min(1, n.e + .02); n.c += .05; n.lit = 1; } });
-    }
-    // sandpile: charge accumulates, topples to neighbours; avalanches travel the network
-    var q = [], size = 0, origin = null;
-    nodes.forEach(function (n) { n.c += .0025 * (1 + SKY.day) * (n.fixed ? 0 : 1); n.f *= .9; n.lit = (n.lit || 0) * .85; n.born *= .94; if (!n.fixed) n.e -= .0005; if (n.c >= 1) q.push(n); });
-    while (q.length && size < 400) {
-      var n = q.shift(); if (n.c < 1 || n.dead) continue;
-      n.c -= 1; n.f = 1; size++; if (!origin) origin = n; heatAt(n.x, n.z, .55);
-      if (n.nb.length) { var to = n.nb[Math.floor(Math.random() * n.nb.length)]; if (PK.length < 160) { PK.push({ a: n, b: to, t: 0 }); trafficAdd(n, to); } }
-      var share = .8 / Math.max(1, n.nb.length); n.nb.forEach(function (m) { if (m.fixed) return; m.c += share; if (m.c >= 1) q.push(m); });
-    }
-    if (size) { STAT.av = size; STAT.avMax = Math.max(STAT.avMax * .999, size); }
-    if (size >= 6 && origin && FX.length < 24) { FX.push({ x: origin.x, y: origin.y, z: origin.z, t: 1, k: 'o', s: size }); say('av', 'avalanche of ' + size + ' nodes'); }
-    if (size >= 16 && T - lastTremor > 20) { lastTremor = T; kick(Math.min(2.2, .4 + size * .035)); say('avk', 'avalanche of ' + size + ' → tremor at sea'); }
-    // signals travel the links; at the lighthouse they become fireflies
-    for (var i = PK.length - 1; i >= 0; i--) { var p = PK[i]; p.t += .05; if (p.a.dead || p.b.dead) { PK.splice(i, 1); continue; }
-      if (p.t >= 1) { PK.splice(i, 1); p.b.e = Math.min(1, p.b.e + .03); heatAt(p.b.x, p.b.z, .2); if (p.b.fixed && FF.length < 120) { spawnFly(LAMP[0], LAMP[1], LAMP[2], .8); if (Math.random() < .08) say('ff', 'a signal reached the lighthouse'); } else if (Math.random() < .25 && p.b.nb.length && PK.length < 160) { var nx = p.b.nb[Math.floor(Math.random() * p.b.nb.length)]; if (nx !== p.a) { PK.push({ a: p.b, b: nx, t: 0 }); trafficAdd(p.b, nx); } } } }
-    // the sea: storms break nodes
-    if (e > .3) nodes.forEach(function (n) { if (!n.fixed && Math.random() < e * e * .01) n.e -= .35; });
-    var died = 0; nodes.forEach(function (n) { if (!n.fixed && n.e <= 0) { kill(n); died++; } });
-    if (died > 1) say('die', 'the sea took ' + died + ' nodes');
-    if (e > .45 && !wasStorm) say('storm', 'storm. the colony holds on'); wasStorm = e > .45;
-    // calm: the colony grows from its strongest nodes
-    if (e < .15 && nodes.length < 110 && Math.random() < .06) {
-      var par = nodes[Math.floor(Math.random() * nodes.length)];
-      if (par && par.e > .55) { var best = null, bd = 9; for (var t = 0; t < 12; t++) { var c = LAND[Math.floor(Math.random() * LAND.length)], dd = Math.hypot(c[0] - par.x, c[1] - par.z); if (dd > .07 && dd < .24 && dd < bd) { bd = dd; best = c; } }
-        if (best) { addNode(best[0], best[1], .32); par.e -= .2; if (Math.random() < .2) say('grow', 'the colony grew to ' + (nodes.length + 1)); } }
-    }
-    // drift: a current around the island, stronger in a storm. What reaches the coast can take root
-    if (DR.length < 140 && Math.random() < .12 + e * 1.4) { var a0 = Math.random() * 6.283, r0 = 2.1 + Math.random() * .5; DR.push({ x: Math.cos(a0) * r0, z: Math.sin(a0) * r0, l: 1 }); }
-    for (var k = DR.length - 1; k >= 0; k--) { var d = DR[k], rr = Math.hypot(d.x, d.z) || 1, sp = .003 + e * .018;
-      var cx = -d.z / rr, cz = d.x / rr, inx = -d.x / rr, inz = -d.z / rr, w = n2(d.x * 1.7 + T * .1, d.z * 1.7) - .5;
-      d.x += (cx * .8 + inx * (.35 + w)) * sp; d.z += (cz * .8 + inz * (.35 - w)) * sp; d.l -= .0015;
-      if (ter(d.x, d.z) > -.035) { DR.splice(k, 1); if (Math.random() < .35 && nodes.length < 110) { var near = null, nd = .2; LAND.forEach(function (c) { var q2 = Math.hypot(c[0] - d.x, c[1] - d.z); if (q2 < nd) { nd = q2; near = c; } }); if (near) { var nn = addNode(near[0], near[1], .3); nn.born = 1; heatAt(near[0], near[1], .9); say('seed', 'a seed washed ashore'); } } continue; }
-      if (d.l <= 0) DR.splice(k, 1); }
-    // swarm: fireflies seek the strongest nodes, keep their distance, flee the cursor and storms
-    var night = 1 - SKY.day;
-    for (var j = FF.length - 1; j >= 0; j--) { var b = FF[j];
-      var tg = null, td = .9; nodes.forEach(function (n) { if (n.fixed || n.e < .35) return; var q3 = Math.hypot(n.x - b.x, n.z - b.z); if (q3 < td) { td = q3; tg = n; } });
-      var ax = 0, ay = 0, az = 0;
-      if (gathered > 0) { ax += (LAMP[0] - b.x) * .002; az += (LAMP[2] - b.z) * .002; ay += (LAMP[1] + .05 - b.y) * .002; }
-      else if (tg) { ax += (tg.x - b.x) * .0016; az += (tg.z - b.z) * .0016; ay += (tg.y + .06 - b.y) * .002; if (td < .05) { tg.e -= .012; b.l = Math.min(2.2, b.l + .02); heatAt(tg.x, tg.z, .04); } }
-      else { ax += (LAMP[0] - b.x) * .0008 * (.5 + night); az += (LAMP[2] - b.z) * .0008 * (.5 + night); ay += (LAMP[1] - b.y) * .001; }
-      for (var o = 0; o < FF.length; o += 2) { var c2 = FF[o]; if (c2 === b) continue; var dx = b.x - c2.x, dz = b.z - c2.z, q4 = dx * dx + dz * dz; if (q4 < .0016 && q4 > 0) { ax += dx * .02; az += dz * .02; } }
-      if (b.sx !== undefined && fine) { var mx = lpT[0] - b.sx, my = lpT[1] - b.sy, md = Math.hypot(mx, my); if (md < 90) { var push = (90 - md) / 90 * .004; ax -= CAM.r[0] * (mx / md) * push; az -= CAM.r[2] * (mx / md) * push; ay += (my / md) * push * .6; } }
-      ax += (Math.random() - .5) * .0016 * (1 + e * 6); az += (Math.random() - .5) * .0016 * (1 + e * 6); ay += (Math.random() - .5) * .0008;
-      b.vx = (b.vx + ax) * .95; b.vy = (b.vy + ay) * .95; b.vz = (b.vz + az) * .95;
-      var vm = Math.hypot(b.vx, b.vz), mxv = .018 + e * .02; if (vm > mxv) { b.vx *= mxv / vm; b.vz *= mxv / vm; }
-      b.x += b.vx; b.y = Math.max(ter(b.x, b.z) + .03, Math.min(.75, b.y + b.vy)); b.z += b.vz;
-      b.l -= .0028 + e * .006; b.ph += .2;
-      if (b.l > 1.8 && FF.length < 120) { b.l *= .5; spawnFly(b.x, b.y, b.z, b.l); }
-      if (b.l <= 0 || Math.hypot(b.x, b.z) > 2.6) FF.splice(j, 1);
-    }
-    if (gathered > 0) gathered -= 1;
-    heatStep(); nodes.forEach(function (n) { if (n.tr) for (var k in n.tr) n.tr[k] *= .985; });
+    var dt = 1 / 30;
+    shoalStep(dt); captStep(dt); driftStep(); helmStep(); merchantStep(); heatStep();
     PH.sea.push([W.x, W.v / W.w0]); if (PH.sea.length > 260) PH.sea.shift();
-    for (var m = FX.length - 1; m >= 0; m--) { FX[m].t -= .03; if (FX[m].t <= 0) FX.splice(m, 1); }
   }
-  function trafficAdd(a, b) { a.tr = a.tr || {}; b.tr = b.tr || {}; a.tr[b.id] = (a.tr[b.id] || 0) + 1; b.tr[a.id] = (b.tr[a.id] || 0) + 1; }
-  var PH = { sea: [], eco: [] };
-  function spawnFly(x, y, z, l) { FF.push({ x: x, y: y, z: z, vx: (Math.random() - .5) * .02, vy: (Math.random() - .5) * .01, vz: (Math.random() - .5) * .02, l: l, ph: Math.random() * 6 }); }
-  for (var fi = 0; fi < 26; fi++) spawnFly(LPX + (Math.random() - .5) * .6, .3, LPZ + (Math.random() - .5) * .6, 1);
 
-  var COL = { paper: '207,203,190', green: '0,166,81', lime: '204,237,92', ink: '13,14,11', cream: '240,245,214' };
+  /* drawing: everything as small engraved marks on the world */
+  var COL = { paper: '207,203,190', green: '0,166,81', lime: '204,237,92', ink: '13,14,11', cream: '240,245,214', deep: '8,41,26' };
+  function boatSprite(c, p, hd, hullRGB, sailRGB, scale) {
+    var q = proj(p.x + Math.cos(hd) * .05, .02, p.z + Math.sin(hd) * .05), b = proj(p.x, .02, p.z); if (!q || !b) return;
+    var ang = Math.atan2(q[1] - b[1], q[0] - b[0]), s = Math.max(.6, Math.min(2.2, 2.2 / b[2])) * (scale || 1);
+    c.save(); c.translate(b[0], b[1]); c.rotate(ang);
+    c.fillStyle = 'rgba(' + COL.ink + ',.85)'; c.fillRect(-6 * s, -2.5 * s, 12 * s, 5 * s);
+    c.fillStyle = 'rgb(' + hullRGB + ')'; c.beginPath(); c.moveTo(-5 * s, -1.6 * s); c.lineTo(3 * s, -1.6 * s); c.lineTo(5.5 * s, 0); c.lineTo(3 * s, 1.6 * s); c.lineTo(-5 * s, 1.6 * s); c.closePath(); c.fill();
+    c.restore();
+    c.fillStyle = 'rgb(' + sailRGB + ')'; c.beginPath(); c.moveTo(b[0], b[1] - 2 * s); c.lineTo(b[0], b[1] - 11 * s); c.lineTo(b[0] + 5 * s, b[1] - 3 * s); c.closePath(); c.fill();
+  }
+  function trail(c, tl, rgb, a0) { for (var i = 0; i < tl.length - 2; i += 2) { var p = proj(tl[i], .005, tl[i + 1]); if (!p) continue; c.fillStyle = 'rgba(' + rgb + ',' + (a0 * i / tl.length).toFixed(2) + ')'; c.fillRect(p[0] - .5, p[1] - .5, 1.5, 1.5); } }
   function lifeDraw() {
     var c = lx; c.setTransform(DPR, 0, 0, DPR, 0, 0); c.clearRect(0, 0, innerWidth, innerHeight);
-    if (document.body.classList.contains('bare-life')) return;
-    var day = SKY.day, base = day > .5 ? COL.ink : COL.paper, nodes = alive();
-    nodes.forEach(function (n) { n.s = proj(n.x, n.y, n.z); });
-    // heat map: where the island has been busy
-    if (SET.heat) { var cellW = 3 / HN;
-      for (var j = 0; j < HN; j++) for (var i = 0; i < HN; i++) { var v = HM[j * HN + i]; if (v < .04) continue;
-        var wx = -1.5 + (i + .5) * cellW, wz = -1.5 + (j + .5) * cellW, hp = proj(wx, Math.max(ter(wx, wz), 0) + .004, wz); if (!hp) continue;
-        var sz2 = cellW * 1.9 * CAM.H / hp[2]; c.fillStyle = 'rgba(' + heatRGB(v * .55) + ',' + Math.min(.78, .15 + v * .45).toFixed(2) + ')';
-        c.fillRect(hp[0] - sz2 / 2, hp[1] - sz2 * .22, sz2 + .5, sz2 * .44 + .5); } }
-    // links: dotted like a circuit in pencil; busy links glow hotter and thicker
-    c.setLineDash([1, 3]);
-    nodes.forEach(function (n) { if (!n.s) return; n.nb.forEach(function (m) { if (m.id < n.id || !m.s) return; var t = (n.tr && n.tr[m.id]) || 0;
-      c.lineWidth = 1 + Math.min(1.5, t / 4); c.strokeStyle = 'rgba(' + heatRGB(.25 + Math.min(.75, t / 6)) + ',' + (.55 + Math.min(.45, t / 8)).toFixed(2) + ')';
-      c.beginPath(); c.moveTo(n.s[0], n.s[1]); c.lineTo(m.s[0], m.s[1]); c.stroke(); }); });
-    c.setLineDash([]); c.lineWidth = 1;
+    if (!SET.life || !CAM) return;
+    var day = SKY.day, night = 1 - day, base = day > .5 ? COL.ink : COL.paper, fed = !ISLAND || ISLAND.world.fish > 0;
+    // heat map
+    if (SET.heat) { var cw = HS / HN;
+      for (var j = 0; j < HN; j++) for (var i = 0; i < HN; i++) { var v = HM[j * HN + i]; if (v < .05) continue;
+        var wx = -HS / 2 + (i + .5) * cw, wz = -HS / 2 + (j + .5) * cw, hp = proj(wx, Math.max(ter(wx, wz), 0) + .004, wz); if (!hp) continue;
+        var sz = cw * 1.9 * CAM.H / hp[2]; c.fillStyle = 'rgba(' + heatRGB(v * .55) + ',' + Math.min(.7, .12 + v * .4).toFixed(2) + ')'; c.fillRect(hp[0] - sz / 2, hp[1] - sz * .22, sz + .5, sz * .44 + .5); } }
     c.textAlign = 'center'; c.textBaseline = 'middle';
+    // forest: engraved ink trees
+    FOREST.forEach(function (t) { var p = proj(t.x, ter(t.x, t.z), t.z); if (!p) return; var s = Math.max(1, Math.min(3, 3.2 / p[2])) * t.s; c.fillStyle = 'rgba(' + COL.ink + ',.8)'; c.fillRect(p[0] - .5 * s, p[1] - 4 * s, s, 4 * s); c.fillRect(p[0] - 1.5 * s, p[1] - 3 * s, 3 * s, s); c.fillRect(p[0] - s, p[1] - 4.5 * s, 2 * s, s); });
+    // shared marks: houses and planted trees
+    MARKS.forEach(function (m) { var p = proj(m.x, ter(m.x, m.z), m.z); if (!p) return; var s = Math.max(1, Math.min(3, 3.4 / p[2]));
+      if (m.kind === 'tree') { c.fillStyle = 'rgba(' + COL.deep + ',.95)'; c.fillRect(p[0] - .5 * s, p[1] - 4 * s, s, 4 * s); c.fillRect(p[0] - 1.5 * s, p[1] - 3 * s, 3 * s, 1.5 * s); c.fillRect(p[0] - s, p[1] - 5 * s, 2 * s, 1.5 * s); return; }
+      c.fillStyle = 'rgba(' + COL.ink + ',' + (m.alive ? .95 : .45) + ')'; c.fillRect(p[0] - 3 * s, p[1] - 4 * s, 6 * s, 4 * s); c.fillRect(p[0] - 2 * s, p[1] - 5.5 * s, 4 * s, 1.5 * s);
+      if (m.alive) { c.fillStyle = 'rgba(' + (night > .4 && fed ? COL.lime : COL.paper) + ',' + (fed ? 1 : .35) + ')'; c.fillRect(p[0] - .8 * s, p[1] - 2.8 * s, 1.6 * s, 1.6 * s); }
+      if (m.pending) { c.strokeStyle = 'rgba(' + COL.green + ',.9)'; c.strokeRect(p[0] - 5 * s, p[1] - 7 * s, 10 * s, 8 * s); } });
+    // the harbour: a pier and a lamp
+    var p1 = proj(HB.cx, .02, HB.cz), p2 = proj(HB.x, .02, HB.z);
+    if (p1 && p2) { c.strokeStyle = 'rgba(' + COL.paper + ',.9)'; c.lineWidth = 2; c.beginPath(); c.moveTo(p1[0], p1[1]); c.lineTo(p2[0], p2[1]); c.stroke(); c.lineWidth = 1; c.fillStyle = 'rgb(' + (ONLINE ? COL.green : COL.paper) + ')'; c.fillRect(p2[0] - 1.5, p2[1] - 8, 3, 3); }
     // drift
     c.font = '500 10px "Geist Mono", ui-monospace, monospace';
-    DR.forEach(function (d) { var p = proj(d.x, .005, d.z); if (!p) return; c.fillStyle = 'rgba(' + base + ',' + (.18 + .3 * Math.min(1, d.l)).toFixed(2) + ')'; c.fillText('~', p[0], p[1]); });
-    // nodes: the glyph is the state
-    nodes.forEach(function (n) { if (!n.s || n.fixed) return; var p = n.s, sz = Math.max(8, Math.min(15, 40 / p[2]));
-      var g = n.e < .25 ? '·' : n.e < .5 ? ':' : n.e < .75 ? '+' : '#';
-      c.font = '500 ' + sz.toFixed(0) + 'px "Geist Mono", ui-monospace, monospace';
-      c.fillStyle = 'rgba(' + COL.ink + ',.82)'; c.fillRect(p[0] - sz * .38, p[1] - sz * .5, sz * .76, sz);
-      if (n.f > .15 || n.lit > .2) { c.fillStyle = 'rgba(' + COL.green + ',' + Math.max(n.f, n.lit * .8).toFixed(2) + ')'; c.fillText(n.f > .15 ? '@' : g, p[0], p[1]); }
-      if (n.f <= .15) { c.fillStyle = 'rgba(' + (n.c > .85 ? COL.lime : COL.paper) + ',' + (.45 + .55 * n.e).toFixed(2) + ')'; c.fillText(g, p[0], p[1]); }
-      if (n.born > .1) { c.strokeStyle = 'rgba(' + COL.green + ',' + n.born.toFixed(2) + ')'; c.strokeRect(p[0] - 7, p[1] - 7, 14, 14); }
+    DR.forEach(function (d) { var p = proj(d.x, .005, d.z); if (!p) return; c.fillStyle = 'rgba(' + base + ',' + (.25 + .35 * Math.min(1, d.l)).toFixed(2) + ')'; c.fillText('=', p[0], p[1]); });
+    // fish shoals: bright dots, more dots, more fish
+    SHOALS.forEach(function (s) { var cnt = Math.round(s.n / 3);
+      for (var k = 0; k < cnt; k++) { var a = h2(k, s.id) * 6.283 + T * .3 * (k % 2 ? 1 : -1), r = .03 + h2(s.id, k) * .12 * (1 + W.e), fx = s.x + Math.cos(a) * r, fz = s.z + Math.sin(a) * r * .8, p = proj(fx, .01, fz); if (!p) continue;
+        var tw = .5 + .5 * Math.sin(T * 3 + k); c.fillStyle = night > .3 ? 'rgba(' + COL.lime + ',' + (.45 + .5 * tw).toFixed(2) + ')' : 'rgba(' + COL.paper + ',' + (.5 + .4 * tw).toFixed(2) + ')'; c.fillRect(p[0] - 1, p[1] - 1, 2, 2); } });
+    // captains, their wakes, wrecks
+    CAPT.forEach(function (cp) {
+      if (cp.st === 'sunk') { var p = proj(cp.x, .01, cp.z); if (!p) return; c.font = '600 12px "Geist Mono", ui-monospace, monospace'; c.fillStyle = 'rgba(' + (cp.saved ? COL.paper : COL.lime) + ',' + (.5 + .5 * Math.sin(T * 6)).toFixed(2) + ')'; c.fillText(cp.saved ? '×' : '!', p[0], p[1] - 4); return; }
+      trail(c, cp.tl, base, .5);
+      boatSprite(c, cp, cp.hd, COL.paper, cp.hold > 10 ? COL.lime : COL.paper, .9);
     });
-    // signals
-    c.fillStyle = 'rgb(' + COL.green + ')'; c.font = '600 11px "Geist Mono", ui-monospace, monospace';
-    PK.forEach(function (k) { var a = k.a.s, b = k.b.s; if (!a || !b) return; c.fillText('•', a[0] + (b[0] - a[0]) * k.t, a[1] + (b[1] - a[1]) * k.t); });
-    // swarm: at night they glow, by day they are specks of ink
-    var night = 1 - day;
-    FF.forEach(function (b) { var p = proj(b.x, b.y, b.z); if (!p) { b.sx = undefined; return; } b.sx = p[0]; b.sy = p[1];
-      var tw = .55 + .45 * Math.sin(b.ph), a = Math.min(1, b.l) * tw;
-      b.tl = b.tl || []; b.tl.push(p[0], p[1]); if (b.tl.length > 12) b.tl.splice(0, 2);
-      for (var q5 = 0; q5 < b.tl.length - 2; q5 += 2) { c.fillStyle = 'rgba(' + (night > .3 ? COL.lime : COL.ink) + ',' + (a * .5 * q5 / b.tl.length).toFixed(2) + ')'; c.fillRect(b.tl[q5], b.tl[q5 + 1], 1, 1); }
-      if (night > .3) { c.fillStyle = 'rgba(' + COL.lime + ',' + (a * .22).toFixed(2) + ')'; c.fillRect(p[0] - 3, p[1] - 3, 6, 6); c.fillStyle = 'rgba(' + COL.cream + ',' + a.toFixed(2) + ')'; c.fillRect(p[0] - 1, p[1] - 1, 2, 2); }
-      else { c.fillStyle = 'rgba(' + COL.ink + ',' + (a * .85).toFixed(2) + ')'; c.fillRect(p[0] - 1, p[1] - 1, 2, 2); }
-    });
-    // effects: rings for avalanches, a cross where a node was lost
-    FX.forEach(function (f) { var p = proj(f.x, f.y, f.z); if (!p) return;
-      if (f.k === 'o') { var r = (1 - f.t) * (14 + Math.min(f.s, 30) * 2); c.strokeStyle = 'rgba(' + COL.green + ',' + f.t.toFixed(2) + ')'; c.setLineDash([2, 3]); c.beginPath(); c.arc(p[0], p[1], r, 0, 6.283); c.stroke(); c.setLineDash([]); }
-      else { c.font = '500 12px "Geist Mono", ui-monospace, monospace'; c.fillStyle = 'rgba(' + base + ',' + f.t.toFixed(2) + ')'; c.fillText('×', p[0], p[1] - (1 - f.t) * 10); } });
+    // merchants and expeditions (other visitors' ships too)
+    MER.forEach(function (m) { boatSprite(c, m, m.hd, COL.paper, COL.cream, 1.5); });
+    if (ISLAND) ISLAND.ships.forEach(function (s) { var sp = shipPos(s); boatSprite(c, sp, sp.hd, s.mine ? COL.green : COL.paper, s.mine ? COL.lime : COL.cream, 1.25);
+      var p = proj(sp.x, .02, sp.z); if (p && s.mine) { c.font = '500 9px "Geist Mono", ui-monospace, monospace'; c.fillStyle = 'rgb(' + COL.lime + ')'; c.fillText('you', p[0], p[1] - 22); } });
+    // your boat
+    if (HELM.on || HELM.v !== 0) { trail(c, HELM.tl, COL.cream, .8); boatSprite(c, HELM, HELM.hd, COL.green, COL.cream, 1.2); }
   }
-  // plant a node where you click on the island
+
+  // click the island to build; click the sea for a ripple
+  var bm = document.getElementById('build'), bmAt = null;
   addEventListener('click', function (e) {
-    var t = e.target; if (!(t === document.body || t.id === 'world' || t.classList.contains('desk'))) return; if (!CAM) return;
-    var best = null, bd = 26; LAND.forEach(function (l) { var p = proj(l[0], ter(l[0], l[1]), l[1]); if (!p) return; var d = Math.hypot(p[0] - e.clientX, p[1] - e.clientY); if (d < bd) { bd = d; best = l; } });
-    if (best) { var n = addNode(best[0], best[1], .7); n.c = .99; heatAt(best[0], best[1], 2.5); say('plant', 'you planted a node'); sfx('open'); } else { ripple(e.clientX, e.clientY); W.v += (Math.random() - .5) * .6; }
+    var t = e.target; if (!(t === document.body || t.id === 'world' || t.classList.contains('desk'))) { if (!t.closest('#build')) bm.hidden = true; return; } if (!CAM) return;
+    var best = null, bd = 22; LAND.forEach(function (l) { var p = proj(l[0], ter(l[0], l[1]), l[1]); if (!p) return; var d = Math.hypot(p[0] - e.clientX, p[1] - e.clientY); if (d < bd) { bd = d; best = l; } });
+    if (best) { bmAt = best; bm.hidden = false; bm.style.left = Math.min(e.clientX + 10, innerWidth - 220) + 'px'; bm.style.top = Math.min(e.clientY + 10, innerHeight - 120) + 'px';
+      var w = ISLAND ? ISLAND.world.wood : 0; document.getElementById('bm-wood').textContent = ONLINE ? w + ' wood in the store' : 'harbour offline'; }
+    else { bm.hidden = true; ripple(e.clientX, e.clientY); W.v += (Math.random() - .5) * .6; }
   });
-  // type "bentlik": the swarm comes home
+  bm.addEventListener('click', function (e) { var b = e.target.closest('[data-build]'); if (!b) return; if (b.dataset.build !== 'no' && bmAt) build(b.dataset.build, bmAt[0] + (Math.random() - .5) * .03, bmAt[1] + (Math.random() - .5) * .03); bm.hidden = true; });
+  // type "bentlik": every captain comes home
   var typed = '';
-  addEventListener('keydown', function (e) { if (e.key.length !== 1) return; typed = (typed + e.key.toLowerCase()).slice(-7); if (typed === 'bentlik') { gathered = 240; say('home', 'bentlik called. everyone came home'); } });
+  addEventListener('keydown', function (e) { if (e.key.length !== 1 || HELM.on) return; typed = (typed + e.key.toLowerCase()).slice(-7); if (typed === 'bentlik') { CAPT.forEach(function (c) { if (c.st === 'out' || c.st === 'fish') c.st = 'home'; }); say('home', 'bentlik called. every captain turned home'); } });
+
+  /* HARBOUR window */
+  var hv = function (id) { return document.getElementById(id); };
+  var harbCargo = hv('hb-cargo'), harbRoute = 'near';
+  function harbourRender() {
+    hv('hb-dot').className = 'dot ' + (ONLINE ? 'on' : '');
+    hv('hb-net').textContent = ONLINE ? 'shared · live' : 'offline';
+    if (!ISLAND) return;
+    var w = ISLAND.world;
+    hv('hb-fish').textContent = w.fish; hv('hb-wood').textContent = w.wood; hv('hb-shells').textContent = w.shells; hv('hb-houses').textContent = w.houses;
+    hv('hb-fv').textContent = '1 fish = ' + (+w.fish_value).toFixed(2) + ' shells';
+    hv('hb-trees').textContent = w.trees + ' planted trees';
+    var risk = +w.storm_p; hv('hb-risk').textContent = (risk * 100).toFixed(1) + '%'; hv('hb-riskbar').style.width = Math.min(100, risk * 100 / .64 * 100) + '%';
+    harbCargo.max = Math.max(1, Math.min(200, w.shells)); if (+harbCargo.value > +harbCargo.max) harbCargo.value = harbCargo.max;
+    evCalc();
+    var ships = ISLAND.ships;
+    hv('hb-ships').innerHTML = ships.length ? ships.slice(0, 8).map(function (s) { var left = Math.max(0, (new Date(s.returns_at).getTime() - Date.now() - SKEW) / 1000); return '<div class="' + (s.mine ? 'me' : '') + '"><span>' + (s.mine ? 'you' : s.name) + '</span><span>' + s.route + '</span><span>' + Math.round(s.cargo) + ' sh</span><span>' + Math.floor(left / 60) + ':' + String(Math.floor(left % 60)).padStart(2, '0') + '</span></div>'; }).join('') : '<p class="dim">No ships at sea.</p>';
+    var me = ISLAND.me || { sent: 0, back: 0, lost: 0, pnl: 0, name: '' };
+    hv('hb-me').textContent = me.name + ' · sent ' + me.sent + ' · back ' + me.back + ' · lost ' + me.lost + ' · ' + (me.pnl >= 0 ? '+' : '') + me.pnl + ' shells';
+    hv('hb-stats').innerHTML = '<span>peak <b>' + w.peak + '</b></span><span>ships <b>' + w.ships_sent + '</b> · back <b>' + w.ships_back + '</b> · lost <b>' + w.ships_lost + '</b></span><span>best haul <b>+' + w.best_haul + '</b></span><span>worst loss <b>−' + w.worst_loss + '</b></span>';
+    hv('hb-log').innerHTML = ISLAND.events.slice(0, 6).map(function (e) { return '<div><span class="t">' + fmtS.format(new Date(e.at)).slice(0, 5) + '</span>' + e.msg + '</div>'; }).join('');
+    ledgerDraw();
+  }
+  function evCalc() {
+    if (!ISLAND) return; var w = ISLAND.world, c = +harbCargo.value, far = harbRoute === 'far', p = Math.min(1, +w.storm_p * (far ? 1.6 : 1)), m = far ? 1.7 : 1.25, ev = (1 - p) * m - 1;
+    hv('hb-cv').textContent = c + ' shells · ' + Math.round(c / Math.max(1, w.shells) * 100) + '% of store';
+    hv('hb-ev').innerHTML = 'Comes home (' + Math.round((1 - p) * 100) + '%): <b>+' + Math.round(c * (m - 1)) + '</b>. Lost (' + Math.round(p * 100) + '%): <b>−' + c + '</b>. Expected: <b class="' + (ev >= 0 ? 'pos' : 'neg') + '">' + (ev >= 0 ? '+' : '') + (c * ev).toFixed(1) + ' (' + (ev >= 0 ? '+' : '') + Math.round(ev * 100) + '%)</b>' + (ev < 0 ? '<br><span class="neg">the odds are against you. a good captain waits.</span>' : '');
+  }
+  harbCargo.addEventListener('input', evCalc);
+  document.querySelectorAll('[data-route]').forEach(function (b) { b.addEventListener('click', function () { harbRoute = b.dataset.route; document.querySelectorAll('[data-route]').forEach(function (q) { q.setAttribute('aria-pressed', String(q === b)); }); evCalc(); }); });
+  hv('hb-send').addEventListener('click', function () { var b = hv('hb-send'); b.disabled = true; sendShip(+harbCargo.value, harbRoute).then(function () { setTimeout(function () { b.disabled = false; }, 2000); }); });
+  hv('hb-helm').addEventListener('click', function () { helm(true); });
+  setInterval(function () { if (ISLAND && !wins.harbour.hidden) harbourRender(); }, 1000);
+  var lgC = hv('hb-ledger'), lgX = lgC.getContext('2d');
+  function ledgerDraw() {
+    var L = ISLAND.ledger.slice(), x = lgX, Wd = lgC.width, Hd = lgC.height; x.fillStyle = '#0D0E0B'; x.fillRect(0, 0, Wd, Hd);
+    var w = ISLAND.world, liveEq = +w.shells + +w.fish * +w.fish_value + +w.wood * .5; L.push({ equity: liveEq, drawdown: w.peak > 0 ? 1 - liveEq / w.peak : 0 });
+    var mn = Infinity, mx = -Infinity; L.forEach(function (r) { mn = Math.min(mn, +r.equity); mx = Math.max(mx, +r.equity, +w.peak); }); if (mx - mn < 10) { mn -= 5; mx += 5; }
+    x.fillStyle = '#34352F'; for (var g = 0; g < 4; g++) x.fillRect(0, Math.round(10 + g * (Hd - 30) / 3), Wd, 1);
+    var py = function (v) { return 10 + (1 - (v - mn) / (mx - mn)) * (Hd - 40); }, px = function (i) { return 10 + i / Math.max(1, L.length - 1) * (Wd - 20); };
+    x.strokeStyle = '#4A4B44'; x.setLineDash([4, 4]); x.beginPath(); x.moveTo(0, py(+w.peak)); x.lineTo(Wd, py(+w.peak)); x.stroke(); x.setLineDash([]);
+    x.strokeStyle = '#00A651'; x.lineWidth = 3; x.beginPath(); L.forEach(function (r, i) { if (i) x.lineTo(px(i), py(+r.equity)); else x.moveTo(px(i), py(+r.equity)); }); if (L.length === 1) x.lineTo(Wd - 10, py(+L[0].equity)); x.stroke(); x.lineWidth = 1;
+    L.forEach(function (r, i) { var dd = Math.min(1, +r.drawdown * 4); if (dd > .01) { x.fillStyle = 'rgba(204,237,92,' + (.25 + dd * .6).toFixed(2) + ')'; x.fillRect(px(i) - 3, Hd - 22, 6, -dd * 14); } });
+    x.font = '500 18px "Geist Mono", ui-monospace, monospace'; x.fillStyle = '#8F8C82'; x.fillText('equity ' + Math.round(liveEq) + '  ·  drawdown ' + Math.max(0, (1 - liveEq / Math.max(1, +w.peak)) * 100).toFixed(1) + '%', 12, Hd - 6);
+  }
+  // captains' table
+  function captRender() {
+    if (wins.harbour.hidden) return;
+    var rows = CAPT.slice().sort(function (a, b) { return (b.catch - b.lost * 30) - (a.catch - a.lost * 30); });
+    hv('hb-capt').innerHTML = rows.map(function (c, i) { return '<div' + (i === 0 ? ' class="lead"' : '') + ' title="' + c.note + '"><span>' + (i === 0 ? '▲ ' : '') + c.name + '</span><span>' + c.style + '</span><span>' + c.trips + '</span><span>' + Math.round(c.catch) + '</span><span>' + c.lost + '</span><span class="st">' + (c.st === 'dock' ? 'in port' : c.st === 'sunk' ? (c.saved ? 'rescued' : 'in the water') : c.st === 'fish' ? 'fishing' : c.st === 'home' ? 'coming home' : 'at sea') + '</span></div>'; }).join('');
+  }
+  setInterval(captRender, 1000);
+
 
   // render: the dither modes run in the shader; glyph, blocks, braille and dots read the analog image back and draw characters
   var pix = null;
@@ -1469,33 +1726,96 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   var sparks = Array.prototype.map.call(document.querySelectorAll('.sysrow canvas'), function (cc) { return cc.getContext('2d'); });
   var svs = [0, 1, 2, 3].map(function (i) { return document.getElementById('sv-' + i); });
   var statT = 0;
+  function fleetOut() { return CAPT.filter(function (c) { return c.st !== 'dock' && c.st !== 'sunk'; }).length + (ISLAND ? ISLAND.ships.length : 0) + (HELM.on ? 1 : 0); }
   function sysTick(T) {
     if (T - statT < .5) return; statT = T;
-    var nodes = alive().length - 1, vals = [W.e, nodes, FF.length, DR.length], maxs = [1, 110, 120, 140];
+    var houses = ISLAND ? ISLAND.world.houses : MARKS.filter(function (m) { return m.kind === 'house' && m.alive; }).length;
+    var vals = [W.e, Math.round(fishTotal()), houses, fleetOut()], maxs = [1, 420, 60, 20];
     vals.forEach(function (v, i) { var hs = STAT.hist[i]; hs.push(v); if (hs.length > 60) hs.shift(); });
     if (wins.systems.hidden) return;
     vals.forEach(function (v, i) { svs[i].textContent = i ? String(v) : v.toFixed(2);
       var c = sparks[i], hs = STAT.hist[i]; c.fillStyle = '#121310'; c.fillRect(0, 0, 120, 22); c.fillStyle = '#34352F'; c.fillRect(0, 21, 120, 1);
-      c.fillStyle = i === 0 && v > .42 ? '#00A651' : i === 2 ? '#CCED5C' : '#CFCBBE';
+      c.fillStyle = i === 0 && v > .42 ? '#00A651' : i === 1 ? '#CCED5C' : '#CFCBBE';
       hs.forEach(function (y, k) { var hgt = Math.max(1, Math.round(Math.min(1, y / maxs[i]) * 20)); c.fillRect(k * 2, 21 - hgt, 1, hgt); }); });
   }
 
   [document.getElementById('sys-q'), document.getElementById('sys-q2')].forEach(function (b) { b.addEventListener('click', function () { var ex = document.getElementById('sys-ex'); ex.hidden = !ex.hidden; document.getElementById('sys-q').setAttribute('aria-expanded', String(!ex.hidden)); wins.systems.style.maxHeight = (innerHeight - wins.systems.offsetTop - 16) + 'px'; }); });
-  // phase portraits: the sea spirals in to zero; colony against swarm draws loops (predator and prey)
+  // phase portraits: the sea spirals back to zero; fish against fishing draws loops (predator and prey)
   var phC = document.getElementById('phase'), phX = phC.getContext('2d'), ecoT = 0;
   function phaseDraw() {
-    if (T - ecoT > .25) { ecoT = T; PH.eco.push([alive().length - 1, FF.length]); if (PH.eco.length > 240) PH.eco.shift(); }
+    if (T - ecoT > .25) { ecoT = T; var eff = CAPT.filter(function (c) { return c.st === 'fish' || c.st === 'out'; }).length + (HELM.on ? 1 : 0); PH.eco.push([fishTotal(), eff + Math.random() * .2]); if (PH.eco.length > 300) PH.eco.shift(); }
     if (wins.systems.hidden) return;
     var x = phX, Wd = phC.width, Hd = phC.height, half = Wd / 2; x.fillStyle = '#121310'; x.fillRect(0, 0, Wd, Hd);
     x.fillStyle = '#34352F'; x.fillRect(half, 8, 1, Hd - 16); x.fillRect(16, Hd / 2, half - 32, 1); x.fillRect(half / 2, 16, 1, Hd - 32);
-    x.font = '500 16px "Geist Mono", ui-monospace, monospace'; x.fillStyle = '#8F8C82'; x.fillText('SEA  x · v', 12, 24); x.fillText('COLONY · SWARM', half + 12, 24);
+    x.font = '500 16px "Geist Mono", ui-monospace, monospace'; x.fillStyle = '#8F8C82'; x.fillText('SEA  x · v', 12, 24); x.fillText('FISH · BOATS OUT', half + 12, 24);
     var s1 = PH.sea, n1 = s1.length;
     for (var i = 0; i < n1; i++) { var px = half / 2 + Math.max(-1, Math.min(1, s1[i][0] * .55)) * (half / 2 - 18), py = Hd / 2 - Math.max(-1, Math.min(1, s1[i][1] * .55)) * (Hd / 2 - 18);
       x.fillStyle = 'rgba(' + heatRGB(.2 + .8 * i / n1) + ',' + (.15 + .85 * i / n1).toFixed(2) + ')'; x.fillRect(px - 1.5, py - 1.5, 3, 3); }
-    var s2 = PH.eco, n2 = s2.length, mxA = 20, mxB = 20; s2.forEach(function (p) { mxA = Math.max(mxA, p[0]); mxB = Math.max(mxB, p[1]); });
-    for (var j = 0; j < n2; j++) { var qx = half + 18 + s2[j][0] / mxA * (half - 36), qy = Hd - 14 - s2[j][1] / mxB * (Hd - 44);
+    var s2 = PH.eco, n2 = s2.length, mnA = 1e9, mxA = 0, mxB = 6; s2.forEach(function (p) { mnA = Math.min(mnA, p[0]); mxA = Math.max(mxA, p[0]); mxB = Math.max(mxB, p[1]); }); if (mxA - mnA < 20) { mnA -= 10; mxA += 10; }
+    for (var j = 0; j < n2; j++) { var qx = half + 18 + (s2[j][0] - mnA) / (mxA - mnA) * (half - 36), qy = Hd - 14 - s2[j][1] / mxB * (Hd - 44);
       x.fillStyle = 'rgba(' + heatRGB(.2 + .8 * j / n2) + ',' + (.15 + .85 * j / n2).toFixed(2) + ')'; x.fillRect(qx - 1.5, qy - 1.5, 3, 3); }
-    if (n2) { var lq = s2[n2 - 1]; x.fillStyle = '#F0F5D6'; x.fillRect(half + 18 + lq[0] / mxA * (half - 36) - 3, Hd - 14 - lq[1] / mxB * (Hd - 44) - 3, 6, 6); }
+  }
+
+  /* ---------- terminal ---------- */
+  var tOut = document.getElementById('term-out'), tIn = document.getElementById('term-in'), tHist = [], tHi = 0;
+  function tw(txt, cls) { var d = document.createElement('div'); if (cls) d.className = cls; d.textContent = txt; tOut.appendChild(d); document.getElementById('term-body').scrollTop = 1e9; }
+  document.getElementById('term-body').addEventListener('click', function () { tIn.focus(); });
+  tw('bentlik os terminal. type help.', 'c');
+  var CMDS = {
+    help: function () { tw('status · store · weather · ships · ledger · captains\nsend <cargo> [near|far]   send a ship from the shared store\nbuild house|tree          build somewhere on the island\nhelm                      take a boat (WASD)\nstorm · calm              push the sea, or calm it\nmode [name]               render: ' + MODES.map(function (m) { return m.id; }).join(' ') + '\npostcard · open <window> · whoami · dogs · clear'); },
+    status: function () { CMDS.weather(); CMDS.store(); tw('captains out: ' + CAPT.filter(function (c) { return c.st !== 'dock'; }).length + ' · fish in the sea: ' + Math.round(fishTotal())); },
+    weather: function () { tw('sea ' + weatherWord(W.e) + ' · energy ' + W.e.toFixed(2) + ' · ' + (LIVE ? 'live readings' : 'resting signal') + (ISLAND ? ' · storm risk ' + (ISLAND.world.storm_p * 100).toFixed(1) + '%' : '')); },
+    store: function () { if (!ISLAND) return tw('harbour offline', 'c'); var w = ISLAND.world; tw('fish ' + w.fish + ' · wood ' + w.wood + ' · shells ' + w.shells + ' · houses ' + w.houses + ' · 1 fish = ' + (+w.fish_value).toFixed(2) + ' shells'); },
+    ships: function () { if (!ISLAND) return tw('harbour offline', 'c'); if (!ISLAND.ships.length) return tw('no ships at sea', 'c'); ISLAND.ships.forEach(function (s) { tw((s.mine ? 'you' : s.name) + ' · ' + s.route + ' · ' + Math.round(s.cargo) + ' shells', s.mine ? 'l' : ''); }); },
+    ledger: function () { if (!ISLAND) return tw('harbour offline', 'c'); ISLAND.ledger.slice(-7).forEach(function (r) { tw(r.day + '  equity ' + Math.round(r.equity) + '  dd ' + (r.drawdown * 100).toFixed(1) + '%  houses ' + r.houses); }); var m = ISLAND.me; if (m) tw('you: sent ' + m.sent + ' · back ' + m.back + ' · lost ' + m.lost + ' · pnl ' + m.pnl, 'l'); },
+    captains: function () { CAPT.forEach(function (c) { tw(c.name.padEnd(7) + c.style.padEnd(11) + 'trips ' + String(c.trips).padEnd(4) + 'fish ' + String(Math.round(c.catch)).padEnd(5) + 'lost ' + c.lost); }); },
+    send: function (a) { var c = parseInt(a[0], 10), r = a[1] === 'far' ? 'far' : 'near'; if (!(c > 0)) return tw('usage: send 20 near', 'c'); tw('loading ' + c + ' shells…', 'c'); sendShip(c, r).then(function (x) { if (x) tw(x.ok ? 'ship out. risk ' + Math.round(x.storm_p * (r === 'far' ? 160 : 100)) + '%' : x.why, x.ok ? 'g' : 'c'); }); },
+    build: function (a) { var k = a[0] === 'tree' ? 'tree' : 'house', l = LAND[Math.floor(Math.random() * LAND.length)]; build(k, l[0], l[1]); tw('builders sent', 'c'); },
+    helm: function () { helm(true); tw('you have the helm. Esc to leave.', 'g'); },
+    storm: function () { kick(3); tw('the sea heard you.', 'g'); },
+    calm: function () { W.v *= .1; W.x *= .1; tw('…', 'c'); },
+    mode: function (a) { if (!a[0]) return tw(MODES.map(function (m) { return (m.id === SET.mode ? '* ' : '  ') + m.id; }).join('\n')); var m = MODES.filter(function (q) { return q.id === a[0]; })[0]; if (!m) return tw('no such mode', 'c'); setMode(m.id); tw('render: ' + m.name, 'g'); },
+    postcard: function () { postcard(); tw('developing…', 'c'); },
+    open: function (a) { if (wins[a[0]]) { openWin(a[0]); tw('opened ' + a[0], 'c'); } else tw('windows: ' + Object.keys(wins).join(' '), 'c'); },
+    whoami: function () { tw((ISLAND && ISLAND.me ? ISLAND.me.name : 'a sailor') + ' on bentlik island. the light is on.'); },
+    dogs: function () { tw('badrik   light, mad, fast\nsonechka dark, calm\nbentlik  the first one. keeps the light on.'); },
+    bentlik: function () { tw('     ▲\n    ▐█▌   the light is on.\n ~~~▐█▌~~~~~~~~~~~~', 'g'); },
+    clear: function () { tOut.innerHTML = ''; },
+    sudo: function () { tw('nice try. the sea has no root.', 'c'); },
+    exit: function () { closeWin(wins.terminal); }
+  };
+  tIn.addEventListener('keydown', function (e) {
+    e.stopPropagation();
+    if (e.key === 'ArrowUp') { if (tHi > 0) tIn.value = tHist[--tHi]; e.preventDefault(); return; }
+    if (e.key === 'ArrowDown') { if (tHi < tHist.length) tIn.value = tHist[++tHi] || ''; e.preventDefault(); return; }
+    if (e.key === 'Escape') { tIn.blur(); return; }
+    if (e.key !== 'Enter') return;
+    var line = tIn.value.trim(); tIn.value = ''; if (!line) return; tHist.push(line); tHi = tHist.length;
+    tw('bentlik:~$ ' + line, 'c'); var parts = line.toLowerCase().split(/\s+/), f = CMDS[parts[0]];
+    if (f) f(parts.slice(1)); else tw(parts[0] + ': command not found. try help', 'c');
+    if (wins.terminal) wins.terminal._h = (wins.terminal._h || 0) + .15;
+  });
+  new MutationObserver(function () { if (!wins.terminal.hidden) setTimeout(function () { tIn.focus(); }, 50); }).observe(wins.terminal, { attributes: true, attributeFilter: ['hidden'] });
+
+  /* ---------- postcard: the island right now, ready to post ---------- */
+  var pcWant = false;
+  function postcard() { pcWant = true; }
+  document.getElementById('disp-pc').addEventListener('click', postcard);
+  function postcardTick() {
+    if (!pcWant) return; pcWant = false;
+    var W2 = 1200, H2 = 630, c = document.createElement('canvas'); c.width = W2; c.height = H2; var x = c.getContext('2d');
+    x.fillStyle = '#0D0E0B'; x.fillRect(0, 0, W2, H2); x.imageSmoothingEnabled = false;
+    var src = modeOf(SET.mode).cpu ? glyphC : cv, sw = src.width, sh = src.height, k = Math.max(W2 / sw, H2 / sh);
+    x.drawImage(src, (W2 - sw * k) / 2, (H2 - sh * k) / 2, sw * k, sh * k);
+    var lk = Math.max(W2 / lifeC.width, H2 / lifeC.height); x.imageSmoothingEnabled = true; x.drawImage(lifeC, (W2 - lifeC.width * lk) / 2, (H2 - lifeC.height * lk) / 2, lifeC.width * lk, lifeC.height * lk);
+    x.strokeStyle = '#00A651'; x.lineWidth = 2; x.strokeRect(16, 16, W2 - 32, H2 - 32);
+    var d = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+    x.fillStyle = 'rgba(13,14,11,.9)'; x.fillRect(32, H2 - 132, 520, 100);
+    x.fillStyle = '#E4E1D7'; x.font = '600 28px Geist, ui-sans-serif, sans-serif'; x.fillText('Bentlik', 48, H2 - 92); x.fillStyle = '#00A651'; x.fillText('OS', 48 + x.measureText('Bentlik').width, H2 - 92);
+    x.font = '500 15px "Geist Mono", ui-monospace, monospace'; x.fillStyle = '#CFCBBE'; x.fillText(d + ' GST · ' + weatherWord(W.e) + ' at sea', 48, H2 - 64);
+    x.fillStyle = '#8F8C82'; x.fillText(ISLAND ? 'fish ' + ISLAND.world.fish + ' · wood ' + ISLAND.world.wood + ' · shells ' + ISLAND.world.shells + ' · houses ' + ISLAND.world.houses : 'the light is on.', 48, H2 - 42);
+    x.fillStyle = '#CCED5C'; x.textAlign = 'right'; x.fillText('yurilebedev.com · @Cogit08', W2 - 40, H2 - 42);
+    c.toBlob(function (b) { if (!b) return; var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'bentlik-postcard-' + Date.now() + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast('postcard saved. <b>post it, tag @Cogit08</b>'); });
   }
 
   /* ---------- small things, part two ---------- */
@@ -1577,7 +1897,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   document.addEventListener('copy', function () { toast('copied. <b>credit @Cogit08</b> if you post it'); });
   // the konami code: the whole world turns to glyphs for a while, the swarm doubles
   var KON = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'], kp = 0;
-  addEventListener('keydown', function (e) { kp = e.key === KON[kp] ? kp + 1 : (e.key === KON[0] ? 1 : 0); if (kp === KON.length) { kp = 0; var prev = SET.mode; setMode('glyph'); for (var i = 0; i < 40; i++) spawnFly(LPX + (Math.random() - .5), .3, LPZ + (Math.random() - .5), 1.2); kick(2); toast('<b>cheat accepted.</b> 30 lives. no, wait. 40 fireflies'); setTimeout(function () { setMode(prev); }, 12000); } });
+  addEventListener('keydown', function (e) { kp = e.key === KON[kp] ? kp + 1 : (e.key === KON[0] ? 1 : 0); if (kp === KON.length) { kp = 0; var prev = SET.mode; setMode('glyph'); SHOALS.forEach(function (q) { q.n = q.K; }); kick(2); toast('<b>cheat accepted.</b> every shoal is full. go fishing (H)'); setTimeout(function () { setMode(prev); }, 12000); } });
 
   var mb = document.getElementById('menubar'), mbState = document.getElementById('mb-state');
   var wxState = document.getElementById('wx-state'), wxAmp = document.getElementById('wx-amp'), wxLast = document.getElementById('wx-last');
@@ -1600,12 +1920,13 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       if (prog) { if (uLp) { if (lpA > .5) { var x0 = (lp[0] - LW / 2) / SCALE, y0 = (innerHeight - lp[1] - LH / 2) / SCALE; gl.uniform4f(uLp, x0, y0, x0 + LW / SCALE, y0 + LH / SCALE); } else gl.uniform4f(uLp, -1, -1, -1, -1); }
         if (uDy) { gl.uniform1f(uDy, SKY.day); gl.uniform1f(uFg, SKY.fog); }
         if (uMd) { gl.uniform1f(uMd, modeOf(SET.mode).md); gl.uniform1f(uCt, SET.ct); gl.uniform1f(uBr, SET.br); gl.uniform1f(uPal, PALS.indexOf(SET.pal)); gl.uniform1f(uGn, SET.grain); }
+        camera(T, ms); if (uCam) { gl.uniform4f(uCam, CV.a, CV.d, CV.tx, CV.tz); gl.uniform2f(uCo, CV.h, CV.ox); }
         gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, T); gl.uniform1f(uE, W.e); gl.uniform2f(uM, ms[0], ms[1]); gl.drawArrays(gl.TRIANGLES, 0, 3); }
       cpuPass();
-      placeLighthouse(T, ms);
-      camera(T, ms);
+      if (!prog) camera(T, ms);
+      placeLighthouse();
       if (!reduced) lifeStep(T);
-      lifeDraw(); thingsTick(1 / 30); sysTick(T); dialTick(); beamSweep(T); winHeat(); phaseDraw();
+      lifeDraw(); thingsTick(1 / 30); sysTick(T); dialTick(); beamSweep(T); winHeat(); phaseDraw(); postcardTick();
       soundTick(T, W.e);
       drawFav(Math.abs(Math.cos(T * .8 - .9)) > .93);
       W.hist.push(W.x); if (W.hist.length > 144) W.hist.shift();
@@ -1644,7 +1965,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     LINES.splice(LINES.length - 1, 0, 'DATE    ' + bd + ' GST', 'SKY     ' + SKY.word + ', ' + weatherWord(W.e) + ' at sea');
   } catch (e) {}
   var done = false;
-  function finish() { if (done) return; done = true; boot.classList.add('done'); try { sessionStorage.setItem('bentlik-booted', '1'); } catch (e) {} setTimeout(function () { boot.hidden = true; }, 800); }
+  function finish() { if (done) return; done = true; setTimeout(function () { try { if (localStorage.getItem('bentlik-news') === '2') return; localStorage.setItem('bentlik-news', '2'); } catch (e) {} toast('new: <b>the harbour (P)</b> is shared by everyone. <b>H</b> takes a boat'); }, 1800); boot.classList.add('done'); try { sessionStorage.setItem('bentlik-booted', '1'); } catch (e) {} setTimeout(function () { boot.hidden = true; }, 800); }
   document.getElementById('boot-skip').addEventListener('click', finish);
   boot.addEventListener('pointerdown', finish);
   addEventListener('keydown', function () { if (!done) finish(); }, { once: false });
