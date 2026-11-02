@@ -217,8 +217,8 @@ body.bare .win { opacity: 0 !important; pointer-events: none; }
 /* ---------- life on the island + render modes ---------- */
 #glyph, #life { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; display: block; }
 #glyph { display: none; }
-body.m-glyph #world, body.m-dots #world { opacity: 0; }
-body.m-glyph #glyph, body.m-dots #glyph { display: block; }
+body.m-cpu #world { opacity: 0; }
+body.m-cpu #glyph { display: block; }
 .sys .body { padding: 12px 14px 14px; }
 .sys-lede { margin: 0 0 10px; }
 .sysrow { display: grid; grid-template-columns: 54px 1fr 44px; align-items: center; gap: 8px; height: 26px; border-top: 1px solid var(--line); }
@@ -246,8 +246,7 @@ body.m-glyph #glyph, body.m-dots #glyph { display: block; }
 .win.closing { animation: crt 260ms cubic-bezier(.7, 0, .84, 0) forwards; pointer-events: none; }
 @keyframes crt { 0% { transform: none; filter: none; } 55% { transform: scale(1, .006); filter: brightness(3); } 100% { transform: scale(0, .006); filter: brightness(4); opacity: 0; } }
 /* the lighthouse beam sweeps across the desktop and catches the window frames */
-.win { transition: border-color 600ms var(--ease), box-shadow 600ms var(--ease); }
-.win.lit { border-color: rgba(0, 166, 81, .75); box-shadow: 0 0 0 1px rgba(0, 166, 81, .25), 0 0 40px -6px rgba(0, 166, 81, .35); transition-duration: 80ms; }
+.win.top .bar .t::before { background: var(--heat, var(--green)); }
 /* the clock breathes */
 #clock .c { animation: blink 2s steps(1) infinite; } @keyframes blink { 50% { opacity: .25; } }
 /* menubar state light pulses faster when the sea is rough */
@@ -279,6 +278,44 @@ body.measure .ruler-lab { display: block; }
 .toast.on { transform: translate(-50%, 0); opacity: 1; }
 .toast b { color: var(--deep); }
 @media (prefers-reduced-motion: reduce) { .walker, .ripple { display: none; } .win.closing { animation: none; } }
+
+
+/* systems: explanation, phase portraits */
+.lnk { color: var(--green); text-decoration: underline; text-underline-offset: 2px; font: inherit; }
+.explain { border-top: 1px solid var(--line); padding: 8px 0 4px; font-size: 12px; line-height: 18px; }
+.explain p { margin: 0 0 8px; } .explain b { color: var(--lime); font-weight: 500; }
+.flow { margin: 0 0 8px; padding: 8px 10px; background: var(--ink); border: 1px solid var(--line); font-size: 10px; line-height: 15px; color: var(--paper); overflow-x: auto; white-space: pre; }
+#phase { width: 100%; height: 90px; display: block; margin-top: 10px; border: 1px solid var(--line); }
+.sys-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
+.sys-foot .sys-help { margin: 0; }
+.sys-foot .ghost, .drow .ghost { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border: 1px solid var(--line); border-radius: 3px; color: var(--text); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; text-decoration: none; transition: border-color 300ms var(--ease), color 300ms var(--ease); }
+/* display window */
+.disp .body { padding: 12px; }
+.mgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.mt { display: grid; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 4px; transition: border-color 300ms var(--ease), background-color 300ms var(--ease); }
+.mt canvas { width: 100%; aspect-ratio: 16 / 9; display: block; image-rendering: pixelated; border-radius: 2px; }
+.mt span { font-size: 9px; line-height: 12px; color: var(--dim); text-align: left; white-space: nowrap; overflow: hidden; }
+.mt .n { color: var(--line); margin-right: 3px; }
+.mt:hover { border-color: #4A4B44; } .mt:hover span { color: var(--text); }
+.mt[aria-pressed="true"] { border-color: var(--green); background: rgba(0, 166, 81, .08); } .mt[aria-pressed="true"] span, .mt[aria-pressed="true"] .n { color: var(--green); }
+.ctl { margin-top: 12px; display: grid; gap: 2px; }
+.sl { display: grid; grid-template-columns: 62px 1fr 44px; align-items: center; gap: 8px; height: 24px; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); transition: opacity 300ms var(--ease); }
+.sl.off { opacity: .3; }
+.sl output { text-align: right; color: var(--text); text-transform: none; }
+.sl input { -webkit-appearance: none; appearance: none; width: 100%; height: 16px; background: transparent; margin: 0; cursor: pointer; }
+.sl input::-webkit-slider-runnable-track { height: 1px; background: repeating-linear-gradient(90deg, #4A4B44 0 1px, transparent 1px 6px); }
+.sl input::-moz-range-track { height: 1px; background: repeating-linear-gradient(90deg, #4A4B44 0 1px, transparent 1px 6px); }
+.sl input::-webkit-slider-thumb { -webkit-appearance: none; width: 9px; height: 14px; margin-top: -7px; background: var(--paper); border-radius: 1px; box-shadow: inset 0 -2px 0 rgba(0,0,0,.25); }
+.sl input::-moz-range-thumb { width: 9px; height: 14px; background: var(--paper); border: 0; border-radius: 1px; }
+.sl input:hover::-webkit-slider-thumb, .sl input:focus-visible::-webkit-slider-thumb { background: var(--green); }
+.k2 { margin: 12px 0 6px; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+.seg button { height: 24px; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); transition: color 300ms var(--ease), background-color 300ms var(--ease); }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button:hover { color: var(--text); }
+.seg button[aria-pressed="true"] { background: var(--green); color: var(--ink); }
+.drow { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 8px; }
+.drow .dim { font-size: 10px; }
 
 /* ---------- Things: objects on the desk ---------- */
 :root { --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
@@ -412,12 +449,14 @@ button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green)
 @media (prefers-reduced-motion: reduce) { .tape .reel { animation: none; } }
 
 @media (max-width: 720px) {
-  body { overflow: auto; }
+  html, body { overflow-x: hidden; }
+  #loupe, .guide, #lh-hit, .ruler, .ruler-lab { display: none !important; }
+  body { overflow-y: auto; }
   .menubar .item kbd, .menubar .hide-sm { display: none; }
   .menubar .item { padding: 4px 5px; }
   .icons { display: none; }
-  .desk { position: relative; z-index: 5; padding: 44px max(12px, env(safe-area-inset-right, 0px)) 24px max(12px, env(safe-area-inset-left, 0px)); display: grid; gap: 14px; }
-  .win { position: relative !important; left: auto !important; top: auto !important; width: auto; max-width: none; max-height: none; }
+  .desk { position: relative; z-index: 5; min-width: 0; grid-template-columns: minmax(0, 1fr); padding: 44px max(12px, env(safe-area-inset-right, 0px)) 24px max(12px, env(safe-area-inset-left, 0px)); display: grid; gap: 14px; }
+  .win { position: relative !important; left: auto !important; top: auto !important; width: auto !important; max-width: none; min-width: 0; max-height: none; }
   .win .bar { cursor: default; }
   .album { grid-template-columns: 1fr 1fr; }
 }
@@ -459,6 +498,7 @@ button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green)
     <button class="item hide-sm" data-open="games" type="button">Games <kbd>G</kbd></button>
     <button class="item" data-open="things" type="button">Things <kbd>T</kbd></button>
     <button class="item hide-sm" data-open="systems" type="button">Systems <kbd>S</kbd></button>
+    <button class="item hide-sm" data-open="display" type="button">Display <kbd>V</kbd></button>
     <button class="item hide-sm" data-open="about" type="button">About <kbd>A</kbd></button>
   </div>
   <div class="right">
@@ -614,20 +654,49 @@ button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green)
     </div>
   </section>
 
-  <section class="win sys" id="w-systems" data-x="0.80" data-y="0.55" data-w="290" aria-label="Systems">
-    <header class="bar"><span class="t mono">systems · live</span><button class="x" type="button" aria-label="Close">×</button></header>
+  <section class="win sys" id="w-systems" data-x="0.79" data-y="0.30" data-w="300" aria-label="Systems">
+    <header class="bar"><span class="t mono">systems · live</span><span class="bar-r"><button class="nav-b" id="sys-q" type="button" aria-expanded="false" aria-controls="sys-ex" title="What is this?">?</button><button class="x" type="button" aria-label="Close">×</button></span></header>
     <div class="body">
-      <p class="mono dim sys-lede">Four systems share the island. None of them is scripted.</p>
+      <p class="mono dim sys-lede">Four systems share the island. None of them is scripted. <button class="lnk" type="button" id="sys-q2">How it works</button></p>
+      <div class="explain" id="sys-ex" hidden>
+        <p><b>Sea</b> is the outside world. Every 30 seconds the site reads one-minute BTC candles from Hyperliquid. Only how unusual the last move is becomes an impulse; a damped spring turns it into weather. No price is ever shown.</p>
+        <p><b>Drift</b> rides a current around the island, faster in a storm. Whatever reaches the coast may take root as a new node.</p>
+        <p><b>Colony</b> is a network fed by the lighthouse beam. Each node stores charge; at 1 it topples and passes 80% to its neighbours. Most avalanches are tiny, a few are huge (self-organised criticality, the sandpile). A big one sends a tremor back to sea.</p>
+        <p><b>Swarm</b>: signals that reach the lighthouse become fireflies. They graze the strongest nodes, so colony and swarm chase each other in loops, like predator and prey.</p>
+        <pre class="mono flow">market ──▶ SEA ──storm──▶ COLONY ✕
+SEA ──▶ DRIFT ──seed──▶ COLONY +
+beam ──▶ COLONY ──avalanche──▶ SEA
+COLONY ──signal──▶ ⌂ ──▶ SWARM
+SWARM ──grazes──▶ COLONY −</pre>
+        <p class="dim">Heat on the island marks where things just happened. Window frames use the same scale for your attention. Nothing is animated by hand: these are rules, and the shapes are what the rules produce.</p>
+      </div>
       <div class="sysrow"><span class="k mono">Sea</span><canvas data-s="0" width="120" height="22"></canvas><span class="v mono" id="sv-0">0.00</span></div>
       <div class="sysrow"><span class="k mono">Colony</span><canvas data-s="1" width="120" height="22"></canvas><span class="v mono" id="sv-1">0</span></div>
       <div class="sysrow"><span class="k mono">Swarm</span><canvas data-s="2" width="120" height="22"></canvas><span class="v mono" id="sv-2">0</span></div>
       <div class="sysrow"><span class="k mono">Drift</span><canvas data-s="3" width="120" height="22"></canvas><span class="v mono" id="sv-3">0</span></div>
       <p class="mono legend"><span><b>+</b> node</span><span><b class="g">•</b> signal</span><span><b>~</b> drift</span><span><b class="l">˙</b> swarm</span></p>
       <div class="log mono" id="sys-log" aria-live="off"></div>
-      <div class="modes mono" role="group" aria-label="How the world is drawn">
-        <button type="button" data-mode="dither" aria-pressed="true">Dither</button><button type="button" data-mode="glyph" aria-pressed="false">Glyph</button><button type="button" data-mode="dots" aria-pressed="false">Dots</button>
+      <canvas id="phase" width="524" height="180" aria-label="Phase portraits of the sea and of colony against swarm"></canvas>
+      <div class="sys-foot"><p class="mono dim sys-help">Click the island to plant a node. <kbd>M</kbd> next render.</p><button class="ghost mono" type="button" id="sys-disp">Display ⌥</button></div>
+    </div>
+  </section>
+
+  <section class="win disp" id="w-display" data-x="0.075" data-y="0.07" data-w="330" hidden aria-label="Display">
+    <header class="bar"><span class="t mono">display · how the world is drawn</span><button class="x" type="button" aria-label="Close">×</button></header>
+    <div class="body">
+      <div class="mgrid" id="mgrid" role="group" aria-label="Render mode"></div>
+      <div class="ctl">
+        <label class="sl mono"><span>Pixel</span><input type="range" min="1" max="6" step="1" data-k="px"><output></output></label>
+        <label class="sl mono"><span>Cell</span><input type="range" min="6" max="24" step="1" data-k="cell"><output></output></label>
+        <label class="sl mono"><span>Contrast</span><input type="range" min="0.4" max="2.5" step="0.05" data-k="ct"><output></output></label>
+        <label class="sl mono"><span>Light</span><input type="range" min="-0.4" max="0.4" step="0.01" data-k="br"><output></output></label>
+        <label class="sl mono"><span>Grain</span><input type="range" min="0" max="1" step="0.05" data-k="grain"><output></output></label>
       </div>
-      <p class="mono dim sys-help">Click the island to plant a node. <kbd>M</kbd> changes the render.</p>
+      <p class="mono k2">Palette</p>
+      <div class="seg mono"><button type="button" data-pal="paper">Paper</button><button type="button" data-pal="phosphor">Phosphor</button><button type="button" data-pal="heat">Heat</button></div>
+      <p class="mono k2">Layers</p>
+      <div class="seg mono"><button type="button" data-ov="heat">Heat map</button><button type="button" data-ov="life">Life</button></div>
+      <div class="drow"><span class="mono dim" id="disp-note"></span><button class="ghost mono" type="button" id="disp-reset">Reset</button></div>
     </div>
   </section>
 
@@ -660,6 +729,16 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
 (function () {
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var small = function () { return innerWidth <= 720; };
+  /* display settings: how the world is drawn. Every knob lives here and is remembered per visitor. */
+  var MODES = [
+    { id: 'bayer8', name: 'Bayer 8', md: 0 }, { id: 'bayer4', name: 'Bayer 4', md: 1 }, { id: 'noise', name: 'Noise', md: 2 },
+    { id: 'lines', name: 'Lines', md: 3 }, { id: 'hatch', name: 'Hatch', md: 4 }, { id: 'heat', name: 'Heat', md: 5 },
+    { id: 'glyph', name: 'Glyph', md: 9, cpu: 1 }, { id: 'blocks', name: 'Blocks', md: 9, cpu: 1 }, { id: 'braille', name: 'Braille', md: 9, cpu: 1 }, { id: 'dots', name: 'Dots', md: 9, cpu: 1 }
+  ], PALS = ['paper', 'phosphor', 'heat'];
+  var DEF = { mode: 'bayer8', px: 2, cell: 11, ct: 1, br: 0, grain: .3, pal: 'paper', heat: true, life: true };
+  var SET = JSON.parse(JSON.stringify(DEF));
+  try { var sv0 = JSON.parse(localStorage.getItem('bentlik-display') || 'null'); if (sv0) Object.keys(DEF).forEach(function (k) { if (sv0[k] !== undefined) SET[k] = sv0[k]; }); } catch (e) {}
+  function modeOf(id) { for (var i = 0; i < MODES.length; i++) if (MODES[i].id === id) return MODES[i]; return MODES[0]; }
 
   /* ---------- weather: a damped oscillator, x'' + 2ζω x' + ω² x = kick ---------- */
   var W = { x: 0, v: 0, w0: 2 * Math.PI * .45, z: .1, e: 0, hist: [], next: 9, t: 0, last: null };
@@ -687,10 +766,10 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   /* ---------- the world: raymarched island, 8x8 Bayer dither, two tones and one green ---------- */
   var cv = document.getElementById('world');
   var gl = cv.getContext('webgl', { antialias: false, preserveDrawingBuffer: false });
-  var SCALE = 2, prog, uR, uT, uE, uM, uLp, uDy, uFg, slowFrames = 0, coarse = false;
+  var SCALE = 2, uMd, uCt, uBr, uPal, uGn, prog, uR, uT, uE, uM, uLp, uDy, uFg, slowFrames = 0, coarse = false;
   var FS = [
     'precision highp float;',
-    'uniform vec2 R; uniform float T; uniform float E; uniform vec2 M; uniform vec4 Lp; uniform float Dy; uniform float Fg;',
+    'uniform vec2 R; uniform float T; uniform float E; uniform vec2 M; uniform vec4 Lp; uniform float Dy; uniform float Fg; uniform float Md,Ct,Br,Pal,Gn;',
     'const vec2 LP = vec2(.38,-.12); const float TH = .36;',
     'float h2(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h2(i),h2(i+vec2(1,0)),f.x),mix(h2(i+vec2(0,1)),h2(i+vec2(1,1)),f.x),f.y);}',
@@ -699,6 +778,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     'float wat(vec2 p){float a=.01+E*.06;return a*(sin(p.x*7.+T*1.3)+sin(p.y*9.-T*1.1+p.x*2.)+.5*sin((p.x+p.y)*15.+T*2.3));}',
     'float B2(vec2 a){a=floor(a);return fract(a.x/2.+a.y*a.y*.75);}',
     'float B8(vec2 a){return B2(.25*a)*.0625+B2(.5*a)*.25+B2(a);}',
+    'vec3 RMP(float l){l=clamp(l,0.,1.);vec3 a=vec3(.051,.055,.043),b=vec3(.03,.16,.08),c=vec3(0.,.651,.318),d=vec3(.80,.93,.36),e=vec3(.94,.96,.84);return l<.25?mix(a,b,l*4.):l<.5?mix(b,c,l*4.-1.):l<.75?mix(c,d,l*4.-2.):mix(d,e,l*4.-3.);}',
     'void main(){',
     ' vec2 fc=gl_FragCoord.xy; float row=floor(fc.y/2.);',
     ' if(E>.35 && h2(vec2(row,floor(T*16.)))>1.-E*.14) fc.x+=(h2(vec2(row,T))-.5)*40.*E;',
@@ -733,17 +813,22 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     ' { vec3 w0=ro-lamp; float sc=max(dot(lamp-ro,rd),0.); float q=length(w0+rd*sc); if(hitT<0.||sc<hitT) g+=exp(-q*q*4000.)*1.4; }',
     ' if(E>.25){float col=floor(fc.x/2.); float r=h2(vec2(col,floor(fc.y/7.+T*26.+h2(vec2(col,1.))*40.))); if(r>1.-(E-.25)*.05) lum+=.55;}'+'\n'+' if(E>.6 && h2(vec2(floor(T*7.),3.))>.95) lum+=.18;',
     ' if(kind==2) lum+=.06*Dy; if(Fg>0.){float fd=hitT<0.?1.:1.-exp(-hitT*.45); lum=mix(lum,.32,Fg*fd*.8);}',
-    ' lum=clamp(lum,0.,1.); float th=B8(gl_FragCoord.xy)+.004;',
+    ' lum=clamp((lum-.5)*Ct+.5+Br,0.,1.); vec2 q=gl_FragCoord.xy; float th=B8(q)+.004;',
+    ' if(Md>.5&&Md<1.5) th=B2(.5*q)*.25+B2(q)+.03; else if(Md>1.5&&Md<2.5) th=h2(floor(q)*.731+3.1); else if(Md>2.5&&Md<3.5) th=abs(fract(q.y/5.)-.5)*2.;',
+    ' else if(Md>3.5&&Md<4.5){float a1=abs(fract((q.x+q.y)/7.)-.5)*2.,a2=abs(fract((q.x-q.y)/7.)-.5)*2.; th=(a1<.9-lum*1.05||(lum<.45&&a2<.8-lum*1.8))?2.:-1.;}',
     ' vec3 INK=vec3(.051,.055,.043), PAP=vec3(.812,.796,.745), GR=vec3(0.,.651,.318);',
     ' vec3 LIME=vec3(.80,.93,.36), CREAM=vec3(.94,.96,.84), DEEP=vec3(.03,.16,.08);',
     ' float gr=(h2(gl_FragCoord.xy+fract(T*7.)*91.)-.5);',
-    ' bool inL=gl_FragCoord.x>Lp.x&&gl_FragCoord.x<Lp.z&&gl_FragCoord.y>Lp.y&&gl_FragCoord.y<Lp.w;',
+    ' bool inL=Md<8.5&&gl_FragCoord.x>Lp.x&&gl_FragCoord.x<Lp.z&&gl_FragCoord.y>Lp.y&&gl_FragCoord.y<Lp.w;',
     ' vec3 col;',
     ' if(inL){float l=clamp(lum*1.05+g*.6+gr*.07,0.,1.);',
     '  col=l<.35?mix(INK,DEEP,l/.35):l<.7?mix(DEEP,LIME,(l-.35)/.35):mix(LIME,CREAM,(l-.7)/.3);}',
-    ' else {col=lum>th?PAP:INK; float gg=clamp(g,0.,1.4);',
+    ' else if(Md>8.5){col=vec3(lum); col.g+=clamp(g,0.,1.)*.6;}',
+    ' else {vec3 HI=Pal<.5?PAP:Pal<1.5?LIME:RMP(lum*.85+.15); col=lum>th?HI:INK;',
+    '  if(Md>4.5&&Md<5.5) col=RMP(floor(clamp(lum+(B8(q)-.5)*.2,0.,1.)*6.)/6.);',
+    '  float gg=clamp(g,0.,1.4);',
     '  vec3 gc=mix(GR,mix(LIME,CREAM,clamp(g-1.,0.,1.)),clamp(g*.8,0.,1.));',
-    '  col=mix(col,gc,clamp(gg*.8,0.,.92)); col+=gr*.05*smoothstep(.02,.3,gg);}',
+    '  col=mix(col,gc,clamp(gg*.8,0.,.92)); col+=gr*.05*smoothstep(.02,.3,gg); col+=gr*Gn*.14;}',
     ' gl_FragColor=vec4(col,1.);',
     '}'
   ].join('\n');
@@ -756,10 +841,11 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
       var loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
       uDy = gl.getUniformLocation(prog, 'Dy'); uFg = gl.getUniformLocation(prog, 'Fg'); uLp = gl.getUniformLocation(prog, 'Lp'); uR = gl.getUniformLocation(prog, 'R'); uT = gl.getUniformLocation(prog, 'T'); uE = gl.getUniformLocation(prog, 'E'); uM = gl.getUniformLocation(prog, 'M');
+      uMd = gl.getUniformLocation(prog, 'Md'); uCt = gl.getUniformLocation(prog, 'Ct'); uBr = gl.getUniformLocation(prog, 'Br'); uPal = gl.getUniformLocation(prog, 'Pal'); uGn = gl.getUniformLocation(prog, 'Gn');
     }
   }
   function resize() {
-    SCALE = coarse ? 3 : (innerWidth > 2200 ? 3 : 2);
+    SCALE = Math.max(1, Math.min(8, SET.px + (coarse ? 1 : 0) + (innerWidth > 2200 ? 1 : 0)));
     cv.width = Math.ceil(innerWidth / SCALE); cv.height = Math.ceil(innerHeight / SCALE);
     if (gl) gl.viewport(0, 0, cv.width, cv.height);
   }
@@ -799,7 +885,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     w.querySelector('.x').addEventListener('click', function (e) { e.stopPropagation(); closeWin(w); });
     var bar = w.querySelector('.bar'), sx, sy, ox, oy, drag = false;
     bar.addEventListener('pointerdown', function (e) {
-      if (small() || e.target.closest('.x')) return;
+      if (small() || e.target.closest('button')) return;
       drag = true; w.classList.add('drag'); sx = e.clientX; sy = e.clientY; ox = w.offsetLeft; oy = w.offsetTop; bar.setPointerCapture(e.pointerId);
     });
     var lastTrail = 0;
@@ -850,13 +936,13 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   function openWin(id) {
     var w = wins[id]; if (!w) return;
     var was = w.hidden; w.hidden = false; layout(); focusWin(w);
-    if (was) { w.classList.remove('opening'); void w.offsetWidth; w.classList.add('opening'); sfx('open'); saveWins(); }
+    w._h = (w._h || 0) + .5; if (was) { w.classList.remove('opening'); void w.offsetWidth; w.classList.add('opening'); sfx('open'); saveWins(); }
     if (small()) w.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
   }
   document.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { openWin(b.dataset.open); }); });
   addEventListener('keydown', function (e) {
     if (e.metaKey || e.ctrlKey || e.altKey || /input|textarea/i.test(e.target.tagName)) return;
-    var k = e.key.toLowerCase(), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik', t: 'things', s: 'systems' };
+    var k = e.key.toLowerCase(), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik', t: 'things', s: 'systems', v: 'display' };
     if (k === 'm' && document.getElementById('boot').classList.contains('done')) cycleMode();
     if (map[k] && document.getElementById('boot').classList.contains('done')) openWin(map[k]);
     if (e.key === 'Escape' && document.getElementById('ctx').hidden) { var t = document.querySelector('.win.top'); if (t && !t.hidden) closeWin(t); }
@@ -1150,9 +1236,19 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     NODES.forEach(function (m) { if (m.dead || n.nb.length >= 3 || m.nb.length >= 4) return; if (Math.hypot(m.x - x, m.z - z) < (fixed || m.fixed ? .5 : .3)) { n.nb.push(m); m.nb.push(n); } });
     NODES.push(n); return n;
   }
-  function kill(n) { n.dead = true; n.nb.forEach(function (m) { m.nb = m.nb.filter(function (q) { return q !== n; }); }); n.nb = []; FX.push({ x: n.x, y: n.y, z: n.z, t: 1, k: 'x' }); }
+  function kill(n) { heatAt(n.x, n.z, 1.2); n.dead = true; n.nb.forEach(function (m) { m.nb = m.nb.filter(function (q) { return q !== n; }); }); n.nb = []; FX.push({ x: n.x, y: n.y, z: n.z, t: 1, k: 'x' }); }
   var bent = addNode(LPX, LPZ, 1, true);
   for (var si = 0; si < 22; si++) { var lp0 = LAND[Math.floor(h2(si, 7) * LAND.length)]; addNode(lp0[0], lp0[1], .45 + .4 * h2(si, 3)); }
+  // activity heat map over the island: every event leaves heat, heat diffuses and cools
+  var HN = 44, HM = new Float32Array(HN * HN), HB = new Float32Array(HN * HN), hTick = 0;
+  function heatAt(x, z, v) { var i = Math.floor((x + 1.5) / 3 * HN), j = Math.floor((z + 1.5) / 3 * HN); if (i < 0 || j < 0 || i >= HN || j >= HN) return; HM[j * HN + i] = Math.min(4, HM[j * HN + i] + v); }
+  function heatStep() {
+    hTick++; for (var k = 0; k < HM.length; k++) HM[k] *= .968;
+    if (hTick % 3) return;
+    for (var j = 1; j < HN - 1; j++) for (var i = 1; i < HN - 1; i++) { var o = j * HN + i; HB[o] = HM[o] * .6 + (HM[o - 1] + HM[o + 1] + HM[o - HN] + HM[o + HN]) * .1; }
+    HM.set(HB);
+  }
+  function heatRGB(v) { var st = [[8, 41, 26], [0, 166, 81], [204, 237, 92], [240, 245, 214]]; v = Math.max(0, Math.min(1, v)) * 3; var i = Math.min(2, Math.floor(v)), f = v - i; return st[i].map(function (a, k) { return Math.round(a + (st[i + 1][k] - a) * f); }).join(','); }
   var LOG = document.getElementById('sys-log'), logLast = {};
   function say(kind, txt) {
     var now = performance.now(); if (logLast[kind] && now - logLast[kind] < 2500) return; logLast[kind] = now;
@@ -1174,8 +1270,8 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     nodes.forEach(function (n) { n.c += .0025 * (1 + SKY.day) * (n.fixed ? 0 : 1); n.f *= .9; n.lit = (n.lit || 0) * .85; n.born *= .94; if (!n.fixed) n.e -= .0005; if (n.c >= 1) q.push(n); });
     while (q.length && size < 400) {
       var n = q.shift(); if (n.c < 1 || n.dead) continue;
-      n.c -= 1; n.f = 1; size++; if (!origin) origin = n;
-      if (n.nb.length) { var to = n.nb[Math.floor(Math.random() * n.nb.length)]; if (PK.length < 160) PK.push({ a: n, b: to, t: 0 }); }
+      n.c -= 1; n.f = 1; size++; if (!origin) origin = n; heatAt(n.x, n.z, .55);
+      if (n.nb.length) { var to = n.nb[Math.floor(Math.random() * n.nb.length)]; if (PK.length < 160) { PK.push({ a: n, b: to, t: 0 }); trafficAdd(n, to); } }
       var share = .8 / Math.max(1, n.nb.length); n.nb.forEach(function (m) { if (m.fixed) return; m.c += share; if (m.c >= 1) q.push(m); });
     }
     if (size) { STAT.av = size; STAT.avMax = Math.max(STAT.avMax * .999, size); }
@@ -1183,7 +1279,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     if (size >= 16 && T - lastTremor > 20) { lastTremor = T; kick(Math.min(2.2, .4 + size * .035)); say('avk', 'avalanche of ' + size + ' → tremor at sea'); }
     // signals travel the links; at the lighthouse they become fireflies
     for (var i = PK.length - 1; i >= 0; i--) { var p = PK[i]; p.t += .05; if (p.a.dead || p.b.dead) { PK.splice(i, 1); continue; }
-      if (p.t >= 1) { PK.splice(i, 1); p.b.e = Math.min(1, p.b.e + .03); if (p.b.fixed && FF.length < 120) { spawnFly(LAMP[0], LAMP[1], LAMP[2], .8); if (Math.random() < .08) say('ff', 'a signal reached the lighthouse'); } else if (Math.random() < .25 && p.b.nb.length && PK.length < 160) { var nx = p.b.nb[Math.floor(Math.random() * p.b.nb.length)]; if (nx !== p.a) PK.push({ a: p.b, b: nx, t: 0 }); } } }
+      if (p.t >= 1) { PK.splice(i, 1); p.b.e = Math.min(1, p.b.e + .03); heatAt(p.b.x, p.b.z, .2); if (p.b.fixed && FF.length < 120) { spawnFly(LAMP[0], LAMP[1], LAMP[2], .8); if (Math.random() < .08) say('ff', 'a signal reached the lighthouse'); } else if (Math.random() < .25 && p.b.nb.length && PK.length < 160) { var nx = p.b.nb[Math.floor(Math.random() * p.b.nb.length)]; if (nx !== p.a) { PK.push({ a: p.b, b: nx, t: 0 }); trafficAdd(p.b, nx); } } } }
     // the sea: storms break nodes
     if (e > .3) nodes.forEach(function (n) { if (!n.fixed && Math.random() < e * e * .01) n.e -= .35; });
     var died = 0; nodes.forEach(function (n) { if (!n.fixed && n.e <= 0) { kill(n); died++; } });
@@ -1200,7 +1296,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     for (var k = DR.length - 1; k >= 0; k--) { var d = DR[k], rr = Math.hypot(d.x, d.z) || 1, sp = .003 + e * .018;
       var cx = -d.z / rr, cz = d.x / rr, inx = -d.x / rr, inz = -d.z / rr, w = n2(d.x * 1.7 + T * .1, d.z * 1.7) - .5;
       d.x += (cx * .8 + inx * (.35 + w)) * sp; d.z += (cz * .8 + inz * (.35 - w)) * sp; d.l -= .0015;
-      if (ter(d.x, d.z) > -.035) { DR.splice(k, 1); if (Math.random() < .35 && nodes.length < 110) { var near = null, nd = .2; LAND.forEach(function (c) { var q2 = Math.hypot(c[0] - d.x, c[1] - d.z); if (q2 < nd) { nd = q2; near = c; } }); if (near) { var nn = addNode(near[0], near[1], .3); nn.born = 1; say('seed', 'a seed washed ashore'); } } continue; }
+      if (ter(d.x, d.z) > -.035) { DR.splice(k, 1); if (Math.random() < .35 && nodes.length < 110) { var near = null, nd = .2; LAND.forEach(function (c) { var q2 = Math.hypot(c[0] - d.x, c[1] - d.z); if (q2 < nd) { nd = q2; near = c; } }); if (near) { var nn = addNode(near[0], near[1], .3); nn.born = 1; heatAt(near[0], near[1], .9); say('seed', 'a seed washed ashore'); } } continue; }
       if (d.l <= 0) DR.splice(k, 1); }
     // swarm: fireflies seek the strongest nodes, keep their distance, flee the cursor and storms
     var night = 1 - SKY.day;
@@ -1208,7 +1304,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       var tg = null, td = .9; nodes.forEach(function (n) { if (n.fixed || n.e < .35) return; var q3 = Math.hypot(n.x - b.x, n.z - b.z); if (q3 < td) { td = q3; tg = n; } });
       var ax = 0, ay = 0, az = 0;
       if (gathered > 0) { ax += (LAMP[0] - b.x) * .002; az += (LAMP[2] - b.z) * .002; ay += (LAMP[1] + .05 - b.y) * .002; }
-      else if (tg) { ax += (tg.x - b.x) * .0016; az += (tg.z - b.z) * .0016; ay += (tg.y + .06 - b.y) * .002; if (td < .05) { tg.e -= .012; b.l = Math.min(2.2, b.l + .02); } }
+      else if (tg) { ax += (tg.x - b.x) * .0016; az += (tg.z - b.z) * .0016; ay += (tg.y + .06 - b.y) * .002; if (td < .05) { tg.e -= .012; b.l = Math.min(2.2, b.l + .02); heatAt(tg.x, tg.z, .04); } }
       else { ax += (LAMP[0] - b.x) * .0008 * (.5 + night); az += (LAMP[2] - b.z) * .0008 * (.5 + night); ay += (LAMP[1] - b.y) * .001; }
       for (var o = 0; o < FF.length; o += 2) { var c2 = FF[o]; if (c2 === b) continue; var dx = b.x - c2.x, dz = b.z - c2.z, q4 = dx * dx + dz * dz; if (q4 < .0016 && q4 > 0) { ax += dx * .02; az += dz * .02; } }
       if (b.sx !== undefined && fine) { var mx = lpT[0] - b.sx, my = lpT[1] - b.sy, md = Math.hypot(mx, my); if (md < 90) { var push = (90 - md) / 90 * .004; ax -= CAM.r[0] * (mx / md) * push; az -= CAM.r[2] * (mx / md) * push; ay += (my / md) * push * .6; } }
@@ -1221,8 +1317,12 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       if (b.l <= 0 || Math.hypot(b.x, b.z) > 2.6) FF.splice(j, 1);
     }
     if (gathered > 0) gathered -= 1;
+    heatStep(); nodes.forEach(function (n) { if (n.tr) for (var k in n.tr) n.tr[k] *= .985; });
+    PH.sea.push([W.x, W.v / W.w0]); if (PH.sea.length > 260) PH.sea.shift();
     for (var m = FX.length - 1; m >= 0; m--) { FX[m].t -= .03; if (FX[m].t <= 0) FX.splice(m, 1); }
   }
+  function trafficAdd(a, b) { a.tr = a.tr || {}; b.tr = b.tr || {}; a.tr[b.id] = (a.tr[b.id] || 0) + 1; b.tr[a.id] = (b.tr[a.id] || 0) + 1; }
+  var PH = { sea: [], eco: [] };
   function spawnFly(x, y, z, l) { FF.push({ x: x, y: y, z: z, vx: (Math.random() - .5) * .02, vy: (Math.random() - .5) * .01, vz: (Math.random() - .5) * .02, l: l, ph: Math.random() * 6 }); }
   for (var fi = 0; fi < 26; fi++) spawnFly(LPX + (Math.random() - .5) * .6, .3, LPZ + (Math.random() - .5) * .6, 1);
 
@@ -1232,10 +1332,18 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     if (document.body.classList.contains('bare-life')) return;
     var day = SKY.day, base = day > .5 ? COL.ink : COL.paper, nodes = alive();
     nodes.forEach(function (n) { n.s = proj(n.x, n.y, n.z); });
-    // links: dotted, like a circuit drawn in pencil
-    c.lineWidth = 1; c.setLineDash([1, 3]); c.strokeStyle = 'rgba(' + COL.green + ',.7)'; c.beginPath();
-    nodes.forEach(function (n) { if (!n.s) return; n.nb.forEach(function (m) { if (m.id < n.id || !m.s) return; c.moveTo(n.s[0], n.s[1]); c.lineTo(m.s[0], m.s[1]); }); });
-    c.stroke(); c.setLineDash([]);
+    // heat map: where the island has been busy
+    if (SET.heat) { var cellW = 3 / HN;
+      for (var j = 0; j < HN; j++) for (var i = 0; i < HN; i++) { var v = HM[j * HN + i]; if (v < .04) continue;
+        var wx = -1.5 + (i + .5) * cellW, wz = -1.5 + (j + .5) * cellW, hp = proj(wx, Math.max(ter(wx, wz), 0) + .004, wz); if (!hp) continue;
+        var sz2 = cellW * 1.9 * CAM.H / hp[2]; c.fillStyle = 'rgba(' + heatRGB(v * .55) + ',' + Math.min(.78, .15 + v * .45).toFixed(2) + ')';
+        c.fillRect(hp[0] - sz2 / 2, hp[1] - sz2 * .22, sz2 + .5, sz2 * .44 + .5); } }
+    // links: dotted like a circuit in pencil; busy links glow hotter and thicker
+    c.setLineDash([1, 3]);
+    nodes.forEach(function (n) { if (!n.s) return; n.nb.forEach(function (m) { if (m.id < n.id || !m.s) return; var t = (n.tr && n.tr[m.id]) || 0;
+      c.lineWidth = 1 + Math.min(1.5, t / 4); c.strokeStyle = 'rgba(' + heatRGB(.25 + Math.min(.75, t / 6)) + ',' + (.55 + Math.min(.45, t / 8)).toFixed(2) + ')';
+      c.beginPath(); c.moveTo(n.s[0], n.s[1]); c.lineTo(m.s[0], m.s[1]); c.stroke(); }); });
+    c.setLineDash([]); c.lineWidth = 1;
     c.textAlign = 'center'; c.textBaseline = 'middle';
     // drift
     c.font = '500 10px "Geist Mono", ui-monospace, monospace';
@@ -1256,6 +1364,8 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     var night = 1 - day;
     FF.forEach(function (b) { var p = proj(b.x, b.y, b.z); if (!p) { b.sx = undefined; return; } b.sx = p[0]; b.sy = p[1];
       var tw = .55 + .45 * Math.sin(b.ph), a = Math.min(1, b.l) * tw;
+      b.tl = b.tl || []; b.tl.push(p[0], p[1]); if (b.tl.length > 12) b.tl.splice(0, 2);
+      for (var q5 = 0; q5 < b.tl.length - 2; q5 += 2) { c.fillStyle = 'rgba(' + (night > .3 ? COL.lime : COL.ink) + ',' + (a * .5 * q5 / b.tl.length).toFixed(2) + ')'; c.fillRect(b.tl[q5], b.tl[q5 + 1], 1, 1); }
       if (night > .3) { c.fillStyle = 'rgba(' + COL.lime + ',' + (a * .22).toFixed(2) + ')'; c.fillRect(p[0] - 3, p[1] - 3, 6, 6); c.fillStyle = 'rgba(' + COL.cream + ',' + a.toFixed(2) + ')'; c.fillRect(p[0] - 1, p[1] - 1, 2, 2); }
       else { c.fillStyle = 'rgba(' + COL.ink + ',' + (a * .85).toFixed(2) + ')'; c.fillRect(p[0] - 1, p[1] - 1, 2, 2); }
     });
@@ -1268,43 +1378,93 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   addEventListener('click', function (e) {
     var t = e.target; if (!(t === document.body || t.id === 'world' || t.classList.contains('desk'))) return; if (!CAM) return;
     var best = null, bd = 26; LAND.forEach(function (l) { var p = proj(l[0], ter(l[0], l[1]), l[1]); if (!p) return; var d = Math.hypot(p[0] - e.clientX, p[1] - e.clientY); if (d < bd) { bd = d; best = l; } });
-    if (best) { var n = addNode(best[0], best[1], .7); n.c = .99; say('plant', 'you planted a node'); sfx('open'); } else { ripple(e.clientX, e.clientY); W.v += (Math.random() - .5) * .6; }
+    if (best) { var n = addNode(best[0], best[1], .7); n.c = .99; heatAt(best[0], best[1], 2.5); say('plant', 'you planted a node'); sfx('open'); } else { ripple(e.clientX, e.clientY); W.v += (Math.random() - .5) * .6; }
   });
   // type "bentlik": the swarm comes home
   var typed = '';
   addEventListener('keydown', function (e) { if (e.key.length !== 1) return; typed = (typed + e.key.toLowerCase()).slice(-7); if (typed === 'bentlik') { gathered = 240; say('home', 'bentlik called. everyone came home'); } });
 
-  // render modes: the same world drawn as dither, as glyphs, or as halftone dots
-  var MODE = 'dither', pix = null, MODES = ['dither', 'glyph', 'dots'];
-  try { var mSaved = localStorage.getItem('bentlik-mode'); if (MODES.indexOf(mSaved) >= 0) MODE = mSaved; } catch (e) {}
-  function setMode(m) {
-    MODE = m; document.body.classList.toggle('m-glyph', m === 'glyph'); document.body.classList.toggle('m-dots', m === 'dots');
-    document.querySelectorAll('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.mode === m)); });
-    try { localStorage.setItem('bentlik-mode', m); } catch (e) {}
+  // render: the dither modes run in the shader; glyph, blocks, braille and dots read the analog image back and draw characters
+  var pix = null;
+  function setMode(id) {
+    SET.mode = modeOf(id).id; document.body.classList.toggle('m-cpu', !!modeOf(SET.mode).cpu);
+    document.querySelectorAll('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.mode === SET.mode)); });
+    saveSet(); if (window.dispSync) dispSync();
   }
-  function cycleMode() { setMode(MODES[(MODES.indexOf(MODE) + 1) % 3]); say('mode', 'render: ' + MODE); }
-  document.querySelectorAll('[data-mode]').forEach(function (b) { b.addEventListener('click', function () { setMode(b.dataset.mode); }); });
-  setMode(MODE);
-  var RAMP = ' .·:-=+*%#@';
-  function glyphPass() {
-    if (MODE === 'dither' || !gl) return;
+  function saveSet() { try { localStorage.setItem('bentlik-display', JSON.stringify(SET)); } catch (e) {} }
+  function cycleMode() { var i = MODES.indexOf(modeOf(SET.mode)); setMode(MODES[(i + 1) % MODES.length].id); say('mode', 'render: ' + modeOf(SET.mode).name.toLowerCase()); }
+  var RAMP = ' .·:-=+*%#@', BLOCKS = ' ░▒▓█', BR = [[0, 4], [6, 2], [1, 5], [7, 3]];
+  var CPAL = { paper: ['#CFCBBE'], phosphor: ['#CCED5C'], heat: ['#0B6B3A', '#00A651', '#CCED5C', '#F0F5D6'] };
+  function cpuPass() {
+    var M = modeOf(SET.mode); if (!M.cpu || !gl) return;
     var w = cv.width, h = cv.height; if (!pix || pix.length !== w * h * 4) pix = new Uint8Array(w * h * 4);
     gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pix);
-    var cell = MODE === 'glyph' ? Math.max(4, Math.round(11 / SCALE)) : Math.max(3, Math.round(8 / SCALE)), css = cell * SCALE;
+    function L(x, y) { var px = Math.min(w - 1, Math.max(0, Math.floor(x / SCALE))), py = Math.min(h - 1, Math.max(0, Math.floor((innerHeight - y) / SCALE))), o = (py * w + px) * 4; return pix[o] / 255; }
+    function G(x, y) { var px = Math.min(w - 1, Math.max(0, Math.floor(x / SCALE))), py = Math.min(h - 1, Math.max(0, Math.floor((innerHeight - y) / SCALE))), o = (py * w + px) * 4; return (pix[o + 1] - pix[o]) / 255; }
     var c = gx; c.setTransform(DPR, 0, 0, DPR, 0, 0); c.fillStyle = '#0D0E0B'; c.fillRect(0, 0, innerWidth, innerHeight);
-    c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '500 ' + (css + 1) + 'px "Geist Mono", ui-monospace, monospace';
-    var greens = [], paths = { p: new Path2D(), g: new Path2D() };
-    for (var cy = 0; cy < h; cy += cell) for (var cx = 0; cx < w; cx += cell) {
-      var L = 0, G = 0, nn = 0;
-      for (var yy = cy; yy < Math.min(h, cy + cell); yy += 1) for (var xx = cx; xx < Math.min(w, cx + cell); xx += 1) { var o = (yy * w + xx) * 4; L += pix[o] + pix[o + 1] + pix[o + 2]; G += pix[o + 1] - pix[o]; nn++; }
-      L = L / (nn * 765); G = G / nn; if (L < .07) continue;
-      var X = (cx + cell / 2) * SCALE, Y = innerHeight - (cy + cell / 2) * SCALE, isG = G > 50;
-      if (MODE === 'glyph') { var ch = RAMP[Math.min(RAMP.length - 1, Math.floor(L * 1.2 * RAMP.length))]; if (ch === ' ') continue; if (isG) greens.push(ch, X, Y); else { c.fillStyle = '#CFCBBE'; c.fillText(ch, X, Y); } }
-      else { if (L < .1) continue; var rad = Math.min(css * .6, Math.pow(L, .75) * css * .6); var P = isG ? paths.g : paths.p; P.moveTo(X + rad, Y); P.arc(X, Y, rad, 0, 6.283); }
+    var fs = SET.cell, cw = M.id === 'dots' ? fs : fs * .6, chh = fs, pal = CPAL[SET.pal] || CPAL.paper, glowC = SET.pal === 'heat' ? '#F0F5D6' : '#00A651';
+    var bins = pal.map(function () { return []; }), glow = [], paths = pal.map(function () { return new Path2D(); }), gpath = new Path2D();
+    c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '500 ' + (M.id === 'braille' ? fs * 1.05 : fs + 1).toFixed(0) + 'px "Geist Mono", ui-monospace, monospace';
+    for (var Y = chh / 2; Y < innerHeight; Y += chh) for (var X = cw / 2; X < innerWidth; X += cw) {
+      var l = L(X, Y), gg = G(X, Y), bi = Math.min(pal.length - 1, Math.floor(l * pal.length)), isG = gg > .12, ch = '';
+      if (M.id === 'glyph') { if (l < .06) continue; ch = RAMP[Math.min(RAMP.length - 1, Math.floor(l * RAMP.length))]; }
+      else if (M.id === 'blocks') { if (l < .08) continue; ch = BLOCKS[Math.min(4, 1 + Math.floor(l * 4))]; }
+      else if (M.id === 'braille') { var bits = 0; for (var dy = 0; dy < 4; dy++) for (var dx = 0; dx < 2; dx++) { var sl = L(X - cw / 4 + dx * cw / 2, Y - chh * .375 + dy * chh / 4); if (sl * 1.15 > (BR[dy][dx] + .5) / 8) bits |= [[1, 8], [2, 16], [4, 32], [64, 128]][dy][dx]; } if (!bits) continue; ch = String.fromCharCode(0x2800 + bits); }
+      else { if (l < .08) continue; var rad = Math.min(fs * .55, Math.pow(l, .75) * fs * .55), P = isG ? gpath : paths[bi]; P.moveTo(X + rad, Y); P.arc(X, Y, rad, 0, 6.283); continue; }
+      if (ch === ' ') continue; (isG ? glow : bins[bi]).push(ch, X, Y);
     }
-    if (MODE === 'glyph') { c.fillStyle = '#00A651'; for (var i = 0; i < greens.length; i += 3) c.fillText(greens[i], greens[i + 1], greens[i + 2]); }
-    else { c.fillStyle = '#CFCBBE'; c.fill(paths.p); c.fillStyle = '#00A651'; c.fill(paths.g); }
+    if (M.id === 'dots') { paths.forEach(function (P, i) { c.fillStyle = pal[i]; c.fill(P); }); c.fillStyle = glowC; c.fill(gpath); return; }
+    bins.forEach(function (arr, i) { c.fillStyle = pal[i]; for (var k = 0; k < arr.length; k += 3) c.fillText(arr[k], arr[k + 1], arr[k + 2]); });
+    c.fillStyle = glowC; for (var k2 = 0; k2 < glow.length; k2 += 3) c.fillText(glow[k2], glow[k2 + 1], glow[k2 + 2]);
   }
+  // the display window: a tile per mode with a live swatch, sliders, palettes, overlays
+  (function () {
+    var grid = document.getElementById('mgrid');
+    function b2(x, y) { x = Math.floor(x); y = Math.floor(y); var v = x / 2 + y * y * .75; return v - Math.floor(v); }
+    function b8(x, y) { return b2(x / 4, y / 4) * .0625 + b2(x / 2, y / 2) * .25 + b2(x, y); }
+    var RGB = { ink: [13, 14, 11], paper: [207, 203, 190], lime: [204, 237, 92] };
+    function rampRGB(l) { var st = [[13, 14, 11], [8, 41, 26], [0, 166, 81], [204, 237, 92], [240, 245, 214]]; l = Math.max(0, Math.min(1, l)) * 4; var i = Math.min(3, Math.floor(l)), f = l - i; return st[i].map(function (v, k) { return Math.round(v + (st[i + 1][k] - v) * f); }); }
+    function swatch(cn, m) {
+      var x = cn.getContext('2d'), W2 = cn.width, H2 = cn.height; x.fillStyle = '#0D0E0B'; x.fillRect(0, 0, W2, H2);
+      if (m.cpu) { x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = '500 9px ui-monospace, monospace'; x.fillStyle = '#CFCBBE';
+        for (var yy = 0; yy < H2; yy += 9) for (var xx = 0; xx < W2; xx += (m.id === 'dots' ? 8 : 6)) { var l = xx / W2;
+          if (m.id === 'dots') { x.beginPath(); x.arc(xx + 4, yy + 4.5, Math.pow(l, .75) * 4, 0, 6.283); x.fill(); continue; }
+          var ch = m.id === 'glyph' ? RAMP[Math.floor(l * RAMP.length)] : m.id === 'blocks' ? BLOCKS[Math.min(4, Math.floor(l * 5))] : String.fromCharCode(0x2800 + [0, 1, 3, 11, 27, 31, 63, 127, 255][Math.floor(l * 9)]);
+          x.fillText(ch, xx + 3, yy + 5); } return; }
+      var d = x.createImageData(W2, H2);
+      for (var y = 0; y < H2; y++) for (var X2 = 0; X2 < W2; X2++) { var lv = X2 / (W2 - 1), th = b8(X2, y) + .004, col;
+        if (m.md === 1) th = b2(X2 / 2, y / 2) * .25 + b2(X2, y) + .03; else if (m.md === 2) th = Math.random(); else if (m.md === 3) th = Math.abs((y / 5) % 1 - .5) * 2;
+        else if (m.md === 4) { var a1 = Math.abs(((X2 + y) / 7) % 1 - .5) * 2, a2 = Math.abs((((X2 - y) % 7 + 7) % 7) / 7 - .5) * 2; th = (a1 < .9 - lv * 1.05 || (lv < .45 && a2 < .8 - lv * 1.8)) ? 2 : -1; }
+        col = m.md === 5 ? rampRGB(Math.floor(Math.max(0, Math.min(1, lv + (b8(X2, y) - .5) * .2)) * 6) / 6) : (lv > th ? RGB.paper : RGB.ink);
+        var o = (y * W2 + X2) * 4; d.data[o] = col[0]; d.data[o + 1] = col[1]; d.data[o + 2] = col[2]; d.data[o + 3] = 255; }
+      x.putImageData(d, 0, 0);
+    }
+    MODES.forEach(function (m, i) {
+      var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'mt'; bt.dataset.mode = m.id; bt.setAttribute('aria-pressed', 'false');
+      bt.innerHTML = '<canvas width="64" height="36" aria-hidden="true"></canvas><span class="mono">' + m.name + '</span>';
+      grid.appendChild(bt); swatch(bt.querySelector('canvas'), m);
+      bt.addEventListener('click', function () { setMode(m.id); });
+    });
+    var note = document.getElementById('disp-note');
+    function fmtV(k, v) { return k === 'px' ? v + 'px' : k === 'cell' ? v + 'px' : k === 'br' ? (v > 0 ? '+' : '') + (+v).toFixed(2) : (+v).toFixed(2); }
+    window.dispSync = function () {
+      var M = modeOf(SET.mode);
+      document.querySelectorAll('#w-display input[type=range]').forEach(function (inp) { var k = inp.dataset.k; inp.value = SET[k]; inp.nextElementSibling.textContent = fmtV(k, SET[k]);
+        inp.closest('.sl').classList.toggle('off', !!((k === 'px' && M.cpu) || (k === 'cell' && !M.cpu) || (k === 'grain' && M.cpu))); });
+      document.querySelectorAll('#w-display [data-pal]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.pal === SET.pal)); });
+      document.querySelectorAll('#w-display [data-ov]').forEach(function (b) { b.setAttribute('aria-pressed', String(!!SET[b.dataset.ov])); });
+      document.body.classList.toggle('bare-life', !SET.life);
+      note.textContent = M.name + ' · ' + (M.cpu ? SET.cell + 'px cells' : SCALE + 'px pixels') + ' · ' + SET.pal;
+    };
+    document.querySelectorAll('#w-display input[type=range]').forEach(function (inp) {
+      inp.addEventListener('input', function () { var k = inp.dataset.k; SET[k] = +inp.value; if (k === 'px') resize(); saveSet(); dispSync(); });
+    });
+    document.querySelectorAll('#w-display [data-pal]').forEach(function (b) { b.addEventListener('click', function () { SET.pal = b.dataset.pal; saveSet(); dispSync(); }); });
+    document.querySelectorAll('#w-display [data-ov]').forEach(function (b) { b.addEventListener('click', function () { SET[b.dataset.ov] = !SET[b.dataset.ov]; saveSet(); dispSync(); }); });
+    document.getElementById('disp-reset').addEventListener('click', function () { Object.keys(DEF).forEach(function (k) { SET[k] = DEF[k]; }); resize(); setMode(SET.mode); toast('display reset. <b>bayer 8, paper</b>'); });
+    document.getElementById('sys-disp').addEventListener('click', function () { openWin('display'); });
+    setMode(SET.mode);
+  })();
   // the systems window: one sparkline per system
   var sparks = Array.prototype.map.call(document.querySelectorAll('.sysrow canvas'), function (cc) { return cc.getContext('2d'); });
   var svs = [0, 1, 2, 3].map(function (i) { return document.getElementById('sv-' + i); });
@@ -1318,6 +1478,24 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       var c = sparks[i], hs = STAT.hist[i]; c.fillStyle = '#121310'; c.fillRect(0, 0, 120, 22); c.fillStyle = '#34352F'; c.fillRect(0, 21, 120, 1);
       c.fillStyle = i === 0 && v > .42 ? '#00A651' : i === 2 ? '#CCED5C' : '#CFCBBE';
       hs.forEach(function (y, k) { var hgt = Math.max(1, Math.round(Math.min(1, y / maxs[i]) * 20)); c.fillRect(k * 2, 21 - hgt, 1, hgt); }); });
+  }
+
+  [document.getElementById('sys-q'), document.getElementById('sys-q2')].forEach(function (b) { b.addEventListener('click', function () { var ex = document.getElementById('sys-ex'); ex.hidden = !ex.hidden; document.getElementById('sys-q').setAttribute('aria-expanded', String(!ex.hidden)); wins.systems.style.maxHeight = (innerHeight - wins.systems.offsetTop - 16) + 'px'; }); });
+  // phase portraits: the sea spirals in to zero; colony against swarm draws loops (predator and prey)
+  var phC = document.getElementById('phase'), phX = phC.getContext('2d'), ecoT = 0;
+  function phaseDraw() {
+    if (T - ecoT > .25) { ecoT = T; PH.eco.push([alive().length - 1, FF.length]); if (PH.eco.length > 240) PH.eco.shift(); }
+    if (wins.systems.hidden) return;
+    var x = phX, Wd = phC.width, Hd = phC.height, half = Wd / 2; x.fillStyle = '#121310'; x.fillRect(0, 0, Wd, Hd);
+    x.fillStyle = '#34352F'; x.fillRect(half, 8, 1, Hd - 16); x.fillRect(16, Hd / 2, half - 32, 1); x.fillRect(half / 2, 16, 1, Hd - 32);
+    x.font = '500 16px "Geist Mono", ui-monospace, monospace'; x.fillStyle = '#8F8C82'; x.fillText('SEA  x · v', 12, 24); x.fillText('COLONY · SWARM', half + 12, 24);
+    var s1 = PH.sea, n1 = s1.length;
+    for (var i = 0; i < n1; i++) { var px = half / 2 + Math.max(-1, Math.min(1, s1[i][0] * .55)) * (half / 2 - 18), py = Hd / 2 - Math.max(-1, Math.min(1, s1[i][1] * .55)) * (Hd / 2 - 18);
+      x.fillStyle = 'rgba(' + heatRGB(.2 + .8 * i / n1) + ',' + (.15 + .85 * i / n1).toFixed(2) + ')'; x.fillRect(px - 1.5, py - 1.5, 3, 3); }
+    var s2 = PH.eco, n2 = s2.length, mxA = 20, mxB = 20; s2.forEach(function (p) { mxA = Math.max(mxA, p[0]); mxB = Math.max(mxB, p[1]); });
+    for (var j = 0; j < n2; j++) { var qx = half + 18 + s2[j][0] / mxA * (half - 36), qy = Hd - 14 - s2[j][1] / mxB * (Hd - 44);
+      x.fillStyle = 'rgba(' + heatRGB(.2 + .8 * j / n2) + ',' + (.15 + .85 * j / n2).toFixed(2) + ')'; x.fillRect(qx - 1.5, qy - 1.5, 3, 3); }
+    if (n2) { var lq = s2[n2 - 1]; x.fillStyle = '#F0F5D6'; x.fillRect(half + 18 + lq[0] / mxA * (half - 36) - 3, Hd - 14 - lq[1] / mxB * (Hd - 44) - 3, 6, 6); }
   }
 
   /* ---------- small things, part two ---------- */
@@ -1339,7 +1517,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   var rh = document.getElementById('rul-h'), rv = document.getElementById('rul-v'), rl = document.getElementById('rul-l'), measuring = false;
   function measure(on) {
     if (on === measuring || small()) return; measuring = on; document.body.classList.toggle('measure', on);
-    if (on) Object.keys(wins).forEach(function (k) { var w = wins[k]; w.dataset.dim = w.offsetWidth + ' × ' + w.offsetHeight + '   @ ' + w.offsetLeft + ',' + w.offsetTop; });
+    if (on) Object.keys(wins).forEach(function (k) { var w = wins[k]; w.dataset.dim = w.offsetWidth + ' × ' + w.offsetHeight + '   @ ' + w.offsetLeft + ',' + w.offsetTop + '   heat ' + Math.min(1, w._h || 0).toFixed(2); });
   }
   addEventListener('keydown', function (e) { if (e.key === 'Shift') measure(true); });
   addEventListener('keyup', function (e) { if (e.key === 'Shift') measure(false); });
@@ -1350,6 +1528,19 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   // the dial clicks as you turn it
   var lastDet = 0;
   function dialTick() { var det = Math.round(DL.a / 10); if (det !== lastDet) { lastDet = det; if (AC && soundOn) { var o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime; o.type = 'square'; o.frequency.value = 2400; g.gain.setValueAtTime(.012, t); g.gain.exponentialRampToValueAtTime(.0001, t + .015); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + .02); } } }
+  // window frames are a heat map of attention: hover, clicks, scrolling, dragging and the beam warm them; they cool on their own
+  var HEATSTOPS = [[52, 53, 47], [8, 90, 50], [0, 166, 81], [204, 237, 92], [240, 245, 214]];
+  function frameRGB(v) { v = Math.max(0, Math.min(1, v)) * 4; var i = Math.min(3, Math.floor(v)), f = v - i; return HEATSTOPS[i].map(function (a, k) { return Math.round(a + (HEATSTOPS[i + 1][k] - a) * f); }).join(','); }
+  Object.keys(wins).forEach(function (k) { var w = wins[k]; w._h = 0; w._a = -1;
+    w.addEventListener('pointermove', function () { w._h += .005; }, { passive: true });
+    w.addEventListener('pointerdown', function () { w._h += .22; }); w.addEventListener('wheel', function () { w._h += .03; }, { passive: true });
+    w.addEventListener('keydown', function () { w._h += .04; }); });
+  function winHeat() {
+    Object.keys(wins).forEach(function (k) { var w = wins[k]; if (w.hidden) return; w._h = Math.min(1.2, w._h * .986);
+      var v = Math.min(1, w._h); if (Math.abs(v - w._a) < .006) return; w._a = v;
+      if (v < .015) { w.style.borderColor = ''; w.style.boxShadow = ''; w.style.removeProperty('--heat'); return; }
+      var rgb = frameRGB(v); w.style.borderColor = 'rgb(' + rgb + ')'; w.style.boxShadow = '0 0 ' + Math.round(10 + v * 50) + 'px -10px rgba(' + rgb + ',' + (v * .7).toFixed(2) + ')'; w.style.setProperty('--heat', 'rgb(' + rgb + ')'); });
+  }
   // the beam sweeps across the desktop and catches the window frames
   function beamSweep(T) {
     if (!CAM || small()) return;
@@ -1357,7 +1548,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     for (var s2 = 0; s2 < 2; s2++) { var ang = T * .8 + s2 * Math.PI, p2 = proj(LAMP[0] + Math.cos(ang) * 5, LAMP[1] - .25, LAMP[2] + Math.sin(ang) * 5); if (p2) hits.push([0, p2[0]]); }
     Object.keys(wins).forEach(function (k) { var w = wins[k]; if (w.hidden) return; var l = w.offsetLeft, r = l + w.offsetWidth, on = false;
       hits.forEach(function (h) { if (h[1] > l - 20 && h[1] < r + 20) on = true; });
-      w.classList.toggle('lit', on); });
+      if (on) w._h += .07; });
   }
   // the dogs walk across the desktop now and then. Badrik runs, Sonechka strolls. Click one.
   var DOGPX = { a: ['#.....#.', '##...##.', '.#####..', '.#.#.#..', '.#####..', '..#.#...', '.#####..', '.#...#..'], b: ['#.....#.', '##...##.', '.#####..', '.#.#.#..', '.#####..', '..#.#...', '.#####..', '..#.#...'] };
@@ -1386,7 +1577,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   document.addEventListener('copy', function () { toast('copied. <b>credit @Cogit08</b> if you post it'); });
   // the konami code: the whole world turns to glyphs for a while, the swarm doubles
   var KON = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'], kp = 0;
-  addEventListener('keydown', function (e) { kp = e.key === KON[kp] ? kp + 1 : (e.key === KON[0] ? 1 : 0); if (kp === KON.length) { kp = 0; var prev = MODE; setMode('glyph'); for (var i = 0; i < 40; i++) spawnFly(LPX + (Math.random() - .5), .3, LPZ + (Math.random() - .5), 1.2); kick(2); toast('<b>cheat accepted.</b> 30 lives. no, wait. 40 fireflies'); setTimeout(function () { setMode(prev); }, 12000); } });
+  addEventListener('keydown', function (e) { kp = e.key === KON[kp] ? kp + 1 : (e.key === KON[0] ? 1 : 0); if (kp === KON.length) { kp = 0; var prev = SET.mode; setMode('glyph'); for (var i = 0; i < 40; i++) spawnFly(LPX + (Math.random() - .5), .3, LPZ + (Math.random() - .5), 1.2); kick(2); toast('<b>cheat accepted.</b> 30 lives. no, wait. 40 fireflies'); setTimeout(function () { setMode(prev); }, 12000); } });
 
   var mb = document.getElementById('menubar'), mbState = document.getElementById('mb-state');
   var wxState = document.getElementById('wx-state'), wxAmp = document.getElementById('wx-amp'), wxLast = document.getElementById('wx-last');
@@ -1408,12 +1599,13 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       placeLoupe();
       if (prog) { if (uLp) { if (lpA > .5) { var x0 = (lp[0] - LW / 2) / SCALE, y0 = (innerHeight - lp[1] - LH / 2) / SCALE; gl.uniform4f(uLp, x0, y0, x0 + LW / SCALE, y0 + LH / SCALE); } else gl.uniform4f(uLp, -1, -1, -1, -1); }
         if (uDy) { gl.uniform1f(uDy, SKY.day); gl.uniform1f(uFg, SKY.fog); }
+        if (uMd) { gl.uniform1f(uMd, modeOf(SET.mode).md); gl.uniform1f(uCt, SET.ct); gl.uniform1f(uBr, SET.br); gl.uniform1f(uPal, PALS.indexOf(SET.pal)); gl.uniform1f(uGn, SET.grain); }
         gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, T); gl.uniform1f(uE, W.e); gl.uniform2f(uM, ms[0], ms[1]); gl.drawArrays(gl.TRIANGLES, 0, 3); }
-      if (MODE !== 'dither') glyphPass();
+      cpuPass();
       placeLighthouse(T, ms);
       camera(T, ms);
       if (!reduced) lifeStep(T);
-      lifeDraw(); thingsTick(1 / 30); sysTick(T); dialTick(); beamSweep(T);
+      lifeDraw(); thingsTick(1 / 30); sysTick(T); dialTick(); beamSweep(T); winHeat(); phaseDraw();
       soundTick(T, W.e);
       drawFav(Math.abs(Math.cos(T * .8 - .9)) > .93);
       W.hist.push(W.x); if (W.hist.length > 144) W.hist.shift();
