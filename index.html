@@ -537,6 +537,7 @@ button.tile:focus-visible, .dial:focus-visible { outline: 1px solid var(--green)
   <button type="button" role="menuitem" data-act="kick">Send an impulse</button>
   <button type="button" role="menuitem" data-act="helm">Take the helm</button>
   <button type="button" role="menuitem" data-act="postcard">Save a postcard</button>
+  <button type="button" role="menuitem" data-act="tidy">Tidy windows</button>
   <button type="button" role="menuitem" data-act="toggle">Hide windows</button>
   <button type="button" role="menuitem" data-act="notebook">Open the notebook</button>
   <hr>
@@ -976,18 +977,22 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     bar.addEventListener('pointermove', function (e) {
       if (!drag) return;
       if (!reduced && performance.now() - lastTrail > 45) { lastTrail = performance.now(); trail(w); }
-      var nx = Math.max(-w.offsetWidth + 80, Math.min(innerWidth - 80, ox + e.clientX - sx));
-      var ny = Math.max(30, Math.min(innerHeight - 40, oy + e.clientY - sy));
+      var nx = Math.max(-w.offsetWidth + 120, Math.min(innerWidth - 120, ox + e.clientX - sx));
+      var ny = Math.max(topMin(), Math.min(innerHeight - 40, oy + e.clientY - sy));
       w.style.left = nx + 'px'; w.style.top = ny + 'px';
     });
     bar.addEventListener('pointerup', function () { if (drag) saveWins(); drag = false; w.classList.remove('drag'); });
   });
-  var saved = {}; try { saved = JSON.parse(localStorage.getItem('bentlik-wins') || '{}') || {}; } catch (e) {}
+  // v2: v1 saved hidden windows at 0,0 (a hidden element reports offset 0), which sent them under the menu bar
+  var saved = {}; try { localStorage.removeItem('bentlik-wins'); saved = JSON.parse(localStorage.getItem('bentlik-wins-2') || '{}') || {}; } catch (e) {}
+  function topMin() { var mbH = document.getElementById('menubar'); return (mbH ? mbH.offsetHeight : 32) + 6; }
+  function clampWin(w) { var x = w.offsetLeft, y = w.offsetTop, nx = Math.max(-w.offsetWidth + 120, Math.min(innerWidth - 120, x)), ny = Math.max(topMin(), Math.min(innerHeight - 40, y)); if (nx !== x) w.style.left = nx + 'px'; if (ny !== y) w.style.top = ny + 'px'; }
   Object.keys(saved).forEach(function (k) { if (wins[k] && typeof saved[k].open === 'boolean') wins[k].hidden = !saved[k].open; });
   function saveWins() {
     if (small()) return;
-    var o = {}; Object.keys(wins).forEach(function (k) { var w = wins[k]; o[k] = { open: !w.hidden }; if (w.dataset.placed) { o[k].x = w.offsetLeft; o[k].y = w.offsetTop; } });
-    try { localStorage.setItem('bentlik-wins', JSON.stringify(o)); } catch (e) {}
+    var o = {}; Object.keys(wins).forEach(function (k) { var w = wins[k], prev = saved[k] || {}; o[k] = { open: !w.hidden };
+      if (!w.hidden && w.dataset.placed && !w.classList.contains('closing')) { o[k].x = w.offsetLeft; o[k].y = w.offsetTop; } else if (typeof prev.x === 'number') { o[k].x = prev.x; o[k].y = prev.y; } });
+    saved = o; try { localStorage.setItem('bentlik-wins-2', JSON.stringify(o)); } catch (e) {}
   }
   function trail(w) {
     var t = document.createElement('div'); t.className = 'trail';
@@ -999,7 +1004,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     Object.keys(wins).forEach(function (k) {
       var w = wins[k]; if (w.dataset.placed) return;
       var sv = saved[k];
-      if (sv && typeof sv.x === 'number' && sv.x < innerWidth - 80 && sv.y < innerHeight - 40) { w.style.left = sv.x + 'px'; w.style.top = sv.y + 'px'; if (w.dataset.h) w.style.maxHeight = Math.round(innerHeight * parseFloat(w.dataset.h)) + 'px'; w.dataset.placed = '1'; return; }
+      if (sv && typeof sv.x === 'number' && sv.x > -200 && sv.x < innerWidth - 120 && sv.y >= topMin() && sv.y < innerHeight - 40) { w.style.left = sv.x + 'px'; w.style.top = sv.y + 'px'; if (w.dataset.h) w.style.maxHeight = Math.round(innerHeight * parseFloat(w.dataset.h)) + 'px'; w.dataset.placed = '1'; return; }
       var ww = Math.min(parseFloat(w.dataset.w || 360), innerWidth - 32);
       var x = Math.round(Math.min(innerWidth - ww - 16, Math.max(110, innerWidth * parseFloat(w.dataset.x))));
       var y = Math.round(Math.max(44, innerHeight * parseFloat(w.dataset.y)));
@@ -1008,6 +1013,11 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
       if (y + 220 > innerHeight) w.style.top = Math.max(44, innerHeight - 260) + 'px';
       w.dataset.placed = '1';
     });
+    Object.keys(wins).forEach(function (k) { if (!wins[k].hidden) clampWin(wins[k]); });
+  }
+  function tidy() {
+    saved = {}; try { localStorage.removeItem('bentlik-wins-2'); } catch (e) {}
+    Object.keys(wins).forEach(function (k) { delete wins[k].dataset.placed; }); layout(); saveWins();
   }
   function closeWin(w) {
     sfx('close');
@@ -1019,7 +1029,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   function pickTop() { var best = null; Object.keys(wins).forEach(function (k) { var w = wins[k]; if (!w.hidden && (!best || +w.style.zIndex > +best.style.zIndex)) best = w; }); if (best) focusWin(best); }
   function openWin(id) {
     var w = wins[id]; if (!w) return;
-    var was = w.hidden; w.hidden = false; layout(); focusWin(w);
+    var was = w.hidden; w.hidden = false; layout(); clampWin(w); focusWin(w);
     w._h = (w._h || 0) + .5; if (was) { w.classList.remove('opening'); void w.offsetWidth; w.classList.add('opening'); sfx('open'); saveWins(); }
     if (small()) w.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
   }
@@ -1032,6 +1042,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     if (e.key === 'Escape' && document.getElementById('ctx').hidden) { var t = document.querySelector('.win.top'); if (t && !t.hidden) closeWin(t); }
   });
   addEventListener('resize', function () { Object.keys(wins).forEach(function (k) { delete wins[k].dataset.placed; }); layout(); });
+  var brand = document.querySelector('.menubar .brand'); if (brand) { brand.title = 'Double-click to tidy the windows'; brand.addEventListener('dblclick', function () { tidy(); toast('windows tidied'); }); }
   layout(); focusWin(wins.about);
 
   /* ---------- notebook ---------- */
@@ -1197,6 +1208,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     var a = b.dataset.act;
     if (a === 'kick') kick(2.6);
     if (a === 'helm') helm(true);
+    if (a === 'tidy') { tidy(); toast('windows tidied'); }
     if (a === 'postcard') postcard();
     if (a === 'toggle') document.body.classList.toggle('bare');
     if (a === 'notebook' || a === 'bentlik') openWin(a);
@@ -1478,13 +1490,13 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
 
   /* SHARED: the harbour, the store and the ledger live in Supabase, one island for everyone */
   var SB = { url: 'https://ggdxnznxaviugnkjsyiz.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHhuem54YXZpdWdua2pzeWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM2MDQ4MjUsImV4cCI6MjEwOTE4MDgyNX0.Qd7X-8C2rl1tTd30Vn801Fo_WagQE-7_pmfFXHPaiik' };
-  var WHO = null; try { WHO = localStorage.getItem('bentlik-who'); } catch (e) {}
-  if (!WHO || !/^[a-z0-9]{6,16}$/.test(WHO)) { WHO = ''; for (var wi = 0; wi < 10; wi++) WHO += 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]; try { localStorage.setItem('bentlik-who', WHO); } catch (e) {} }
+  var SAILOR = null; try { SAILOR = localStorage.getItem('bentlik-who'); } catch (e) {}
+  if (!SAILOR || !/^[a-z0-9]{6,16}$/.test(SAILOR)) { SAILOR = ''; for (var wi = 0; wi < 10; wi++) SAILOR += 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]; try { localStorage.setItem('bentlik-who', SAILOR); } catch (e) {} }
   var ISLAND = null, ONLINE = false, SKEW = 0, seenEv = null, pulling = false;
   function rpc(fn, args) { return fetch(SB.url + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: SB.key, Authorization: 'Bearer ' + SB.key, 'Content-Type': 'application/json' }, body: JSON.stringify(args) }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
   function pull() {
     if (pulling || document.hidden) return; pulling = true;
-    rpc('island_state', { p_who: WHO, p_weather: +W.e.toFixed(3) }).then(function (s) {
+    rpc('island_state', { p_who: SAILOR, p_weather: +W.e.toFixed(3) }).then(function (s) {
       pulling = false; ISLAND = s; ONLINE = true; SKEW = new Date(s.now).getTime() - Date.now();
       MARKS = s.marks.map(function (m) { return { kind: m.kind, x: +m.x, z: +m.z, alive: m.alive, id: m.id }; });
       var myName = s.me && s.me.name;
@@ -1495,16 +1507,16 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   }
   function landCatch(n) {
     if (!ONLINE) { toast('landed ' + n + ' fish. <b>the harbour is offline</b>, the island keeps them locally'); return; }
-    rpc('land_catch', { p_who: WHO, p_fish: n }).then(function (r) { toast(r.ok ? 'the harbour bought <b>' + r.fish + ' fish</b>. the whole island eats better' : r.why); if (r.ok) { bell(); pull(); } }).catch(function () { toast('the harbour did not answer'); });
+    rpc('land_catch', { p_who: SAILOR, p_fish: n }).then(function (r) { toast(r.ok ? 'the harbour bought <b>' + r.fish + ' fish</b>. the whole island eats better' : r.why); if (r.ok) { bell(); pull(); } }).catch(function () { toast('the harbour did not answer'); });
   }
   function build(kind, x, z) {
     if (!ONLINE) { toast('the harbour is offline. <b>nothing to build with</b>'); return; }
     MARKS.push({ kind: kind, x: x, z: z, alive: true, pending: true }); heatAt(x, z, 2);
-    rpc('build', { p_who: WHO, p_kind: kind, p_x: +x.toFixed(3), p_z: +z.toFixed(3) }).then(function (r) { toast(r.ok ? (kind === 'house' ? 'a new house. <b>one more mouth to feed</b>' : 'a tree. <b>wood, slowly</b>') : r.why); pull(); });
+    rpc('build', { p_who: SAILOR, p_kind: kind, p_x: +x.toFixed(3), p_z: +z.toFixed(3) }).then(function (r) { toast(r.ok ? (kind === 'house' ? 'a new house. <b>one more mouth to feed</b>' : 'a tree. <b>wood, slowly</b>') : r.why); pull(); });
   }
   function sendShip(cargo, route) {
     if (!ONLINE) { toast('the harbour is offline'); return Promise.resolve(); }
-    return rpc('send_ship', { p_who: WHO, p_cargo: cargo, p_route: route }).then(function (r) { toast(r.ok ? 'ship out: <b>' + r.cargo + ' shells</b>, ' + route + '. storm risk ' + Math.round(r.storm_p * (route === 'far' ? 160 : 100)) + '%' : r.why); if (r.ok) heatAt(HB.x, HB.z, 1.5); pull(); return r; });
+    return rpc('send_ship', { p_who: SAILOR, p_cargo: cargo, p_route: route }).then(function (r) { toast(r.ok ? 'ship out: <b>' + r.cargo + ' shells</b>, ' + route + '. storm risk ' + Math.round(r.storm_p * (route === 'far' ? 160 : 100)) + '%' : r.why); if (r.ok) heatAt(HB.x, HB.z, 1.5); pull(); return r; });
   }
   function bell() { if (!AC || !soundOn) return; var t = AC.currentTime; [880, 1320].forEach(function (f, i) { var o = AC.createOscillator(), g = AC.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(.05 / (i + 1), t); g.gain.exponentialRampToValueAtTime(.0001, t + 1.6); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + 1.7); }); }
   pull(); setInterval(pull, 15000); document.addEventListener('visibilitychange', function () { if (!document.hidden) pull(); });
@@ -1531,7 +1543,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     c.restore();
     c.fillStyle = 'rgb(' + sailRGB + ')'; c.beginPath(); c.moveTo(b[0], b[1] - 2 * s); c.lineTo(b[0], b[1] - 11 * s); c.lineTo(b[0] + 5 * s, b[1] - 3 * s); c.closePath(); c.fill();
   }
-  function trail(c, tl, rgb, a0) { for (var i = 0; i < tl.length - 2; i += 2) { var p = proj(tl[i], .005, tl[i + 1]); if (!p) continue; c.fillStyle = 'rgba(' + rgb + ',' + (a0 * i / tl.length).toFixed(2) + ')'; c.fillRect(p[0] - .5, p[1] - .5, 1.5, 1.5); } }
+  function boatWake(c, tl, rgb, a0) { for (var i = 0; i < tl.length - 2; i += 2) { var p = proj(tl[i], .005, tl[i + 1]); if (!p) continue; c.fillStyle = 'rgba(' + rgb + ',' + (a0 * i / tl.length).toFixed(2) + ')'; c.fillRect(p[0] - .5, p[1] - .5, 1.5, 1.5); } }
   function lifeDraw() {
     var c = lx; c.setTransform(DPR, 0, 0, DPR, 0, 0); c.clearRect(0, 0, innerWidth, innerHeight);
     if (!SET.life || !CAM) return;
@@ -1563,7 +1575,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     // captains, their wakes, wrecks
     CAPT.forEach(function (cp) {
       if (cp.st === 'sunk') { var p = proj(cp.x, .01, cp.z); if (!p) return; c.font = '600 12px "Geist Mono", ui-monospace, monospace'; c.fillStyle = 'rgba(' + (cp.saved ? COL.paper : COL.lime) + ',' + (.5 + .5 * Math.sin(T * 6)).toFixed(2) + ')'; c.fillText(cp.saved ? '×' : '!', p[0], p[1] - 4); return; }
-      trail(c, cp.tl, base, .5);
+      boatWake(c, cp.tl, base, .5);
       boatSprite(c, cp, cp.hd, COL.paper, cp.hold > 10 ? COL.lime : COL.paper, .9);
     });
     // merchants and expeditions (other visitors' ships too)
@@ -1571,7 +1583,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     if (ISLAND) ISLAND.ships.forEach(function (s) { var sp = shipPos(s); boatSprite(c, sp, sp.hd, s.mine ? COL.green : COL.paper, s.mine ? COL.lime : COL.cream, 1.25);
       var p = proj(sp.x, .02, sp.z); if (p && s.mine) { c.font = '500 9px "Geist Mono", ui-monospace, monospace'; c.fillStyle = 'rgb(' + COL.lime + ')'; c.fillText('you', p[0], p[1] - 22); } });
     // your boat
-    if (HELM.on || HELM.v !== 0) { trail(c, HELM.tl, COL.cream, .8); boatSprite(c, HELM, HELM.hd, COL.green, COL.cream, 1.2); }
+    if (HELM.on || HELM.v !== 0) { boatWake(c, HELM.tl, COL.cream, .8); boatSprite(c, HELM, HELM.hd, COL.green, COL.cream, 1.2); }
   }
 
   // click the island to build; click the sea for a ripple
@@ -1762,7 +1774,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
   document.getElementById('term-body').addEventListener('click', function () { tIn.focus(); });
   tw('bentlik os terminal. type help.', 'c');
   var CMDS = {
-    help: function () { tw('status · store · weather · ships · ledger · captains\nsend <cargo> [near|far]   send a ship from the shared store\nbuild house|tree          build somewhere on the island\nhelm                      take a boat (WASD)\nstorm · calm              push the sea, or calm it\nmode [name]               render: ' + MODES.map(function (m) { return m.id; }).join(' ') + '\npostcard · open <window> · whoami · dogs · clear'); },
+    help: function () { tw('tidy                      put every window back in place\nstatus · store · weather · ships · ledger · captains\nsend <cargo> [near|far]   send a ship from the shared store\nbuild house|tree          build somewhere on the island\nhelm                      take a boat (WASD)\nstorm · calm              push the sea, or calm it\nmode [name]               render: ' + MODES.map(function (m) { return m.id; }).join(' ') + '\npostcard · open <window> · whoami · dogs · clear'); },
     status: function () { CMDS.weather(); CMDS.store(); tw('captains out: ' + CAPT.filter(function (c) { return c.st !== 'dock'; }).length + ' · fish in the sea: ' + Math.round(fishTotal())); },
     weather: function () { tw('sea ' + weatherWord(W.e) + ' · energy ' + W.e.toFixed(2) + ' · ' + (LIVE ? 'live readings' : 'resting signal') + (ISLAND ? ' · storm risk ' + (ISLAND.world.storm_p * 100).toFixed(1) + '%' : '')); },
     store: function () { if (!ISLAND) return tw('harbour offline', 'c'); var w = ISLAND.world; tw('fish ' + w.fish + ' · wood ' + w.wood + ' · shells ' + w.shells + ' · houses ' + w.houses + ' · 1 fish = ' + (+w.fish_value).toFixed(2) + ' shells'); },
@@ -1781,6 +1793,7 @@ var ESSAYS = [{"title": "Point zero: what I carried with me", "deck": "I have st
     dogs: function () { tw('badrik   light, mad, fast\nsonechka dark, calm\nbentlik  the first one. keeps the light on.'); },
     bentlik: function () { tw('     ▲\n    ▐█▌   the light is on.\n ~~~▐█▌~~~~~~~~~~~~', 'g'); },
     clear: function () { tOut.innerHTML = ''; },
+    tidy: function () { tidy(); tw('windows back in place', 'g'); },
     sudo: function () { tw('nice try. the sea has no root.', 'c'); },
     exit: function () { closeWin(wins.terminal); }
   };
