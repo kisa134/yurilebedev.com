@@ -2,19 +2,23 @@
    loupe, sky, favicon, sound, context menu, things, island economy, display, terminal, postcard, small things, loop, boot. */
 (function () {
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // the physical key, whatever the keyboard layout (W is W on a Russian layout too)
+  function keyOf(e) { var c = e.code || ''; if (/^Key[A-Z]$/.test(c)) return c.slice(3).toLowerCase(); if (/^Digit\d$/.test(c)) return c.slice(5); if (c === 'Backquote') return '`'; if (c === 'Space') return ' '; if (/^Shift/.test(c)) return 'shift'; return (e.key || '').toLowerCase(); }
   var small = function () { return innerWidth <= 720; };
   /* display settings: how the world is drawn. Every knob lives here and is remembered per visitor. */
   var MODES = [
     { id: 'bayer8', name: 'Bayer 8', md: 0 }, { id: 'bayer4', name: 'Bayer 4', md: 1 }, { id: 'noise', name: 'Noise', md: 2 },
-    { id: 'lines', name: 'Lines', md: 3 }, { id: 'hatch', name: 'Hatch', md: 4 }, { id: 'heat', name: 'Heat', md: 5 },
+    { id: 'lines', name: 'Lines', md: 3 }, { id: 'hatch', name: 'Hatch', md: 4 }, { id: 'heat', name: 'Heat', md: 5 }, { id: 'clean', name: 'Clean', md: 6 },
     { id: 'glyph', name: 'Glyph', md: 9, cpu: 1 }, { id: 'blocks', name: 'Blocks', md: 9, cpu: 1 }, { id: 'braille', name: 'Braille', md: 9, cpu: 1 }, { id: 'dots', name: 'Dots', md: 9, cpu: 1 }
   ], PALS = ['paper', 'phosphor', 'heat'];
-  var DEF = { mode: 'bayer8', px: 2, cell: 11, ct: 1, br: 0, grain: .3, pal: 'paper', heat: true, life: true, perf: 'auto' };
+  var DEF = { mode: 'bayer8', px: 2, cell: 11, ct: 1, br: 0, grain: .3, pal: 'paper', heat: true, life: true, perf: 'auto', clean3d: true };
   var SET = JSON.parse(JSON.stringify(DEF));
   try { var sv0 = JSON.parse(localStorage.getItem('bentlik-display') || 'null'); if (sv0) Object.keys(DEF).forEach(function (k) { if (sv0[k] !== undefined) SET[k] = sv0[k]; }); } catch (e) {}
   // fast mode: bigger pixels, fewer ray steps, 20 fps, fewer boats. Auto picks it on modest machines or when frames drop.
   var AUTOFAST = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4 || !!(navigator.connection && navigator.connection.saveData) || innerWidth <= 720;
   try { if (/[?&]fast\b/.test(location.search)) SET.perf = 'fast'; } catch (e) {}
+  // aboard, the world is drawn clean by default (X toggles), so you see the sea and not the pattern
+  function curMode() { return modeOf(HELM && HELM.on && SET.clean3d ? 'clean' : SET.mode); }
   function isFast() { return SET.perf === 'fast' || (SET.perf === 'auto' && AUTOFAST); }
   function modeOf(id) { for (var i = 0; i < MODES.length; i++) if (MODES[i].id === id) return MODES[i]; return MODES[0]; }
 
@@ -64,7 +68,7 @@
     ' float cab=sdB(p-vec3(-.22,.14,0.),vec3(.08,.06,.1)); if(cab<r.x)r=vec2(cab,2.);',
     ' float m1=max(length(p.xz-vec2(.06,0.))-.014,abs(p.y-.33)-.27); if(m1<r.x)r=vec2(m1,2.);',
     ' float sl=sdB(p-vec3(-.06,.36,0.),vec3(.11*(1.-clamp((p.y-.14)/.44,0.,1.)*.75),.21,.006))*.8; if(sl<r.x)r=vec2(sl,3.);',
-    ' if(k>2.5){r=vec2(sdB(p-vec3(0.,.02,0.),vec3(.5,.06,w))*.8,1.); float wh=sdB(p-vec3(-.02,.12,0.),vec3(.09,.04,.1)); if(wh<r.x)r=vec2(wh,2.); float rl=max(abs(p.y-.1)-.012,max(abs(p.x)-.48,abs(abs(p.z)-w*.92)-.01)); if(rl<r.x)r=vec2(rl,3.); return r;}',
+    ' if(k>2.5){r=vec2(sdB(p-vec3(0.,.02,0.),vec3(.5,.06,w))*.8,1.); float wh=sdB(p-vec3(.12,.1,0.),vec3(.08,.03,.09)); if(wh<r.x)r=vec2(wh,2.); float rl=max(abs(p.y-.1)-.012,max(abs(p.x)-.48,abs(abs(p.z)-w*.92)-.01)); if(rl<r.x)r=vec2(rl,3.); return r;}',
     ' if(k>1.5){float m2=max(length(p.xz-vec2(-.3,0.))-.014,abs(p.y-.28)-.22); if(m2<r.x)r=vec2(m2,2.); float s2=sdB(p-vec3(-.39,.3,0.),vec3(.08,.16,.006)); if(s2<r.x)r=vec2(s2,3.);}',
     ' return r;}',
     'vec3 OBJ;',
@@ -122,6 +126,7 @@
     ' if(inL){float l=clamp(lum*1.05+g*.6+gr*.07,0.,1.);',
     '  col=l<.35?mix(INK,DEEP,l/.35):l<.7?mix(DEEP,LIME,(l-.35)/.35):mix(LIME,CREAM,(l-.7)/.3);}',
     ' else if(Md>8.5){col=vec3(lum); col.g+=clamp(g,0.,1.)*.6;}',
+    ' else if(Md>5.5&&Md<6.5){float l=clamp(lum+gr*.025,0.,1.); col=Pal<.5?mix(INK,PAP,smoothstep(0.,.95,l)):Pal<1.5?mix(INK,LIME,l):RMP(l*.9+.05); float gg=clamp(g,0.,1.4); col=mix(col,mix(GR,mix(LIME,CREAM,clamp(g-1.,0.,1.)),clamp(g*.8,0.,1.)),clamp(gg*.75,0.,.9));}',
     ' else {vec3 HI=Pal<.5?PAP:Pal<1.5?LIME:RMP(lum*.85+.15); col=lum>th?HI:INK;',
     '  if(Md>4.5&&Md<5.5) col=RMP(floor(clamp(lum+(B8(q)-.5)*.2,0.,1.)*6.)/6.);',
     '  float gg=clamp(g,0.,1.4);',
@@ -239,7 +244,7 @@
   document.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { openWin(b.dataset.open); }); });
   addEventListener('keydown', function (e) {
     if (e.metaKey || e.ctrlKey || e.altKey || /input|textarea/i.test(e.target.tagName)) return;
-    var k = e.key.toLowerCase(), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik', t: 'things', s: 'systems', v: 'display', p: 'harbour', '`': 'terminal' };
+    var k = keyOf(e), map = { n: 'notebook', w: 'weather', d: 'dogs', g: 'games', a: 'about', b: 'bentlik', t: 'things', s: 'systems', v: 'display', p: 'harbour', '`': 'terminal' };
     if (k === 'm' && document.getElementById('boot').classList.contains('done')) cycleMode();
     if (map[k] && document.getElementById('boot').classList.contains('done')) openWin(map[k]);
     if (e.key === 'Escape' && document.getElementById('ctx').hidden) { var t = document.querySelector('.win.top'); if (t && !t.hidden) closeWin(t); }
@@ -564,7 +569,7 @@
     if (HELM.mode === 'shore') return [HELM.wx, walkH(HELM.wx, HELM.wz) + .034, HELM.wz];
     var c = Math.cos(HELM.hd), s = Math.sin(HELM.hd), lx = HELM.mode === 'wheel' ? -.36 : HELM.lx, lz = HELM.mode === 'wheel' ? 0 : HELM.lz;
     var x = HELM.x + (c * lx - s * lz) * BOATL, z = HELM.z + (s * lx + c * lz) * BOATL;
-    return [x, boatY(HELM.x, HELM.z) + .08 * BOATL + .032, z];
+    return [x, boatY(HELM.x, HELM.z) + .08 * BOATL + .045, z];
   }
   function proj(x, y, z) {
     var c = CAM, px = x - c.ro[0], py = y - c.ro[1], pz = z - c.ro[2];
@@ -623,7 +628,7 @@
     { name: 'Sami', style: 'follower', note: 'goes when the last boats came back full' }
   ];
   var lastHauls = [];
-  CAPT.forEach(function (c, i) { c.x = HB.x - HB.dz * (i - 2) * .09 + HB.dx * .06; c.z = HB.z + HB.dx * (i - 2) * .09 + HB.dz * .06; c.hd = Math.atan2(HB.dz, HB.dx); c.st = 'dock'; c.t = 2 + i * 3; c.hold = 0; c.trips = 0; c.catch = 0; c.lost = 0; c.tl = []; });
+  CAPT.forEach(function (c, i) { var slot = i < 2 ? i - 2 : i - 1; c.x = HB.x - HB.dz * slot * .1 + HB.dx * .04; c.z = HB.z + HB.dx * slot * .1 + HB.dz * .04; c.hd = Math.atan2(HB.dz, HB.dx); c.st = 'dock'; c.t = 2 + i * 3; c.hold = 0; c.trips = 0; c.catch = 0; c.lost = 0; c.tl = []; });
   function inBeam(x, z) { var ph = Math.atan2(z - LPZ, x - LPX); for (var s = 0; s < 2; s++) { var d = Math.abs(((ph - (T * .8 + s * Math.PI)) % 6.283 + 9.425) % 6.283 - 3.1416); if (d < .3) return true; } return Math.hypot(x - LPX, z - LPZ) < .7; }
   function wantsOut(c) {
     var e = W.e, docked = CAPT.filter(function (q) { return q.st === 'dock'; }).length;
@@ -696,18 +701,20 @@
   function onPier(x, z) { var ax = HB.cx, az = HB.cz, bx = HB.x, bz = HB.z, vx = bx - ax, vz = bz - az, t = Math.max(0, Math.min(1, ((x - ax) * vx + (z - az) * vz) / (vx * vx + vz * vz))); return Math.hypot(x - ax - vx * t, z - az - vz * t) < .035; }
   function walkH(x, z) { return onPier(x, z) ? Math.max(ter(x, z), .025) : ter(x, z); }
   function walkable(x, z) { return onPier(x, z) || ter(x, z) > -.02; }
-  function deckOK(lx, lz) { if (lx < -.46 || lx > .44) return false; var tp = Math.max(0, Math.min(1, (lx + .1) / .6)), w = .15 * (1 - tp * tp * .9); if (Math.abs(lz) > w) return false; return !(lx > -.13 && lx < .09 && Math.abs(lz) < .11); }
+  function deckOK(lx, lz) { if (lx < -.46 || lx > .44) return false; var tp = Math.max(0, Math.min(1, (lx + .1) / .6)), w = .15 * (1 - tp * tp * .9); if (Math.abs(lz) > w) return false; return !(lx > .03 && lx < .21 && Math.abs(lz) < .1); }
   addEventListener('keydown', function (e) {
     if (/input|textarea/i.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
-    var k = e.key.toLowerCase();
-    if (k === 'h' && document.getElementById('boot').classList.contains('done')) { helm(); e.preventDefault(); return; }
+    var k = keyOf(e);
+    if (k === 'h' && document.getElementById('boot').classList.contains('done')) { helm(); e.preventDefault(); e.stopPropagation(); return; }
     if (!HELM.on) return;
     if (k === 'escape') { if (!document.pointerLockElement) setMode2('off'); e.stopPropagation(); return; }
     if (k === 'e') { toggleWheel(); e.stopPropagation(); return; }
     if (k === 'c') { HELM.cam = HELM.cam === 'first' ? 'third' : 'first'; e.stopPropagation(); return; }
+    if (k === 'x') { SET.clean3d = !SET.clean3d; saveSet(); toast(SET.clean3d ? 'clean view' : 'pattern view: <b>' + modeOf(SET.mode).name + '</b>'); e.stopPropagation(); return; }
     if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'shift'].indexOf(k) >= 0) { HELM.keys[k] = true; e.preventDefault(); e.stopPropagation(); }
   }, true);
-  addEventListener('keyup', function (e) { HELM.keys[e.key.toLowerCase()] = false; });
+  addEventListener('keyup', function (e) { HELM.keys[keyOf(e)] = false; });
+  addEventListener('blur', function () { HELM.keys = {}; });
   document.getElementById('helm-x').addEventListener('click', function () { setMode2('off'); });
   function toggleWheel() {
     if (HELM.mode === 'wheel') { HELM.lx = -.36; HELM.lz = .07; setMode2('deck'); say('deck', 'you left the wheel'); return; }
@@ -884,7 +891,7 @@
   bm.addEventListener('click', function (e) { var b = e.target.closest('[data-build]'); if (!b) return; if (b.dataset.build !== 'no' && bmAt) build(b.dataset.build, bmAt[0] + (Math.random() - .5) * .03, bmAt[1] + (Math.random() - .5) * .03); bm.hidden = true; });
   // type "bentlik": every captain comes home
   var typed = '';
-  addEventListener('keydown', function (e) { if (e.key.length !== 1 || HELM.on) return; typed = (typed + e.key.toLowerCase()).slice(-7); if (typed === 'bentlik') { CAPT.forEach(function (c) { if (c.st === 'out' || c.st === 'fish') c.st = 'home'; }); say('home', 'bentlik called. every captain turned home'); } });
+  addEventListener('keydown', function (e) { var kk = keyOf(e); if (kk.length !== 1 || HELM.on || /input|textarea/i.test(e.target.tagName)) return; typed = (typed + kk).slice(-7); if (typed === 'bentlik') { CAPT.forEach(function (c) { if (c.st === 'out' || c.st === 'fish') c.st = 'home'; }); say('home', 'bentlik called. every captain turned home'); } });
 
   /* HARBOUR window */
   var hv = function (id) { return document.getElementById(id); };
@@ -951,7 +958,7 @@
   var RAMP = ' .·:-=+*%#@', BLOCKS = ' ░▒▓█', BR = [[0, 4], [6, 2], [1, 5], [7, 3]];
   var CPAL = { paper: ['#CFCBBE'], phosphor: ['#CCED5C'], heat: ['#0B6B3A', '#00A651', '#CCED5C', '#F0F5D6'] };
   function cpuPass() {
-    var M = modeOf(SET.mode); if (!M.cpu || !gl) return;
+    var M = curMode(); if (!M.cpu || !gl) return;
     var w = cv.width, h = cv.height; if (!pix || pix.length !== w * h * 4) pix = new Uint8Array(w * h * 4);
     gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pix);
     function L(x, y) { var px = Math.min(w - 1, Math.max(0, Math.floor(x / SCALE))), py = Math.min(h - 1, Math.max(0, Math.floor((innerHeight - y) / SCALE))), o = (py * w + px) * 4; return pix[o] / 255; }
@@ -1107,7 +1114,7 @@
     if (!pcWant) return; pcWant = false;
     var W2 = 1200, H2 = 630, c = document.createElement('canvas'); c.width = W2; c.height = H2; var x = c.getContext('2d');
     x.fillStyle = '#0D0E0B'; x.fillRect(0, 0, W2, H2); x.imageSmoothingEnabled = false;
-    var src = modeOf(SET.mode).cpu ? glyphC : cv, sw = src.width, sh = src.height, k = Math.max(W2 / sw, H2 / sh);
+    var src = curMode().cpu ? glyphC : cv, sw = src.width, sh = src.height, k = Math.max(W2 / sw, H2 / sh);
     x.drawImage(src, (W2 - sw * k) / 2, (H2 - sh * k) / 2, sw * k, sh * k);
     var lk = Math.max(W2 / lifeC.width, H2 / lifeC.height); x.imageSmoothingEnabled = true; x.drawImage(lifeC, (W2 - lifeC.width * lk) / 2, (H2 - lifeC.height * lk) / 2, lifeC.width * lk, lifeC.height * lk);
     x.strokeStyle = '#00A651'; x.lineWidth = 2; x.strokeRect(16, 16, W2 - 32, H2 - 32);
@@ -1141,7 +1148,7 @@
     if (on === measuring || small()) return; measuring = on; document.body.classList.toggle('measure', on);
     if (on) Object.keys(wins).forEach(function (k) { var w = wins[k]; w.dataset.dim = w.offsetWidth + ' × ' + w.offsetHeight + '   @ ' + w.offsetLeft + ',' + w.offsetTop + '   heat ' + Math.min(1, w._h || 0).toFixed(2); });
   }
-  addEventListener('keydown', function (e) { if (e.key === 'Shift') measure(true); });
+  addEventListener('keydown', function (e) { if (e.key === 'Shift' && !HELM.on) measure(true); });
   addEventListener('keyup', function (e) { if (e.key === 'Shift') measure(false); });
   addEventListener('blur', function () { measure(false); });
   addEventListener('pointermove', function (e) { if (!measuring) return; rh.style.top = e.clientY + 'px'; rv.style.left = e.clientX + 'px'; rl.style.left = (e.clientX + 8) + 'px'; rl.style.top = (e.clientY + 6) + 'px'; rl.textContent = 'x ' + e.clientX + '  y ' + e.clientY; });
@@ -1199,7 +1206,7 @@
   document.addEventListener('copy', function () { toast('copied. <b>credit @Cogit08</b> if you post it'); });
   // the konami code: the whole world turns to glyphs for a while, the swarm doubles
   var KON = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'], kp = 0;
-  addEventListener('keydown', function (e) { kp = e.key === KON[kp] ? kp + 1 : (e.key === KON[0] ? 1 : 0); if (kp === KON.length) { kp = 0; var prev = SET.mode; setMode('glyph'); SHOALS.forEach(function (q) { q.n = q.K; }); kick(2); toast('<b>cheat accepted.</b> every shoal is full. go fishing (H)'); setTimeout(function () { setMode(prev); }, 12000); } });
+  addEventListener('keydown', function (e) { var kk = e.key.length > 1 ? e.key : keyOf(e); kp = kk === KON[kp] ? kp + 1 : (kk === KON[0] ? 1 : 0); if (kp === KON.length) { kp = 0; var prev = SET.mode; setMode('glyph'); SHOALS.forEach(function (q) { q.n = q.K; }); kick(2); toast('<b>cheat accepted.</b> every shoal is full. go fishing (H)'); setTimeout(function () { setMode(prev); }, 12000); } });
 
   var mb = document.getElementById('menubar'), mbState = document.getElementById('mb-state');
   var wxState = document.getElementById('wx-state'), wxAmp = document.getElementById('wx-amp'), wxLast = document.getElementById('wx-last');
@@ -1221,7 +1228,7 @@
       placeLoupe();
       if (prog) { if (uLp) { if (lpA > .5 && !HELM.on) { var x0 = (lp[0] - LW / 2) / SCALE, y0 = (innerHeight - lp[1] - LH / 2) / SCALE; gl.uniform4f(uLp, x0, y0, x0 + LW / SCALE, y0 + LH / SCALE); } else gl.uniform4f(uLp, -1, -1, -1, -1); }
         if (uDy) { gl.uniform1f(uDy, SKY.day); gl.uniform1f(uFg, SKY.fog); }
-        if (uMd) { gl.uniform1f(uMd, modeOf(SET.mode).md); gl.uniform1f(uCt, SET.ct); gl.uniform1f(uBr, SET.br); gl.uniform1f(uPal, PALS.indexOf(SET.pal)); gl.uniform1f(uGn, SET.grain); }
+        if (uMd) { var CMd = curMode(); document.body.classList.toggle('m-cpu', !!CMd.cpu); gl.uniform1f(uMd, CMd.md); gl.uniform1f(uCt, SET.ct); gl.uniform1f(uBr, SET.br); gl.uniform1f(uPal, PALS.indexOf(SET.pal)); gl.uniform1f(uGn, SET.grain); }
         camera(T, ms); if (uRo) { gl.uniform3fv(uRo, CAM.ro); gl.uniform3fv(uTa, CAM.ta); gl.uniform1f(uOx, CAM.ox); gl.uniform1f(uQ, CAM.q); gl.uniform1f(uTn, CAM.tn); gl.uniform2f(uSt, CAM.st[0], CAM.st[1]); boatsUniform(); }
         gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, T); gl.uniform1f(uE, W.e); gl.uniform2f(uM, ms[0], ms[1]); gl.drawArrays(gl.TRIANGLES, 0, 3); }
       cpuPass();

@@ -30,10 +30,19 @@ await until(() => !document.getElementById('w-notebook').hidden);
 const re = await box('#w-notebook');
 ok(!!re && re.y > 30 && Math.abs(re.x - after.x) < 4, 'a reopened window keeps its place');
 
+await page.evaluate(() => { const b = document.querySelector('.mt[data-mode="glyph"]'); b && b.click(); });
 await page.keyboard.press('h');
 ok(await until(() => !document.getElementById('helm').hidden), 'H takes the helm');
-await page.keyboard.press('e');
+// a Russian layout sends "ц" for the W key: the boat must still move
+const key = (type, k, code) => page.evaluate(([t, kk, c]) => dispatchEvent(new KeyboardEvent(t, { key: kk, code: c, bubbles: true })), [type, k, code]);
+await key('keydown', 'ц', 'KeyW');
+ok(await until(() => parseFloat(document.getElementById('helm-sp').textContent) > 1), 'W (any layout) moves the boat');
+await key('keyup', 'ц', 'KeyW');
+ok(await page.evaluate(() => !document.body.classList.contains('m-cpu')) && await page.evaluate(() => getComputedStyle(document.getElementById('w-about')).visibility === 'hidden'), 'aboard: clean 3D view, windows out of the way');
+await key('keydown', 'у', 'KeyE');
 ok(await until(() => document.getElementById('helm-mode').textContent === 'on deck'), 'E leaves the wheel for the deck');
+await key('keydown', 'ц', 'KeyW'); await page.waitForTimeout(1500); await key('keyup', 'ц', 'KeyW');
+ok(await page.evaluate(() => document.getElementById('helm-mode').textContent.length > 0), 'walking on deck');
 await page.keyboard.press('Escape');
 ok(await until(() => document.getElementById('helm').hidden), 'Esc leaves the boat');
 
